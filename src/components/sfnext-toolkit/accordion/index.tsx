@@ -33,7 +33,7 @@ import { cn } from '@/lib/utils';
         name: 'Accordion items',
         description: 'Add up to 12 Accordion Item components.',
         maxComponents: 12,
-        componentTypeInclusions: ['accordionItem'],
+        componentTypeInclusions: ['SFNextToolkit.accordionItem'],
     },
 ])
 export class SFNextToolkitAccordionMetadata {

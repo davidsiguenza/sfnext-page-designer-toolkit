@@ -1,6 +1,6 @@
 # Storefront Next Page Designer Toolkit
 
-`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides merchant-facing page types and components without brand assets, catalog IDs, credentials, or site-specific configuration.
+`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides 3 merchant-facing page types and 18 component types without brand assets, catalog IDs, credentials, or site-specific configuration.
 
 The toolkit has two required parts:
 
@@ -15,7 +15,7 @@ A B2C cartridge cannot execute React by itself. Install and deploy both parts to
 
 | Type ID                                | Use case                                                                                    | Route or assignment                                   |
 | -------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `page.sfnextToolkitBlankPage`          | Build campaign and editorial landing pages from an unrestricted blank canvas.               | `/:siteId/:localeId/page/:pageId`                     |
+| `page.sfnextToolkitBlankPage`          | Build campaign and editorial landing pages from a flexible blank canvas.                     | `/:siteId/:localeId/page/:pageId`                     |
 | `page.sfnextToolkitProductListingPage` | Add managed content around the standard category experience and configure the product grid. | PLP aspect, `/:siteId/:localeId/category/:categoryId` |
 | `page.sfnextToolkitProductDetailPage`  | Add promotional and engagement content before and after the standard product experience.    | PDP aspect, `/:siteId/:localeId/product/:productId`   |
 
@@ -23,27 +23,50 @@ The PLP and PDP page types use the standard `plp` and `pdp` aspect definitions f
 
 ### Component types
 
-| Type ID                                 | Best used for                                                                          | Data dependency        |
-| --------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------- |
-| `component.SFNextToolkit.section`       | Page sections with controlled width, spacing, surface, and a nested content region.    | None                   |
-| `component.SFNextToolkit.richText`      | Headings, merchant-authored rich text, and an optional call to action.                 | None                   |
-| `component.SFNextToolkit.mediaContent`  | Editorial image-and-copy layouts for campaigns, brand stories, and PDP storytelling.   | None                   |
-| `component.SFNextToolkit.promoGrid`     | Responsive collections of promotional cards.                                           | None                   |
-| `component.SFNextToolkit.promoCard`     | Image, copy, and CTA used inside a Promo Grid.                                         | None                   |
-| `component.SFNextToolkit.trustBar`      | A responsive row of service and confidence messages.                                   | None                   |
-| `component.SFNextToolkit.trustItem`     | One delivery, returns, payment, support, store, or gift message inside a Trust Bar.    | None                   |
-| `component.SFNextToolkit.accordion`     | FAQ, delivery, returns, care, and long-form supporting information.                    | None                   |
-| `component.SFNextToolkit.accordionItem` | One accessible disclosure inside an Accordion.                                         | None                   |
-| `component.SFNextToolkit.categoryHero`  | A PLP hero that defaults to the current category and supports editorial overrides.     | Current category route |
-| `component.SFNextToolkit.productList`   | PLP image view type, product fields, swatches, actions, and custom catalog attributes. | PLP search runtime     |
+| Type ID                                           | Best used for                                                                                 | Data dependency          |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------ |
+| `component.SFNextToolkit.heroBanner`              | Campaign launches with responsive imagery, safe overlays, semantic headings, and two CTAs.   | None                     |
+| `component.SFNextToolkit.promoStrip`              | Delivery, sale, member, or service messages in a compact themed strip.                        | None                     |
+| `component.SFNextToolkit.section`                 | Page sections with controlled width, spacing, surface, and a nested content region.           | None                     |
+| `component.SFNextToolkit.responsiveColumns`       | Responsive two- or three-column compositions with controlled ratios and mobile order.         | None                     |
+| `component.SFNextToolkit.richText`                | Headings, merchant-authored rich text, and an optional call to action.                        | None                     |
+| `component.SFNextToolkit.mediaContent`            | Editorial image-and-copy layouts for campaigns, brand stories, and PDP storytelling.          | None                     |
+| `component.SFNextToolkit.promoGrid`               | Equal or featured-first collections of promotional cards.                                     | None                     |
+| `component.SFNextToolkit.promoCard`               | Overlay or stacked image, copy, and CTA used inside a Promo Grid.                              | None                     |
+| `component.SFNextToolkit.categoryCarousel`        | A scrollable collection of catalog-backed or manually selected categories.                    | Categories API           |
+| `component.SFNextToolkit.categoryCard`            | One catalog-backed category with optional editorial image and copy overrides.                  | Category API             |
+| `component.SFNextToolkit.productCarousel`         | Category-backed or manually curated product carousel using the storefront Product Tile.       | Product Search API       |
+| `component.SFNextToolkit.productRecommendations` | Einstein-powered personalised product carousel with a clear Page Designer authoring state.    | Einstein + Products APIs |
+| `component.SFNextToolkit.trustBar`                | A responsive row of service and confidence messages.                                          | None                     |
+| `component.SFNextToolkit.trustItem`               | One delivery, returns, payment, support, store, or gift message inside a Trust Bar.           | None                     |
+| `component.SFNextToolkit.accordion`               | FAQ, delivery, returns, care, and long-form supporting information.                           | None                     |
+| `component.SFNextToolkit.accordionItem`           | One accessible disclosure inside an Accordion.                                                | None                     |
+| `component.SFNextToolkit.categoryHero`            | A PLP hero that defaults to the current category and supports editorial overrides.            | Current category route   |
+| `component.SFNextToolkit.productList`             | PLP image view type, product fields, swatches, actions, and custom catalog attributes.        | PLP search runtime       |
+
+Four component types are contextual building blocks rather than root-page blocks: `accordionItem`, `categoryCard`, `promoCard`, and `trustItem`. They appear only inside their compatible parent regions. This keeps the Page Designer palette useful instead of exposing invalid loose fragments.
 
 ## Component guide
+
+### Campaign Hero
+
+Use Campaign Hero for the primary visual statement on a campaign or landing page. It supports separate desktop and mobile images, focal points, decorative-image mode, eyebrow, semantic heading choice, controlled visual sizes, nine content positions, token-based overlays, responsive height, and two safe CTAs.
+
+The component intentionally does not accept arbitrary CSS, JavaScript, raw color values, or unsanitised links. Use one `h1` on standalone landing pages and `h2` or `h3` where the route already owns the page title.
+
+### Promo Strip
+
+Use Promo Strip for concise, high-visibility messages such as free delivery, sale deadlines, loyalty benefits, or store services. Merchants select a safe icon, semantic tone, density, alignment, and optional link. The block is static content and does not announce itself as a live alert to assistive technology.
 
 ### Section
 
 Use a Section as the outer building block of a blank page. It gives merchants controlled presets for maximum width, vertical spacing, background surface, alignment, and an optional anchor ID. Add other components to its `content` region.
 
 Use Sections instead of spacer components or merchant-authored CSS. Sections can contain normal content, but recursive Section nesting is intentionally restricted to keep pages predictable and responsive.
+
+### Responsive Columns
+
+Use Responsive Columns to compose two- or three-column editorial layouts without custom grid CSS. Merchants select equal or asymmetric ratios, gap, vertical alignment, and mobile order. Each column is a Page Designer region, so it can contain normal top-level toolkit components while recursive column layouts and loose child fragments remain restricted.
 
 ### Rich Text
 
@@ -61,7 +84,21 @@ Typical examples include a brand story, campaign feature, material story, sustai
 
 Add a Promo Grid, configure its responsive column preset, and then add up to six Promo Cards to its `items` region. That region accepts only `SFNextToolkit.promoCard`, preventing incompatible layouts.
 
-Use this pair for campaign tiles, gender or age navigation, seasonal stories, or editorial category entry points. Promo Card reuses the Storefront Next Content Card implementation instead of maintaining a second card design. Mark an image as decorative when it repeats the adjacent card copy; otherwise provide meaningful alternative text.
+Use this pair for campaign tiles, gender or age navigation, seasonal stories, or editorial category entry points. Promo Grid supports equal and featured-first compositions. Promo Card supports overlay and stacked treatments, controlled image ratios, focal points, safe CTA variants, and a useful empty authoring state. Mark an image as decorative when it repeats the adjacent card copy; otherwise provide meaningful alternative text.
+
+### Category Carousel and Category Card
+
+Category Carousel can populate itself from the children of a selected parent category or render manually placed Category Cards. Use automatic population for catalog navigation that should stay in sync, and manual cards when the campaign needs editorial ordering or image/copy overrides.
+
+Category Card never invents catalog content or falls back to a demo asset. If a selected category has no usable image, configure an editorial image or correct the category data.
+
+### Product Carousel
+
+Select a category to populate Product Carousel automatically, or leave the category empty and add standard Storefront Next Product Tiles to its manual region. The adapter reuses the host storefront's pricing, badges, analytics, responsive product imagery, and accessibility behaviour rather than maintaining a parallel tile implementation.
+
+### Einstein Product Recommendations
+
+Choose an Einstein recommender and a fallback heading. The component enriches recommendations with product data on the server and renders the shared storefront carousel. In Page Designer, an unconfigured component shows a clear configuration card; on the live storefront an empty recommendation result renders nothing.
 
 ### Trust Bar and Trust Item
 
@@ -99,7 +136,7 @@ pnpm cartridge:validate
 pnpm build
 ```
 
-`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest.
+`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest. Validation also enforces the complete 18-type public contract and rejects unresolved TypeScript expressions or enum defaults that are not present in their value lists.
 
 `cartridge:validate` validates both the standard Storefront Next metadata and every file in this cartridge with the B2C tooling schema validator.
 
@@ -125,12 +162,36 @@ The MRT environment must be linked to the same B2C Commerce instance and site so
 
 1. Open **Merchant Tools > Content > Page Designer** for the target site.
 2. Create a page and choose one of the `SFNext Toolkit` page types, or open a PLP/PDP assignment using the matching aspect.
-3. Drag components from the `SFNextToolkit` group into compatible regions.
+3. Drag components from the `SFNextToolkit` group into compatible regions. Root regions expose 14 complete blocks; the 4 contextual child types appear only inside their matching parents.
 4. Configure the component attributes and save.
 5. Use Preview to verify desktop and mobile behavior.
 6. Publish the page or assignment when it is ready.
 
 Page Designer changes must be saved before the Storefront Next preview iframe refreshes. Unsaved property changes are not reflected live.
+
+## Recommended page recipes
+
+### Campaign landing page
+
+1. Campaign Hero
+2. Promo Strip
+3. Section containing Rich Text or Media + Content
+4. Promo Grid or Category Carousel
+5. Featured Product Carousel
+6. Trust Bar
+7. Accordion for supporting information
+
+### Product listing page
+
+1. Category Hero in `plpTopFullWidth`
+2. Optional Promo Strip or Rich Text in `plpTopContent`
+3. Configurable Product List in `plpProductList`
+4. Media + Content, Featured Product Carousel, Trust Bar, or Accordion in `plpBottom`
+
+### Product detail page
+
+1. Promo Strip, Trust Bar, or Media + Content in `promoContent`
+2. Einstein Product Recommendations, Media + Content, or Accordion in `engagementContent`
 
 ## Install in another Storefront Next project
 

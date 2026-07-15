@@ -81,6 +81,13 @@ function normalizeValue<T extends string>(value: string | undefined, values: rea
     return value && (values as readonly string[]).includes(value) ? (value as T) : fallback;
 }
 
+const SAFE_ANCHOR_ID = /^[A-Za-z][A-Za-z0-9_:.-]*$/;
+
+function normalizeAnchorId(value: string | undefined, fallback: string | undefined): string | undefined {
+    const trimmed = value?.trim();
+    return trimmed && SAFE_ANCHOR_ID.test(trimmed) ? trimmed : fallback;
+}
+
 /* v8 ignore start - decorator behavior is covered by the shared decorator tests. */
 @Component('section', {
     name: 'Section',
@@ -93,7 +100,13 @@ function normalizeValue<T extends string>(value: string | undefined, values: rea
         id: 'content',
         name: 'Content',
         description: 'Components displayed inside this section.',
-        componentTypeExclusions: ['section'],
+        componentTypeExclusions: [
+            'SFNextToolkit.section',
+            'SFNextToolkit.accordionItem',
+            'SFNextToolkit.categoryCard',
+            'SFNextToolkit.promoCard',
+            'SFNextToolkit.trustItem',
+        ],
     },
 ])
 export class SFNextToolkitSectionMetadata {
@@ -190,7 +203,7 @@ export const Section = forwardRef<HTMLElement, SectionProps>(
         const resolvedSpacing = normalizeValue(spacing, SECTION_SPACING, 'md');
         const resolvedWidth = normalizeValue(contentWidth, SECTION_WIDTHS, 'contained');
         const resolvedAlignment = normalizeValue(alignment, SECTION_ALIGNMENTS, 'left');
-        const resolvedId = anchorId?.trim() || id;
+        const resolvedId = normalizeAnchorId(anchorId, id);
 
         return (
             <section

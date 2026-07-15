@@ -23,7 +23,7 @@ import { registry } from '@/lib/page-designer/registry';
  *
  * DO NOT EDIT THIS FUNCTION MANUALLY - it will be overwritten on next build.
  *
- * Components registered: Content.announcementBanner, Content.contentCard, Content.hero, Content.pdImage, Content.popularCategory, Content.productRecommendations, Content.productTile, Layout.grid, Layout.header, Layout.heroCarousel, Layout.popularCategories, Layout.productCarousel, Layout.productList, SFNextToolkit.accordion, SFNextToolkit.accordionItem, SFNextToolkit.categoryHero, SFNextToolkit.mediaContent, SFNextToolkit.productList, SFNextToolkit.promoCard, SFNextToolkit.promoGrid, SFNextToolkit.richText, SFNextToolkit.section, SFNextToolkit.trustBar, SFNextToolkit.trustItem
+ * Components registered: Content.announcementBanner, Content.contentCard, Content.hero, Content.pdImage, Content.popularCategory, Content.productRecommendations, Content.productTile, Layout.grid, Layout.header, Layout.heroCarousel, Layout.popularCategories, Layout.productCarousel, Layout.productList, SFNextToolkit.accordion, SFNextToolkit.accordionItem, SFNextToolkit.categoryCard, SFNextToolkit.categoryCarousel, SFNextToolkit.categoryHero, SFNextToolkit.heroBanner, SFNextToolkit.mediaContent, SFNextToolkit.productCarousel, SFNextToolkit.productList, SFNextToolkit.productRecommendations, SFNextToolkit.promoCard, SFNextToolkit.promoGrid, SFNextToolkit.promoStrip, SFNextToolkit.responsiveColumns, SFNextToolkit.richText, SFNextToolkit.section, SFNextToolkit.trustBar, SFNextToolkit.trustItem
  */
 export function initializeRegistry(targetRegistry = registry): void {
     targetRegistry.registerImporter(
@@ -73,8 +73,23 @@ export function initializeRegistry(targetRegistry = registry): void {
         { fallback: 'fallback' }
     );
     targetRegistry.registerImporter(
+        'SFNextToolkit.categoryCard',
+        () => import('../../components/sfnext-toolkit/category-card/index'),
+        { loader: 'loader', fallback: 'fallback' }
+    );
+    targetRegistry.registerImporter(
+        'SFNextToolkit.categoryCarousel',
+        () => import('../../components/sfnext-toolkit/category-carousel/index'),
+        { loader: 'loader', fallback: 'fallback' }
+    );
+    targetRegistry.registerImporter(
         'SFNextToolkit.categoryHero',
         () => import('../../components/sfnext-toolkit/category-hero/index'),
+        { fallback: 'fallback' }
+    );
+    targetRegistry.registerImporter(
+        'SFNextToolkit.heroBanner',
+        () => import('../../components/sfnext-toolkit/hero-banner/index'),
         { fallback: 'fallback' }
     );
     targetRegistry.registerImporter(
@@ -83,8 +98,18 @@ export function initializeRegistry(targetRegistry = registry): void {
         { fallback: 'fallback' }
     );
     targetRegistry.registerImporter(
+        'SFNextToolkit.productCarousel',
+        () => import('../../components/sfnext-toolkit/product-carousel/index'),
+        { loader: 'loader', fallback: 'fallback' }
+    );
+    targetRegistry.registerImporter(
         'SFNextToolkit.productList',
         () => import('../../components/sfnext-toolkit/product-list/index')
+    );
+    targetRegistry.registerImporter(
+        'SFNextToolkit.productRecommendations',
+        () => import('../../components/sfnext-toolkit/product-recommendations/index'),
+        { loader: 'loader', fallback: 'fallback' }
     );
     targetRegistry.registerImporter(
         'SFNextToolkit.promoCard',
@@ -94,6 +119,16 @@ export function initializeRegistry(targetRegistry = registry): void {
     targetRegistry.registerImporter(
         'SFNextToolkit.promoGrid',
         () => import('../../components/sfnext-toolkit/promo-grid/index'),
+        { fallback: 'fallback' }
+    );
+    targetRegistry.registerImporter(
+        'SFNextToolkit.promoStrip',
+        () => import('../../components/sfnext-toolkit/promo-strip/index'),
+        { fallback: 'fallback' }
+    );
+    targetRegistry.registerImporter(
+        'SFNextToolkit.responsiveColumns',
+        () => import('../../components/sfnext-toolkit/responsive-columns/index'),
         { fallback: 'fallback' }
     );
     targetRegistry.registerImporter(

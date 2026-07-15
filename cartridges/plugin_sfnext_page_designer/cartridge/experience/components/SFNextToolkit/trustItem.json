@@ -17,7 +17,7 @@
                     "required": false,
                     "description": "Predefined storefront icon. Arbitrary SVG, HTML and scripts are intentionally not accepted.",
                     "values": ["delivery", "returns", "security", "payment", "support", "store", "package", "gift"],
-                    "default_value": "'delivery' as TrustIconName"
+                    "default_value": "delivery"
                 },
                 {
                     "id": "title",

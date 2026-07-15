@@ -201,7 +201,8 @@ var UnresolvedConstantReferenceError = class extends Error {
 	}
 };
 function parseExpression(expression) {
-	if (Node.isStringLiteral(expression)) return expression.getLiteralValue();
+	if (Node.isAsExpression(expression)) return parseExpression(expression.getExpression());
+	else if (Node.isStringLiteral(expression)) return expression.getLiteralValue();
 	else if (Node.isNumericLiteral(expression)) return expression.getLiteralValue();
 	else if (Node.isTrueLiteral(expression)) return true;
 	else if (Node.isFalseLiteral(expression)) return false;
@@ -247,7 +248,15 @@ function parseArrayLiteral(arrayLiteral) {
 	const result = [];
 	try {
 		const elements = arrayLiteral.getElements();
-		for (const element of elements) result.push(parseExpression(element));
+		for (const element of elements) {
+			if (Node.isSpreadElement(element)) {
+				const spreadValue = parseExpression(element.getExpression());
+				if (!Array.isArray(spreadValue)) throw new UnresolvedConstantReferenceError(element.getText());
+				result.push(...spreadValue);
+				continue;
+			}
+			result.push(parseExpression(element));
+		}
 	} catch (error) {
 		logger.warn(`Could not parse array literal: ${error.message}`);
 	}

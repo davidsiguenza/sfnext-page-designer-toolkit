@@ -1,0 +1,72 @@
+{
+    "name": "Featured Product Carousel",
+    "description": "A polished, responsive product carousel populated from a category or with manually selected Product Tiles.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "products",
+            "name": "Manual products",
+            "component_type_inclusions": [
+                {
+                    "type_id": "Content.productTile"
+                }
+            ],
+            "max_components": 12
+        }
+    ],
+    "attribute_definition_groups": [
+        {
+            "id": "productCarousel",
+            "name": "Featured Product Carousel",
+            "description": "A polished, responsive product carousel populated from a category or with manually selected Product Tiles.",
+            "attribute_definitions": [
+                {
+                    "id": "title",
+                    "name": "Heading",
+                    "type": "string",
+                    "required": false,
+                    "description": "Section heading shown above the products.",
+                    "default_value": "Featured products"
+                },
+                {
+                    "id": "subtitle",
+                    "name": "Supporting text",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional short line shown below the heading."
+                },
+                {
+                    "id": "categoryId",
+                    "name": "Category",
+                    "type": "category",
+                    "required": false,
+                    "description": "Automatically populate the carousel with products from this category."
+                },
+                {
+                    "id": "limit",
+                    "name": "Maximum products",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Maximum number of category products loaded into the carousel.",
+                    "default_value": 12
+                },
+                {
+                    "id": "shopAllText",
+                    "name": "View-all label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional label displayed at the end of the heading row.",
+                    "default_value": "View all"
+                },
+                {
+                    "id": "shopAllUrl",
+                    "name": "View-all destination",
+                    "type": "url",
+                    "required": false,
+                    "description": "Internal or external destination for the view-all link."
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,149 @@
+{
+    "name": "Hero Banner",
+    "description": "Responsive campaign hero with desktop and mobile imagery, safe calls to action, semantic headings and token-based overlays.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "heroBanner",
+            "name": "Hero Banner",
+            "description": "Responsive campaign hero with desktop and mobile imagery, safe calls to action, semantic headings and token-based overlays.",
+            "attribute_definitions": [
+                {
+                    "id": "desktopImage",
+                    "name": "Desktop image",
+                    "type": "image",
+                    "required": false,
+                    "description": "Primary content-library image used on tablet and desktop screens."
+                },
+                {
+                    "id": "mobileImage",
+                    "name": "Mobile image",
+                    "type": "image",
+                    "required": false,
+                    "description": "Optional portrait crop used below the tablet breakpoint."
+                },
+                {
+                    "id": "imageAlt",
+                    "name": "Image alternative text",
+                    "type": "string",
+                    "required": false,
+                    "description": "Describe an informative image. Leave empty only when Decorative image is enabled."
+                },
+                {
+                    "id": "decorativeImage",
+                    "name": "Decorative image",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Hides campaign imagery from assistive technology when the adjacent copy conveys the same meaning.",
+                    "default_value": true
+                },
+                {
+                    "id": "eyebrow",
+                    "name": "Eyebrow",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: eyebrow"
+                },
+                {
+                    "id": "title",
+                    "name": "Title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: title"
+                },
+                {
+                    "id": "body",
+                    "name": "Body",
+                    "type": "text",
+                    "required": false,
+                    "description": "Field: body"
+                },
+                {
+                    "id": "headingLevel",
+                    "name": "Heading level",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Use H1 only when this hero owns the page title.",
+                    "values": ["h1", "h2", "h3"],
+                    "default_value": "h1"
+                },
+                {
+                    "id": "visualSize",
+                    "name": "Title size",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Visual title scale, independent of its semantic heading level.",
+                    "values": ["sm", "md", "lg"],
+                    "default_value": "lg"
+                },
+                {
+                    "id": "contentPosition",
+                    "name": "Content position",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: contentPosition",
+                    "values": [
+                        "top-left",
+                        "top-center",
+                        "top-right",
+                        "middle-left",
+                        "middle-center",
+                        "middle-right",
+                        "bottom-left",
+                        "bottom-center",
+                        "bottom-right"
+                    ],
+                    "default_value": "middle-left"
+                },
+                {
+                    "id": "height",
+                    "name": "Height",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: height",
+                    "values": ["sm", "md", "lg", "xl"],
+                    "default_value": "lg"
+                },
+                {
+                    "id": "overlay",
+                    "name": "Image overlay",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Token-based contrast treatment placed between the image and content.",
+                    "values": ["none", "subtle", "strong"],
+                    "default_value": "strong"
+                },
+                {
+                    "id": "primaryCtaLabel",
+                    "name": "Primary CTA label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: primaryCtaLabel"
+                },
+                {
+                    "id": "primaryCtaUrl",
+                    "name": "Primary CTA destination",
+                    "type": "url",
+                    "required": false,
+                    "description": "Field: primaryCtaUrl"
+                },
+                {
+                    "id": "secondaryCtaLabel",
+                    "name": "Secondary CTA label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: secondaryCtaLabel"
+                },
+                {
+                    "id": "secondaryCtaUrl",
+                    "name": "Secondary CTA destination",
+                    "type": "url",
+                    "required": false,
+                    "description": "Field: secondaryCtaUrl"
+                }
+            ]
+        }
+    ]
+}

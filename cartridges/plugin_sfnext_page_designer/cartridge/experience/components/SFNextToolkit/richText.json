@@ -30,7 +30,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Semantic heading level. Use h1 once for a blank landing page; PLP and PDP templates already provide h1.",
-                    "values": ["...HEADING_LEVELS"],
+                    "values": ["h1", "h2", "h3", "h4"],
                     "default_value": "h2"
                 },
                 {
@@ -46,7 +46,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Field: alignment",
-                    "values": ["...RICH_TEXT_ALIGNMENTS"],
+                    "values": ["left", "center", "right"],
                     "default_value": "left"
                 },
                 {
@@ -55,7 +55,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Field: contentWidth",
-                    "values": ["...RICH_TEXT_WIDTHS"],
+                    "values": ["full", "wide", "narrow"],
                     "default_value": "wide"
                 },
                 {
@@ -78,7 +78,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Field: ctaStyle",
-                    "values": ["...CTA_STYLES"],
+                    "values": ["primary", "secondary", "outline", "link"],
                     "default_value": "primary"
                 }
             ]

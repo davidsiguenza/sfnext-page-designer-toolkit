@@ -1,0 +1,73 @@
+{
+    "name": "Promo Strip",
+    "description": "A compact, static announcement with a predefined icon and an optional safe link. Ideal for shipping, campaign or service messages.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "promoStrip",
+            "name": "Promo Strip",
+            "description": "A compact, static announcement with a predefined icon and an optional safe link. Ideal for shipping, campaign or service messages.",
+            "attribute_definitions": [
+                {
+                    "id": "message",
+                    "name": "Message",
+                    "type": "string",
+                    "required": true,
+                    "description": "Short announcement shown across the strip."
+                },
+                {
+                    "id": "linkLabel",
+                    "name": "Link label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional descriptive link label. It is shown only when a safe destination is also configured."
+                },
+                {
+                    "id": "linkUrl",
+                    "name": "Link destination",
+                    "type": "url",
+                    "required": false,
+                    "description": "Optional internal or external destination. Unsafe script and data protocols are rejected."
+                },
+                {
+                    "id": "icon",
+                    "name": "Icon",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Safe predefined icon. Select None to show text only.",
+                    "values": ["none", "megaphone", "sparkles", "tag", "delivery", "gift", "info"],
+                    "default_value": "megaphone"
+                },
+                {
+                    "id": "tone",
+                    "name": "Tone",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Semantic storefront color pairing used for the strip background and content.",
+                    "values": ["primary", "secondary", "accent", "muted"],
+                    "default_value": "primary"
+                },
+                {
+                    "id": "size",
+                    "name": "Size",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: size",
+                    "values": ["sm", "md", "lg"],
+                    "default_value": "md"
+                },
+                {
+                    "id": "alignment",
+                    "name": "Alignment",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: alignment",
+                    "values": ["left", "center", "right"],
+                    "default_value": "center"
+                }
+            ]
+        }
+    ]
+}

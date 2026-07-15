@@ -1,0 +1,134 @@
+{
+    "name": "Responsive Columns",
+    "description": "Two or three responsive content columns with configurable proportions, spacing, alignment, and mobile order.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "column1",
+            "name": "Column 1",
+            "component_type_exclusions": [
+                {
+                    "type_id": "SFNextToolkit.responsiveColumns"
+                },
+                {
+                    "type_id": "SFNextToolkit.section"
+                },
+                {
+                    "type_id": "SFNextToolkit.accordionItem"
+                },
+                {
+                    "type_id": "SFNextToolkit.categoryCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.promoCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.trustItem"
+                }
+            ]
+        },
+        {
+            "id": "column2",
+            "name": "Column 2",
+            "component_type_exclusions": [
+                {
+                    "type_id": "SFNextToolkit.responsiveColumns"
+                },
+                {
+                    "type_id": "SFNextToolkit.section"
+                },
+                {
+                    "type_id": "SFNextToolkit.accordionItem"
+                },
+                {
+                    "type_id": "SFNextToolkit.categoryCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.promoCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.trustItem"
+                }
+            ]
+        },
+        {
+            "id": "column3",
+            "name": "Column 3",
+            "component_type_exclusions": [
+                {
+                    "type_id": "SFNextToolkit.responsiveColumns"
+                },
+                {
+                    "type_id": "SFNextToolkit.section"
+                },
+                {
+                    "type_id": "SFNextToolkit.accordionItem"
+                },
+                {
+                    "type_id": "SFNextToolkit.categoryCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.promoCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.trustItem"
+                }
+            ]
+        }
+    ],
+    "attribute_definition_groups": [
+        {
+            "id": "responsiveColumns",
+            "name": "Responsive Columns",
+            "description": "Two or three responsive content columns with configurable proportions, spacing, alignment, and mobile order.",
+            "attribute_definitions": [
+                {
+                    "id": "columns",
+                    "name": "Columns",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Number of columns shown from the large breakpoint onwards.",
+                    "values": ["2", "3"],
+                    "default_value": "2"
+                },
+                {
+                    "id": "ratio",
+                    "name": "Column ratio",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Relative column widths. In a three-column layout the third column remains one fraction wide.",
+                    "values": ["equal", "2-1", "1-2"],
+                    "default_value": "equal"
+                },
+                {
+                    "id": "gap",
+                    "name": "Gap",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Responsive spacing between columns.",
+                    "values": ["sm", "md", "lg"],
+                    "default_value": "md"
+                },
+                {
+                    "id": "verticalAlign",
+                    "name": "Vertical alignment",
+                    "type": "enum",
+                    "required": false,
+                    "description": "How column content aligns when columns have different heights.",
+                    "values": ["start", "center", "end", "stretch"],
+                    "default_value": "stretch"
+                },
+                {
+                    "id": "mobileOrder",
+                    "name": "Mobile order",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Keep the authored column order or reverse it on small screens.",
+                    "values": ["normal", "reverse"],
+                    "default_value": "normal"
+                }
+            ]
+        }
+    ]
+}

@@ -6,11 +6,23 @@
         {
             "id": "plpTopFullWidth",
             "name": "Top Full Width",
+            "component_type_exclusions": [
+                { "type_id": "SFNextToolkit.accordionItem" },
+                { "type_id": "SFNextToolkit.categoryCard" },
+                { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.trustItem" }
+            ],
             "max_components": 5
         },
         {
             "id": "plpTopContent",
             "name": "Top Content",
+            "component_type_exclusions": [
+                { "type_id": "SFNextToolkit.accordionItem" },
+                { "type_id": "SFNextToolkit.categoryCard" },
+                { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.trustItem" }
+            ],
             "max_components": 5
         },
         {
@@ -26,6 +38,12 @@
         {
             "id": "plpBottom",
             "name": "Bottom Content",
+            "component_type_exclusions": [
+                { "type_id": "SFNextToolkit.accordionItem" },
+                { "type_id": "SFNextToolkit.categoryCard" },
+                { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.trustItem" }
+            ],
             "max_components": 5
         }
     ],

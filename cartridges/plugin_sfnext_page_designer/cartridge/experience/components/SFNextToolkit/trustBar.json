@@ -35,7 +35,7 @@
                     "required": false,
                     "description": "Benefits stack on mobile, use two columns on tablet and this number on desktop.",
                     "values": ["2", "3", "4", "5"],
-                    "default_value": "'4' as TrustBarColumns"
+                    "default_value": "4"
                 },
                 {
                     "id": "density",
@@ -44,7 +44,7 @@
                     "required": false,
                     "description": "Controls semantic spacing around and between benefits.",
                     "values": ["compact", "comfortable"],
-                    "default_value": "'comfortable' as TrustBarDensity"
+                    "default_value": "comfortable"
                 },
                 {
                     "id": "surface",
@@ -53,7 +53,7 @@
                     "required": false,
                     "description": "Semantic storefront surface applied to the complete trust bar.",
                     "values": ["transparent", "muted", "card"],
-                    "default_value": "'muted' as TrustBarSurface"
+                    "default_value": "muted"
                 }
             ]
         }

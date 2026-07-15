@@ -13,49 +13,111 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { ReactNode } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { MemoryRouter, useInRouterContext } from 'react-router';
 import PromoCard from '@/components/sfnext-toolkit/promo-card';
+import { AllProvidersWrapper } from '@/test-utils/context-provider';
 import PromoGrid, { PromoGridFallback } from './index';
 
-const cards = [
+function StoryProviders({ children }: { children: ReactNode }) {
+    const content = <AllProvidersWrapper>{children}</AllProvidersWrapper>;
+    return useInRouterContext() ? content : <MemoryRouter>{content}</MemoryRouter>;
+}
+
+const CARD_CONTENT = [
     {
+        eyebrow: '3–7 years',
         title: 'Girls',
-        description: 'Fresh silhouettes and joyful colour.',
-        image: 'https://placehold.co/800x600?text=Girls',
+        description: 'Fresh silhouettes, joyful colour and easy layers.',
+        image: '/images/hero-01.webp',
     },
     {
+        eyebrow: '3–7 years',
         title: 'Boys',
-        description: 'Comfortable essentials made for play.',
-        image: 'https://placehold.co/800x600?text=Boys',
+        description: 'Comfortable essentials made for every adventure.',
+        image: '/images/hero-02.webp',
     },
     {
+        eyebrow: '0–24 months',
         title: 'Baby',
-        description: 'Soft layers for their first adventures.',
-        image: 'https://placehold.co/800x600?text=Baby',
+        description: 'Soft layers designed for their first discoveries.',
+        image: '/images/hero-03.webp',
+    },
+    {
+        eyebrow: '8–16 years',
+        title: 'Junior',
+        description: 'Confident new-season looks with personality.',
+        image: '/images/hero-04.webp',
+    },
+    {
+        eyebrow: 'Occasion',
+        title: 'Celebration',
+        description: 'Special pieces for memorable days together.',
+        image: '/images/hero-01.webp',
     },
 ];
+
+function PromoCards({ featuredFirst = false }: { featuredFirst?: boolean }) {
+    const cards = featuredFirst ? CARD_CONTENT : CARD_CONTENT.slice(0, 3);
+
+    return cards.map((card, index) => (
+        <PromoCard
+            key={card.title}
+            eyebrow={card.eyebrow}
+            title={card.title}
+            description={card.description}
+            imageUrl={{ url: card.image, focalPoint: { x: 50, y: index === 0 ? 38 : 50 } }}
+            imageAlt={`${card.title} new-season collection`}
+            buttonText="Explore"
+            buttonLink="/category/new-arrivals"
+            layout={featuredFirst && index === 0 ? 'overlay' : 'stacked'}
+            aspectRatio={featuredFirst && index === 0 ? 'square' : 'landscape'}
+            ctaStyle={featuredFirst && index === 0 ? 'outline' : 'link'}
+            hoverEffect="zoom"
+        />
+    ));
+}
+
+const DEFAULT_ARGS = {
+    title: 'Shop by age',
+    subtitle: 'Curated collections designed for every stage and every small adventure.',
+    columns: '3',
+    gap: 'md',
+    surface: 'transparent',
+    layout: 'equal',
+    headerAlignment: 'left',
+    shopAllLabel: 'View all collections',
+    shopAllUrl: '/category/all',
+};
 
 const meta: Meta<typeof PromoGrid> = {
     title: 'SFNext Toolkit/Promo/Promo Grid',
     component: PromoGrid,
     tags: ['autodocs'],
+    decorators: [
+        (Story) => (
+            <StoryProviders>
+                <Story />
+            </StoryProviders>
+        ),
+    ],
     parameters: {
         layout: 'fullscreen',
         docs: {
             description: {
                 component:
-                    'Responsive parent component for up to six SFNextToolkit.promoCard children. It stacks on mobile and uses the authored desktop column count.',
+                    'Responsive Page Designer composition for up to six Promo Cards. Merchants can choose equal or featured-first hierarchy, align the editorial header and add a validated shop-all destination.',
             },
         },
     },
-    args: {
-        title: 'Shop by age',
-        subtitle: 'Curated collections for every stage.',
-        columns: '3',
-        gap: 'md',
-        surface: 'transparent',
-    },
+    args: DEFAULT_ARGS,
     argTypes: {
+        columns: { control: 'inline-radio', options: ['2', '3', '4'] },
+        gap: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+        surface: { control: 'inline-radio', options: ['transparent', 'muted', 'card'] },
+        layout: { control: 'inline-radio', options: ['equal', 'featured-first'] },
+        headerAlignment: { control: 'inline-radio', options: ['left', 'center', 'right'] },
         component: { table: { disable: true } },
         componentData: { table: { disable: true } },
         designMetadata: { table: { disable: true } },
@@ -65,17 +127,7 @@ const meta: Meta<typeof PromoGrid> = {
     },
     render: (args) => (
         <PromoGrid {...args}>
-            {cards.map((card) => (
-                <PromoCard
-                    key={card.title}
-                    title={card.title}
-                    description={card.description}
-                    imageUrl={card.image}
-                    imageAlt=""
-                    buttonText="Explore"
-                    buttonLink="/category/new-arrivals"
-                />
-            ))}
+            <PromoCards featuredFirst={args.layout === 'featured-first'} />
         </PromoGrid>
     ),
 };
@@ -85,8 +137,25 @@ type Story = StoryObj<typeof PromoGrid>;
 
 export const Default: Story = {};
 
+export const FeaturedFirst: Story = {
+    args: {
+        title: 'This week’s stories',
+        subtitle: 'Lead with the campaign that matters most, then support it with complementary edits.',
+        layout: 'featured-first',
+        columns: '3',
+        surface: 'muted',
+    },
+};
+
+export const CenteredHeader: Story = {
+    args: {
+        headerAlignment: 'center',
+        surface: 'card',
+    },
+};
+
 export const FourColumns: Story = {
-    args: { columns: '4', gap: 'sm', surface: 'muted' },
+    args: { columns: '4', gap: 'sm', surface: 'muted', headerAlignment: 'right' },
 };
 
 export const Loading: Story = {
@@ -94,5 +163,20 @@ export const Loading: Story = {
 };
 
 export const Snapshot: Story = {
-    args: { surface: 'card' },
+    render: () => (
+        <div data-slot="promo-grid-story-snapshot" className="bg-background p-4 md:p-8">
+            <PromoGrid
+                title="This week’s stories"
+                subtitle="A featured campaign followed by supporting editorial collections."
+                columns="3"
+                gap="md"
+                surface="muted"
+                layout="featured-first"
+                headerAlignment="left"
+                shopAllLabel="View all collections"
+                shopAllUrl="/category/all">
+                <PromoCards featuredFirst />
+            </PromoGrid>
+        </div>
+    ),
 };

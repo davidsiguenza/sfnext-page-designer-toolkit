@@ -1,6 +1,6 @@
 {
     "name": "Promo Grid",
-    "description": "Responsive grid for two to six Promo Cards. Cards stack on mobile and expand to the selected desktop column count.",
+    "description": "Responsive editorial grid for two to six Promo Cards, with equal or featured-first hierarchy and an optional safe shop-all link.",
     "group": "SFNextToolkit",
     "arch_type": "headless",
     "region_definitions": [
@@ -19,7 +19,7 @@
         {
             "id": "promoGrid",
             "name": "Promo Grid",
-            "description": "Responsive grid for two to six Promo Cards. Cards stack on mobile and expand to the selected desktop column count.",
+            "description": "Responsive editorial grid for two to six Promo Cards, with equal or featured-first hierarchy and an optional safe shop-all link.",
             "attribute_definitions": [
                 {
                     "id": "title",
@@ -42,7 +42,7 @@
                     "required": false,
                     "description": "Cards always stack on mobile and use two columns on tablet before this desktop layout.",
                     "values": ["2", "3", "4"],
-                    "default_value": "'3' as PromoGridColumns"
+                    "default_value": "3"
                 },
                 {
                     "id": "gap",
@@ -51,7 +51,7 @@
                     "required": false,
                     "description": "Responsive spacing between promotional cards.",
                     "values": ["sm", "md", "lg"],
-                    "default_value": "'md' as PromoGridGap"
+                    "default_value": "md"
                 },
                 {
                     "id": "surface",
@@ -60,7 +60,39 @@
                     "required": false,
                     "description": "Semantic storefront surface applied to the complete section.",
                     "values": ["transparent", "muted", "card"],
-                    "default_value": "'transparent' as PromoGridSurface"
+                    "default_value": "transparent"
+                },
+                {
+                    "id": "layout",
+                    "name": "Card layout",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Keep every card equal or let the first promotion span two columns from tablet upwards.",
+                    "values": ["equal", "featured-first"],
+                    "default_value": "equal"
+                },
+                {
+                    "id": "headerAlignment",
+                    "name": "Header alignment",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Alignment for the title, supporting copy and shop-all link.",
+                    "values": ["left", "center", "right"],
+                    "default_value": "left"
+                },
+                {
+                    "id": "shopAllLabel",
+                    "name": "Shop-all label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional link label. It is hidden until both a label and destination are provided."
+                },
+                {
+                    "id": "shopAllUrl",
+                    "name": "Shop-all destination",
+                    "type": "url",
+                    "required": false,
+                    "description": "Safe internal or external destination for the collection link."
                 }
             ]
         }

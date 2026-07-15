@@ -10,6 +10,18 @@
             "component_type_exclusions": [
                 {
                     "type_id": "SFNextToolkit.section"
+                },
+                {
+                    "type_id": "SFNextToolkit.accordionItem"
+                },
+                {
+                    "type_id": "SFNextToolkit.categoryCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.promoCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.trustItem"
                 }
             ]
         }
@@ -33,7 +45,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Theme-token surface and its matching text color.",
-                    "values": ["...SECTION_SURFACES"],
+                    "values": ["transparent", "background", "muted", "card", "primary", "secondary", "accent"],
                     "default_value": "transparent"
                 },
                 {
@@ -42,7 +54,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Responsive space above and below the section content.",
-                    "values": ["...SECTION_SPACING"],
+                    "values": ["none", "sm", "md", "lg", "xl"],
                     "default_value": "md"
                 },
                 {
@@ -51,7 +63,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Maximum width of the inner content region.",
-                    "values": ["...SECTION_WIDTHS"],
+                    "values": ["full", "contained", "narrow"],
                     "default_value": "contained"
                 },
                 {
@@ -60,7 +72,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Default text alignment inherited by content in the section.",
-                    "values": ["...SECTION_ALIGNMENTS"],
+                    "values": ["left", "center", "right"],
                     "default_value": "left"
                 }
             ]

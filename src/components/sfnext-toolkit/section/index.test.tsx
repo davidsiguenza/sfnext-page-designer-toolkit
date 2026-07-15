@@ -54,6 +54,11 @@ describe('SFNext Toolkit section', () => {
         expect(section.firstElementChild).toHaveClass('max-w-4xl', 'text-center');
     });
 
+    test('ignores malformed merchant anchor IDs', () => {
+        render(<Section anchorId="not a safe anchor" id="section-fallback" data-testid="section" />);
+        expect(screen.getByTestId('section')).toHaveAttribute('id', 'section-fallback');
+    });
+
     test('renders the nested Page Designer content region when component data is present', () => {
         const component = { id: 'section-1', typeId: 'SFNextToolkit.section', regions: [] };
         render(<Section component={component}>Standalone fallback</Section>);
@@ -76,7 +81,13 @@ describe('SFNext Toolkit section', () => {
             expect.objectContaining({
                 id: 'content',
                 name: 'Content',
-                componentTypeExclusions: ['SFNextToolkit.section'],
+                componentTypeExclusions: [
+                    'SFNextToolkit.section',
+                    'SFNextToolkit.accordionItem',
+                    'SFNextToolkit.categoryCard',
+                    'SFNextToolkit.promoCard',
+                    'SFNextToolkit.trustItem',
+                ],
             }),
         ]);
     });

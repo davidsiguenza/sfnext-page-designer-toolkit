@@ -1,6 +1,6 @@
 {
     "name": "Promo Card",
-    "description": "Reusable promotional card with an optional image, supporting copy and call to action. Use it inside a Promo Grid.",
+    "description": "Editorial promotion with stacked or image-overlay layouts, responsive crops and a safe call to action. Use it inside a Promo Grid.",
     "group": "SFNextToolkit",
     "arch_type": "headless",
     "region_definitions": [],
@@ -8,7 +8,7 @@
         {
             "id": "promoCard",
             "name": "Promo Card",
-            "description": "Reusable promotional card with an optional image, supporting copy and call to action. Use it inside a Promo Grid.",
+            "description": "Editorial promotion with stacked or image-overlay layouts, responsive crops and a safe call to action. Use it inside a Promo Grid.",
             "attribute_definitions": [
                 {
                     "id": "title",
@@ -29,7 +29,7 @@
                     "name": "Image",
                     "type": "image",
                     "required": false,
-                    "description": "Promotional image selected from the content library."
+                    "description": "Promotional image selected from the content library. Its configured focal point is respected."
                 },
                 {
                     "id": "imageAlt",
@@ -75,6 +75,49 @@
                     "required": false,
                     "description": "Displays the semantic storefront border around the card.",
                     "default_value": true
+                },
+                {
+                    "id": "eyebrow",
+                    "name": "Eyebrow",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional short label shown above the card title."
+                },
+                {
+                    "id": "layout",
+                    "name": "Layout",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Stack content below the image or place it in a readable panel over the image.",
+                    "values": ["stacked", "overlay"],
+                    "default_value": "stacked"
+                },
+                {
+                    "id": "aspectRatio",
+                    "name": "Image aspect ratio",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Editorial crop applied while preserving the image focal point.",
+                    "values": ["landscape", "square", "portrait"],
+                    "default_value": "landscape"
+                },
+                {
+                    "id": "ctaStyle",
+                    "name": "CTA style",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Semantic storefront treatment for the call to action.",
+                    "values": ["primary", "secondary", "outline", "link"],
+                    "default_value": "primary"
+                },
+                {
+                    "id": "hoverEffect",
+                    "name": "Hover effect",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Optional motion-safe lift or image zoom. Keyboard focus always remains visible.",
+                    "values": ["none", "lift", "zoom"],
+                    "default_value": "lift"
                 }
             ]
         }

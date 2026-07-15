@@ -5,7 +5,13 @@
     "region_definitions": [
         {
             "id": "main",
-            "name": "Main Content"
+            "name": "Main Content",
+            "component_type_exclusions": [
+                { "type_id": "SFNextToolkit.accordionItem" },
+                { "type_id": "SFNextToolkit.categoryCard" },
+                { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.trustItem" }
+            ]
         }
     ],
     "supported_aspect_types": [],

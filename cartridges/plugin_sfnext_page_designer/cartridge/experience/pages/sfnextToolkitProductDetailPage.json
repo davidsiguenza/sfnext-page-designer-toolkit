@@ -6,11 +6,23 @@
         {
             "id": "promoContent",
             "name": "Promotional Content",
+            "component_type_exclusions": [
+                { "type_id": "SFNextToolkit.accordionItem" },
+                { "type_id": "SFNextToolkit.categoryCard" },
+                { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.trustItem" }
+            ],
             "max_components": 5
         },
         {
             "id": "engagementContent",
             "name": "Engagement Content",
+            "component_type_exclusions": [
+                { "type_id": "SFNextToolkit.accordionItem" },
+                { "type_id": "SFNextToolkit.categoryCard" },
+                { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.trustItem" }
+            ],
             "max_components": 5
         }
     ],

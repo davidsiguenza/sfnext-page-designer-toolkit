@@ -1,0 +1,71 @@
+{
+    "name": "Category Carousel",
+    "description": "Carousel populated automatically from a parent category or manually with SFNext Toolkit Category Cards.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "cards",
+            "name": "Category cards",
+            "component_type_inclusions": [
+                {
+                    "type_id": "SFNextToolkit.categoryCard"
+                }
+            ],
+            "max_components": 12
+        }
+    ],
+    "attribute_definition_groups": [
+        {
+            "id": "categoryCarousel",
+            "name": "Category Carousel",
+            "description": "Carousel populated automatically from a parent category or manually with SFNext Toolkit Category Cards.",
+            "attribute_definitions": [
+                {
+                    "id": "parentCategory",
+                    "name": "Parent category",
+                    "type": "category",
+                    "required": false,
+                    "description": "When selected, immediate child categories are loaded automatically and the manual cards region is ignored."
+                },
+                {
+                    "id": "title",
+                    "name": "Title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: title"
+                },
+                {
+                    "id": "subtitle",
+                    "name": "Subtitle",
+                    "type": "text",
+                    "required": false,
+                    "description": "Field: subtitle"
+                },
+                {
+                    "id": "shopAllText",
+                    "name": "Shop-all label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: shopAllText"
+                },
+                {
+                    "id": "shopAllUrl",
+                    "name": "Shop-all URL override",
+                    "type": "url",
+                    "required": false,
+                    "description": "Optional safe destination. The parent category URL is used by default in automatic mode."
+                },
+                {
+                    "id": "tone",
+                    "name": "Tone",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: tone",
+                    "values": ["default", "muted"],
+                    "default_value": "default"
+                }
+            ]
+        }
+    ]
+}

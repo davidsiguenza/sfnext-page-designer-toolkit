@@ -13,6 +13,28 @@ const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const projectDirectory = resolve(scriptDirectory, '..');
 const cartridgeName = 'plugin_sfnext_page_designer';
 const componentGroup = 'SFNextToolkit';
+// Public component contract. Keeping this explicit prevents a decorator typo or
+// parser regression from silently shrinking the Business Manager component set.
+const requiredToolkitComponentTypes = [
+    'accordion',
+    'accordionItem',
+    'categoryCard',
+    'categoryCarousel',
+    'categoryHero',
+    'heroBanner',
+    'mediaContent',
+    'productCarousel',
+    'productList',
+    'productRecommendations',
+    'promoCard',
+    'promoGrid',
+    'promoStrip',
+    'responsiveColumns',
+    'richText',
+    'section',
+    'trustBar',
+    'trustItem',
+];
 const experienceDirectory = join(projectDirectory, 'cartridges', cartridgeName, 'cartridge', 'experience');
 const baseExperienceDirectory = join(
     projectDirectory,
@@ -101,14 +123,54 @@ async function loadMetadataValidator() {
     return import(pathToFileURL(validatorEntry).href);
 }
 
+function validateEnumContracts(file, metadata) {
+    const failures = [];
+
+    for (const group of metadata.attribute_definition_groups ?? []) {
+        for (const attribute of group.attribute_definitions ?? []) {
+            if (attribute.type !== 'enum') continue;
+
+            const values = attribute.values;
+            if (!Array.isArray(values) || values.length === 0) {
+                failures.push(`${file}#${attribute.id}: enum must declare at least one value`);
+                continue;
+            }
+
+            const unresolvedValue = values.find(
+                (value) => typeof value === 'string' && (value.startsWith('...') || value.includes(' as '))
+            );
+            if (unresolvedValue !== undefined) {
+                failures.push(
+                    `${file}#${attribute.id}: unresolved TypeScript expression ${JSON.stringify(unresolvedValue)}`
+                );
+            }
+
+            if (attribute.default_value !== undefined && !values.includes(attribute.default_value)) {
+                failures.push(
+                    `${file}#${attribute.id}: default ${JSON.stringify(attribute.default_value)} is not in enum values`
+                );
+            }
+        }
+    }
+
+    return failures;
+}
+
 async function validateToolkitCartridge() {
     const expectedFiles = await expectedMetadataFiles();
     const actualFiles = await listJsonFiles(experienceDirectory);
+    const requiredComponentFiles = requiredToolkitComponentTypes.map(
+        (typeId) => `components/${componentGroup}/${typeId}.json`
+    );
+    const missingRequiredComponents = requiredComponentFiles.filter((file) => !actualFiles.includes(file));
     const missingFiles = expectedFiles.filter((file) => !actualFiles.includes(file));
     const unexpectedFiles = actualFiles.filter((file) => !expectedFiles.includes(file));
 
-    if (missingFiles.length || unexpectedFiles.length) {
+    if (missingRequiredComponents.length || missingFiles.length || unexpectedFiles.length) {
         const details = [
+            ...(missingRequiredComponents.length
+                ? [`missing required component types: ${missingRequiredComponents.join(', ')}`]
+                : []),
             ...(missingFiles.length ? [`missing: ${missingFiles.join(', ')}`] : []),
             ...(unexpectedFiles.length ? [`unexpected: ${unexpectedFiles.join(', ')}`] : []),
         ].join('; ');
@@ -132,6 +194,9 @@ async function validateToolkitCartridge() {
                 `${file}: ${result.errors.map((error) => `${error.path || '/'} ${error.message}`).join('; ')}`
             );
         }
+
+        const metadata = JSON.parse(await readFile(absolutePath, 'utf8'));
+        failures.push(...validateEnumContracts(file, metadata));
     }
 
     if (failures.length) {

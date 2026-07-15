@@ -1,0 +1,76 @@
+{
+    "name": "Category Card",
+    "description": "Catalog-backed category card with editorial overrides, focal-point-aware imagery, and safe navigation.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "categoryCard",
+            "name": "Category Card",
+            "description": "Catalog-backed category card with editorial overrides, focal-point-aware imagery, and safe navigation.",
+            "attribute_definitions": [
+                {
+                    "id": "category",
+                    "name": "Category",
+                    "type": "category",
+                    "required": false,
+                    "description": "Select the catalog category used for default content and destination."
+                },
+                {
+                    "id": "image",
+                    "name": "Image override",
+                    "type": "image",
+                    "required": false,
+                    "description": "Optional Page Designer image. Its configured focal point is preserved."
+                },
+                {
+                    "id": "title",
+                    "name": "Title override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional title. When empty, the selected category name is used."
+                },
+                {
+                    "id": "copy",
+                    "name": "Copy override",
+                    "type": "text",
+                    "required": false,
+                    "description": "Optional supporting copy. When empty, the selected category description is used."
+                },
+                {
+                    "id": "ctaLabel",
+                    "name": "CTA label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional call-to-action label."
+                },
+                {
+                    "id": "ctaUrl",
+                    "name": "CTA URL override",
+                    "type": "url",
+                    "required": false,
+                    "description": "Optional safe destination. When empty, the selected category URL is used."
+                },
+                {
+                    "id": "layout",
+                    "name": "Layout",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: layout",
+                    "values": ["overlay", "stacked"],
+                    "default_value": "overlay"
+                },
+                {
+                    "id": "ratio",
+                    "name": "Image ratio",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: ratio",
+                    "values": ["square", "landscape", "portrait"],
+                    "default_value": "square"
+                }
+            ]
+        }
+    ]
+}

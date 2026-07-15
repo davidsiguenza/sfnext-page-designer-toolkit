@@ -3224,6 +3224,50 @@ describe('generateMetadata integration tests', () => {
         expect(visibleAttr.default_value).toBe(true);
     });
 
+    test('should resolve spread const arrays and typed defaults in enum metadata', async () => {
+        const projectDir = '/test/project';
+        const metadataDir = '/test/metadata';
+
+        const componentCode = `
+            const ALIGNMENTS = ['left', 'center', 'right'] as const;
+            type Alignment = (typeof ALIGNMENTS)[number];
+            const DEFAULTS = {
+                alignment: 'center' as Alignment,
+            } as const;
+
+            @Component({ id: 'testComponent', name: 'Test Component' })
+            class TestComponent {
+                @AttributeDefinition({
+                    type: 'enum',
+                    values: [...ALIGNMENTS],
+                    defaultValue: DEFAULTS.alignment
+                })
+                alignment: string;
+            }
+        `;
+
+        vi.mocked(readdir)
+            .mockResolvedValueOnce([{ name: 'components', isDirectory: () => true, isFile: () => false } as any])
+            .mockResolvedValueOnce([
+                { name: 'TestComponent.tsx', isDirectory: () => false, isFile: () => true } as any,
+            ]);
+
+        vi.mocked(readFile).mockResolvedValue(componentCode);
+        vi.mocked(rm).mockResolvedValue(undefined);
+        vi.mocked(mkdir).mockResolvedValue(undefined);
+        vi.mocked(access).mockResolvedValue(undefined);
+        vi.mocked(writeFile).mockResolvedValue(undefined);
+
+        await generateMetadata(projectDir, metadataDir);
+
+        const writeCall = vi.mocked(writeFile).mock.calls[0];
+        const writtenData = JSON.parse(writeCall[1] as string);
+        const alignment = writtenData.attribute_definition_groups[0].attribute_definitions[0];
+
+        expect(alignment.values).toEqual(['left', 'center', 'right']);
+        expect(alignment.default_value).toBe('center');
+    });
+
     test('should throw on unresolved constant property access reference', async () => {
         const projectDir = '/test/project';
         const metadataDir = '/test/metadata';

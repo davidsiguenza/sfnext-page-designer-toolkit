@@ -1,0 +1,56 @@
+{
+    "name": "Einstein Product Recommendations",
+    "description": "A responsive product carousel powered by an Einstein recommender, with a useful authoring state in Page Designer.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "productRecommendations",
+            "name": "Einstein Product Recommendations",
+            "description": "A responsive product carousel powered by an Einstein recommender, with a useful authoring state in Page Designer.",
+            "attribute_definitions": [
+                {
+                    "id": "recommenderName",
+                    "name": "Recommender",
+                    "type": "enum",
+                    "required": true,
+                    "description": "Einstein recommender configured for this placement.",
+                    "values": [
+                        "pdp-similar-items",
+                        "viewed-recently-einstein",
+                        "product-to-product-einstein",
+                        "complete-the-set",
+                        "home-top-revenue-for-category",
+                        "products-in-all-categories"
+                    ],
+                    "default_value": "products-in-all-categories"
+                },
+                {
+                    "id": "recommenderTitle",
+                    "name": "Heading",
+                    "type": "string",
+                    "required": true,
+                    "description": "Fallback heading when Einstein does not return a display message.",
+                    "default_value": "Recommended for you"
+                },
+                {
+                    "id": "type",
+                    "name": "Recommendation type",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Use zone only for a zone-based Einstein configuration.",
+                    "values": ["recommender", "zone"],
+                    "default_value": "recommender"
+                },
+                {
+                    "id": "subtitle",
+                    "name": "Supporting text",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional short line displayed beneath the heading."
+                }
+            ]
+        }
+    ]
+}

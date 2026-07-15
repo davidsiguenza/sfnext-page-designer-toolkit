@@ -37,7 +37,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "The image remains first on small screens and moves to this side on larger screens.",
-                    "values": ["...MEDIA_POSITIONS"],
+                    "values": ["left", "right"],
                     "default_value": "left"
                 },
                 {
@@ -46,7 +46,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Field: mediaRatio",
-                    "values": ["...MEDIA_RATIOS"],
+                    "values": ["landscape", "square", "portrait", "auto"],
                     "default_value": "landscape"
                 },
                 {
@@ -69,7 +69,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Field: headingLevel",
-                    "values": ["...HEADING_LEVELS"],
+                    "values": ["h2", "h3", "h4"],
                     "default_value": "h2"
                 },
                 {
@@ -99,7 +99,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Field: ctaStyle",
-                    "values": ["...CTA_STYLES"],
+                    "values": ["primary", "secondary", "outline", "link"],
                     "default_value": "primary"
                 },
                 {
@@ -108,7 +108,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Field: surface",
-                    "values": ["...MEDIA_SURFACES"],
+                    "values": ["transparent", "background", "muted", "card", "secondary"],
                     "default_value": "transparent"
                 },
                 {
@@ -117,7 +117,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Field: contentAlignment",
-                    "values": ["...CONTENT_ALIGNMENTS"],
+                    "values": ["start", "center", "end"],
                     "default_value": "center"
                 },
                 {
@@ -126,7 +126,7 @@
                     "type": "enum",
                     "required": false,
                     "description": "Field: contentSpacing",
-                    "values": ["...CONTENT_SPACING"],
+                    "values": ["sm", "md", "lg"],
                     "default_value": "md"
                 }
             ]

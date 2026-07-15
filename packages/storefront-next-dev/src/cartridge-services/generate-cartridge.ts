@@ -182,7 +182,9 @@ class UnresolvedConstantReferenceError extends Error {
 // Helper function to parse any TypeScript expression into a JavaScript value
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseExpression(expression: any): unknown {
-    if (Node.isStringLiteral(expression)) {
+    if (Node.isAsExpression(expression)) {
+        return parseExpression(expression.getExpression());
+    } else if (Node.isStringLiteral(expression)) {
         return expression.getLiteralValue();
     } else if (Node.isNumericLiteral(expression)) {
         return expression.getLiteralValue();
@@ -255,6 +257,15 @@ function parseArrayLiteral(arrayLiteral: any): unknown[] {
         const elements = arrayLiteral.getElements();
 
         for (const element of elements) {
+            if (Node.isSpreadElement(element)) {
+                const spreadValue = parseExpression(element.getExpression());
+                if (!Array.isArray(spreadValue)) {
+                    throw new UnresolvedConstantReferenceError(element.getText());
+                }
+                result.push(...spreadValue);
+                continue;
+            }
+
             result.push(parseExpression(element));
         }
     } catch (error) {
