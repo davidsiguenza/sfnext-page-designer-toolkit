@@ -1,0 +1,107 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`InventoryMessage stories snapshot > AllVariants story renders and matches snapshot 1`] = `
+<div>
+  <div
+    class="p-8"
+  >
+    <div
+      class="flex flex-wrap gap-4"
+    >
+      <div
+        class="flex items-center gap-2"
+        data-slot="inventory-message"
+      >
+        <span
+          aria-hidden="true"
+          class="h-2 w-2 shrink-0 bg-current text-status-positive"
+        />
+        <p
+          class="text-sm font-medium text-status-positive"
+        >
+          In stock
+        </p>
+      </div>
+      <div
+        class="flex items-center gap-2"
+        data-slot="inventory-message"
+      >
+        <span
+          aria-hidden="true"
+          class="h-2 w-2 shrink-0 bg-current text-status-info"
+        />
+        <p
+          class="text-sm font-medium text-status-info"
+        >
+          Available for pre-order
+        </p>
+      </div>
+      <div
+        class="flex items-center gap-2"
+        data-slot="inventory-message"
+      >
+        <span
+          aria-hidden="true"
+          class="h-2 w-2 shrink-0 bg-current text-status-warning"
+        />
+        <p
+          class="text-sm font-medium text-status-warning"
+        >
+          Available for back order
+        </p>
+      </div>
+      <div
+        class="flex items-center gap-2"
+        data-slot="inventory-message"
+      >
+        <span
+          aria-hidden="true"
+          class="h-2 w-2 shrink-0 bg-current text-status-critical"
+        />
+        <p
+          class="text-sm font-medium text-status-critical"
+        >
+          Out of stock
+        </p>
+      </div>
+      <div
+        class="flex items-center gap-2"
+        data-slot="inventory-message"
+      >
+        <span
+          aria-hidden="true"
+          class="h-2 w-2 shrink-0 bg-current text-muted-foreground"
+        />
+        <p
+          class="text-sm font-medium text-muted-foreground"
+        >
+          Inventory unavailable
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InventoryMessage stories snapshot > Perpetual story renders and matches snapshot 1`] = `
+<div>
+  <div
+    class="p-8"
+  >
+    <div
+      class="flex items-center gap-2"
+      data-slot="inventory-message"
+    >
+      <span
+        aria-hidden="true"
+        class="h-2 w-2 shrink-0 bg-current text-status-positive"
+      />
+      <p
+        class="text-sm font-medium text-status-positive"
+      >
+        In stock
+      </p>
+    </div>
+  </div>
+</div>
+`;

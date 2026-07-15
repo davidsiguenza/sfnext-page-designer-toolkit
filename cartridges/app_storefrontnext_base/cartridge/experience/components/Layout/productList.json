@@ -1,0 +1,129 @@
+{
+    "name": "Lista de productos configurable",
+    "description": "Configura la imagen y la información que se muestra en cada producto de la PLP.",
+    "group": "Layout",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "productList",
+            "name": "Lista de productos configurable",
+            "description": "Configura la imagen y la información que se muestra en cada producto de la PLP.",
+            "attribute_definitions": [
+                {
+                    "id": "imageViewType",
+                    "name": "Tipo de imagen",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Tipo de imagen de catálogo utilizado como imagen principal de cada producto.",
+                    "values": ["hi-res", "large", "medium", "small", "swatch"],
+                    "default_value": "medium"
+                },
+                {
+                    "id": "showBadges",
+                    "name": "Mostrar distintivos",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Muestra distintivos como novedad o rebaja.",
+                    "default_value": true
+                },
+                {
+                    "id": "showWishlist",
+                    "name": "Mostrar favoritos",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Muestra la acción para añadir el producto a favoritos.",
+                    "default_value": true
+                },
+                {
+                    "id": "showQuickAdd",
+                    "name": "Mostrar compra rápida",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Muestra la acción de compra rápida al interactuar con el producto.",
+                    "default_value": true
+                },
+                {
+                    "id": "showSwatches",
+                    "name": "Mostrar muestras de color",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Muestra las variaciones de color utilizando imágenes de tipo swatch cuando estén disponibles.",
+                    "default_value": true
+                },
+                {
+                    "id": "showBrand",
+                    "name": "Mostrar marca",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Muestra la marca configurada para el producto o el storefront.",
+                    "default_value": true
+                },
+                {
+                    "id": "showCategory",
+                    "name": "Mostrar categoría",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Muestra la categoría principal sobre el nombre del producto.",
+                    "default_value": true
+                },
+                {
+                    "id": "showProductName",
+                    "name": "Mostrar nombre",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Muestra el nombre y enlace del producto.",
+                    "default_value": true
+                },
+                {
+                    "id": "showSku",
+                    "name": "Mostrar SKU",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Muestra el identificador del producto.",
+                    "default_value": true
+                },
+                {
+                    "id": "showRating",
+                    "name": "Mostrar valoración",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Muestra la valoración y el número de reseñas.",
+                    "default_value": true
+                },
+                {
+                    "id": "showPrice",
+                    "name": "Mostrar precio",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Muestra el precio actual y, cuando corresponda, el precio anterior.",
+                    "default_value": true
+                },
+                {
+                    "id": "showPromotions",
+                    "name": "Mostrar promociones",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Muestra los mensajes promocionales asociados al precio.",
+                    "default_value": true
+                },
+                {
+                    "id": "maxSwatches",
+                    "name": "Máximo de muestras",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Número máximo de muestras de color visibles por producto (entre 1 y 12).",
+                    "default_value": 3
+                },
+                {
+                    "id": "additionalAttributes",
+                    "name": "Atributos adicionales",
+                    "type": "text",
+                    "required": false,
+                    "description": "Hasta 5 atributos personalizados, separados por líneas o comas. Formato: material|Material o season=Temporada. El prefijo c_ es opcional.",
+                    "default_value": ""
+                }
+            ]
+        }
+    ]
+}

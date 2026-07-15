@@ -1,0 +1,69 @@
+{
+    "name": "Section",
+    "description": "A token-based layout section with configurable width, spacing, surface, alignment, and an inner content region.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "content",
+            "name": "Content",
+            "component_type_exclusions": [
+                {
+                    "type_id": "SFNextToolkit.section"
+                }
+            ]
+        }
+    ],
+    "attribute_definition_groups": [
+        {
+            "id": "section",
+            "name": "Section",
+            "description": "A token-based layout section with configurable width, spacing, surface, alignment, and an inner content region.",
+            "attribute_definitions": [
+                {
+                    "id": "anchorId",
+                    "name": "Anchor ID",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional HTML anchor used for links to this section. Do not include the # character."
+                },
+                {
+                    "id": "surface",
+                    "name": "Surface",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Theme-token surface and its matching text color.",
+                    "values": ["...SECTION_SURFACES"],
+                    "default_value": "transparent"
+                },
+                {
+                    "id": "spacing",
+                    "name": "Vertical Spacing",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Responsive space above and below the section content.",
+                    "values": ["...SECTION_SPACING"],
+                    "default_value": "md"
+                },
+                {
+                    "id": "contentWidth",
+                    "name": "Content Width",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Maximum width of the inner content region.",
+                    "values": ["...SECTION_WIDTHS"],
+                    "default_value": "contained"
+                },
+                {
+                    "id": "alignment",
+                    "name": "Text Alignment",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Default text alignment inherited by content in the section.",
+                    "values": ["...SECTION_ALIGNMENTS"],
+                    "default_value": "left"
+                }
+            ]
+        }
+    ]
+}

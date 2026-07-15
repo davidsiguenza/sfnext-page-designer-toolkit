@@ -1,0 +1,59 @@
+{
+    "name": "Hero Carousel",
+    "description": "Interactive carousel component with multiple hero slides, autoplay, navigation controls, and dot indicators",
+    "group": "Layout",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "slides",
+            "name": "Carousel Slides",
+            "component_type_inclusions": [
+                {
+                    "type_id": "Content.hero"
+                }
+            ],
+            "max_components": 10
+        }
+    ],
+    "attribute_definition_groups": [
+        {
+            "id": "heroCarousel",
+            "name": "Hero Carousel",
+            "description": "Interactive carousel component with multiple hero slides, autoplay, navigation controls, and dot indicators",
+            "attribute_definitions": [
+                {
+                    "id": "autoPlay",
+                    "name": "Auto Play",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: autoPlay",
+                    "default_value": true
+                },
+                {
+                    "id": "autoPlayInterval",
+                    "name": "Auto Play Interval",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Field: autoPlayInterval",
+                    "default_value": 5000
+                },
+                {
+                    "id": "showDots",
+                    "name": "Show Dots",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showDots",
+                    "default_value": true
+                },
+                {
+                    "id": "showNavigation",
+                    "name": "Show Navigation",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showNavigation",
+                    "default_value": true
+                }
+            ]
+        }
+    ]
+}

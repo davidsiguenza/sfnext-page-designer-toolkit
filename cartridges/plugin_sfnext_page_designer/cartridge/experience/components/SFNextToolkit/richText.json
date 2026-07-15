@@ -1,0 +1,87 @@
+{
+    "name": "Rich Text",
+    "description": "Editorial eyebrow, semantic heading, rich text, and optional call to action.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "richText",
+            "name": "Rich Text",
+            "description": "Editorial eyebrow, semantic heading, rich text, and optional call to action.",
+            "attribute_definitions": [
+                {
+                    "id": "eyebrow",
+                    "name": "Eyebrow",
+                    "type": "string",
+                    "required": false,
+                    "description": "Short label displayed above the heading."
+                },
+                {
+                    "id": "heading",
+                    "name": "Heading",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: heading"
+                },
+                {
+                    "id": "headingLevel",
+                    "name": "Heading Level",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Semantic heading level. Use h1 once for a blank landing page; PLP and PDP templates already provide h1.",
+                    "values": ["...HEADING_LEVELS"],
+                    "default_value": "h2"
+                },
+                {
+                    "id": "content",
+                    "name": "Content",
+                    "type": "markup",
+                    "required": false,
+                    "description": "Formatted editorial copy managed with the Page Designer rich-text editor."
+                },
+                {
+                    "id": "alignment",
+                    "name": "Alignment",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: alignment",
+                    "values": ["...RICH_TEXT_ALIGNMENTS"],
+                    "default_value": "left"
+                },
+                {
+                    "id": "contentWidth",
+                    "name": "Content Width",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: contentWidth",
+                    "values": ["...RICH_TEXT_WIDTHS"],
+                    "default_value": "wide"
+                },
+                {
+                    "id": "ctaLabel",
+                    "name": "CTA Label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: ctaLabel"
+                },
+                {
+                    "id": "ctaUrl",
+                    "name": "CTA URL",
+                    "type": "url",
+                    "required": false,
+                    "description": "Field: ctaUrl"
+                },
+                {
+                    "id": "ctaStyle",
+                    "name": "CTA Style",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: ctaStyle",
+                    "values": ["...CTA_STYLES"],
+                    "default_value": "primary"
+                }
+            ]
+        }
+    ]
+}

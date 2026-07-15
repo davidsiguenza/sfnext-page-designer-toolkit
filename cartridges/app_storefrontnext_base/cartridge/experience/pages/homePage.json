@@ -1,0 +1,19 @@
+{
+    "name": "Home Page",
+    "description": "Main landing page with hero carousel, featured products, and help sections",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "headerbanner",
+            "name": "Header Banner Region",
+            "max_components": 3
+        },
+        {
+            "id": "main",
+            "name": "Main Content Region",
+            "max_components": 10
+        }
+    ],
+    "supported_aspect_types": [],
+    "route": "/:siteId/:localeId"
+}

@@ -1,0 +1,68 @@
+{
+    "name": "Promo Grid",
+    "description": "Responsive grid for two to six Promo Cards. Cards stack on mobile and expand to the selected desktop column count.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "items",
+            "name": "Promo cards",
+            "component_type_inclusions": [
+                {
+                    "type_id": "SFNextToolkit.promoCard"
+                }
+            ],
+            "max_components": 6
+        }
+    ],
+    "attribute_definition_groups": [
+        {
+            "id": "promoGrid",
+            "name": "Promo Grid",
+            "description": "Responsive grid for two to six Promo Cards. Cards stack on mobile and expand to the selected desktop column count.",
+            "attribute_definitions": [
+                {
+                    "id": "title",
+                    "name": "Title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional accessible heading shown above the cards."
+                },
+                {
+                    "id": "subtitle",
+                    "name": "Subtitle",
+                    "type": "text",
+                    "required": false,
+                    "description": "Optional supporting copy shown below the heading."
+                },
+                {
+                    "id": "columns",
+                    "name": "Desktop columns",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Cards always stack on mobile and use two columns on tablet before this desktop layout.",
+                    "values": ["2", "3", "4"],
+                    "default_value": "'3' as PromoGridColumns"
+                },
+                {
+                    "id": "gap",
+                    "name": "Gap",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Responsive spacing between promotional cards.",
+                    "values": ["sm", "md", "lg"],
+                    "default_value": "'md' as PromoGridGap"
+                },
+                {
+                    "id": "surface",
+                    "name": "Surface",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Semantic storefront surface applied to the complete section.",
+                    "values": ["transparent", "muted", "card"],
+                    "default_value": "'transparent' as PromoGridSurface"
+                }
+            ]
+        }
+    ]
+}

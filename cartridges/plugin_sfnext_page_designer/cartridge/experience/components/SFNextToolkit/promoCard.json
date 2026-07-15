@@ -1,0 +1,82 @@
+{
+    "name": "Promo Card",
+    "description": "Reusable promotional card with an optional image, supporting copy and call to action. Use it inside a Promo Grid.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "promoCard",
+            "name": "Promo Card",
+            "description": "Reusable promotional card with an optional image, supporting copy and call to action. Use it inside a Promo Grid.",
+            "attribute_definitions": [
+                {
+                    "id": "title",
+                    "name": "Title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Short promotional heading."
+                },
+                {
+                    "id": "description",
+                    "name": "Description",
+                    "type": "text",
+                    "required": false,
+                    "description": "Supporting copy displayed with the promotional heading."
+                },
+                {
+                    "id": "imageUrl",
+                    "name": "Image",
+                    "type": "image",
+                    "required": false,
+                    "description": "Promotional image selected from the content library."
+                },
+                {
+                    "id": "imageAlt",
+                    "name": "Image alternative text",
+                    "type": "string",
+                    "required": false,
+                    "description": "Describe informative images. When empty, the card title is used as the alternative text."
+                },
+                {
+                    "id": "decorativeImage",
+                    "name": "Decorative image",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Enable when the image adds no information beyond the card title and copy.",
+                    "default_value": false
+                },
+                {
+                    "id": "buttonText",
+                    "name": "CTA label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Link label. The CTA is hidden until both a label and destination are provided."
+                },
+                {
+                    "id": "buttonLink",
+                    "name": "CTA destination",
+                    "type": "url",
+                    "required": false,
+                    "description": "Internal or external destination for the call to action."
+                },
+                {
+                    "id": "showBackground",
+                    "name": "Show background",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Applies the storefront card surface behind the content.",
+                    "default_value": true
+                },
+                {
+                    "id": "showBorder",
+                    "name": "Show border",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Displays the semantic storefront border around the card.",
+                    "default_value": true
+                }
+            ]
+        }
+    ]
+}

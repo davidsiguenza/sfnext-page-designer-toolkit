@@ -1,0 +1,53 @@
+{
+    "name": "Trust Item",
+    "description": "A concise service or reassurance message with a safe, predefined icon. Use it inside a Trust Bar.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "trustItem",
+            "name": "Trust Item",
+            "description": "A concise service or reassurance message with a safe, predefined icon. Use it inside a Trust Bar.",
+            "attribute_definitions": [
+                {
+                    "id": "icon",
+                    "name": "Icon",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Predefined storefront icon. Arbitrary SVG, HTML and scripts are intentionally not accepted.",
+                    "values": ["delivery", "returns", "security", "payment", "support", "store", "package", "gift"],
+                    "default_value": "'delivery' as TrustIconName"
+                },
+                {
+                    "id": "title",
+                    "name": "Title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Short benefit or reassurance statement."
+                },
+                {
+                    "id": "description",
+                    "name": "Description",
+                    "type": "text",
+                    "required": false,
+                    "description": "Optional detail such as a delivery threshold or return period."
+                },
+                {
+                    "id": "linkLabel",
+                    "name": "Link label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional descriptive link label. The link is hidden until a safe destination is also provided."
+                },
+                {
+                    "id": "linkUrl",
+                    "name": "Link destination",
+                    "type": "url",
+                    "required": false,
+                    "description": "Optional internal or external destination. Unsafe script and data protocols are rejected."
+                }
+            ]
+        }
+    ]
+}

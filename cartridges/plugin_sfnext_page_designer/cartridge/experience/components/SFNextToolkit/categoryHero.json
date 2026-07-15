@@ -1,0 +1,110 @@
+{
+    "name": "Category Hero",
+    "description": "Context-aware PLP hero that uses the current category by default and supports safe editorial overrides.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "categoryHero",
+            "name": "Category Hero",
+            "description": "Context-aware PLP hero that uses the current category by default and supports safe editorial overrides.",
+            "attribute_definitions": [
+                {
+                    "id": "image",
+                    "name": "Image override",
+                    "type": "image",
+                    "required": false,
+                    "description": "Optional image. When empty, the current category banner image is used."
+                },
+                {
+                    "id": "eyebrow",
+                    "name": "Eyebrow override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional short label. When empty, the parent category name is used."
+                },
+                {
+                    "id": "title",
+                    "name": "Title override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional title. When empty, the current category name is used."
+                },
+                {
+                    "id": "description",
+                    "name": "Description override",
+                    "type": "text",
+                    "required": false,
+                    "description": "Optional supporting copy. When empty, the current category description is used."
+                },
+                {
+                    "id": "productCountOverride",
+                    "name": "Product count override",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Optional non-negative count. When empty, the live PLP result count is used."
+                },
+                {
+                    "id": "semanticTitle",
+                    "name": "Expose title as H2",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Keep disabled on the standard PLP, whose product-list heading is the page H1. Enable only when this title belongs in the semantic heading hierarchy.",
+                    "default_value": false
+                },
+                {
+                    "id": "showEyebrow",
+                    "name": "Show eyebrow",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showEyebrow",
+                    "default_value": true
+                },
+                {
+                    "id": "showDescription",
+                    "name": "Show description",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showDescription",
+                    "default_value": true
+                },
+                {
+                    "id": "showProductCount",
+                    "name": "Show product count",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showProductCount",
+                    "default_value": true
+                },
+                {
+                    "id": "height",
+                    "name": "Height",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Responsive height preset.",
+                    "values": ["sm", "md", "lg"],
+                    "default_value": "md"
+                },
+                {
+                    "id": "alignment",
+                    "name": "Content alignment",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: alignment",
+                    "values": ["left", "center", "right"],
+                    "default_value": "left"
+                },
+                {
+                    "id": "overlay",
+                    "name": "Image overlay",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Uses theme-aware overlay presets to preserve text readability.",
+                    "values": ["none", "subtle", "medium", "strong"],
+                    "default_value": "strong"
+                }
+            ]
+        }
+    ]
+}

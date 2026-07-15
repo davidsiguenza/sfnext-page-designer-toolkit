@@ -1,0 +1,19 @@
+{
+    "name": "SFNext Toolkit - Product Detail",
+    "description": "Storefront Next product detail template that reuses the standard product experience and adds managed content regions.",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "promoContent",
+            "name": "Promotional Content",
+            "max_components": 5
+        },
+        {
+            "id": "engagementContent",
+            "name": "Engagement Content",
+            "max_components": 5
+        }
+    ],
+    "supported_aspect_types": ["pdp"],
+    "route": "/:siteId/:localeId/product/:productId"
+}

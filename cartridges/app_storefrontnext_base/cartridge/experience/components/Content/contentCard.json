@@ -1,0 +1,82 @@
+{
+    "name": "Content Card",
+    "description": "Flexible card component with optional image, title, description, and call-to-action button",
+    "group": "Content",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "contentCard",
+            "name": "Content Card",
+            "description": "Flexible card component with optional image, title, description, and call-to-action button",
+            "attribute_definitions": [
+                {
+                    "id": "title",
+                    "name": "Title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: title"
+                },
+                {
+                    "id": "description",
+                    "name": "Description",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: description"
+                },
+                {
+                    "id": "imageUrl",
+                    "name": "Image Url",
+                    "type": "image",
+                    "required": false,
+                    "description": "Field: imageUrl"
+                },
+                {
+                    "id": "imageAlt",
+                    "name": "Image Alt",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: imageAlt"
+                },
+                {
+                    "id": "decorativeImage",
+                    "name": "Decorative image",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Hides the image from assistive technology when it adds no information beyond the card copy.",
+                    "default_value": false
+                },
+                {
+                    "id": "buttonText",
+                    "name": "Button Text",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: buttonText"
+                },
+                {
+                    "id": "buttonLink",
+                    "name": "Button Link",
+                    "type": "url",
+                    "required": false,
+                    "description": "Field: buttonLink"
+                },
+                {
+                    "id": "showBackground",
+                    "name": "Show Background",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showBackground",
+                    "default_value": true
+                },
+                {
+                    "id": "showBorder",
+                    "name": "Show Border",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showBorder",
+                    "default_value": true
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,32 @@
+/*
+ * Storefront header/footer chrome — NOT in Figma JSON.
+ * Figma's `colors.light.header.*` is a separate contextual palette unrelated
+ * to these storefront-specific chrome tokens. UX has not provided values for
+ * --header-menu-*, --header-divider, --header-logo-filter, --footer-*.
+ *
+ * Header tokens are intentionally decoupled from core --primary* tokens.
+ * Header chrome is its own design slot — rebranding the primary button color
+ * must not affect the header's readability. Hover-state colors are also
+ * standalone literals, not aliases of --header-foreground.
+ */
+:root {
+    /* header & navigation */
+    --header-background: #18181b;
+    --header-foreground: #ffffff;
+    --header-border: rgba(255, 255, 255, 0.1);
+    --header-divider: var(--header-border);
+    /* header menu dropdowns */
+    --header-menu-background: var(--header-background);
+    --header-menu-foreground: var(--header-foreground);
+    --header-menu-border: var(--header-border);
+    --header-menu-hover-background: #ffffff;
+    --header-menu-hover-foreground: #000000;
+    --header-menu-active-background: rgba(255, 255, 255, 0.05);
+    --header-menu-icon: rgba(255, 255, 255, 0.7);
+    /* logo.svg is black; invert to white on dark header */
+    --header-logo-filter: brightness(0) invert(1);
+
+    /* footer */
+    --footer-background: #ffffff;
+    --footer-foreground: #000000;
+}

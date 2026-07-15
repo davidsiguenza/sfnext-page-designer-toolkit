@@ -1,0 +1,13 @@
+{
+    "name": "SFNext Toolkit - Blank Page",
+    "description": "Blank Storefront Next page with one unrestricted content region.",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "main",
+            "name": "Main Content"
+        }
+    ],
+    "supported_aspect_types": [],
+    "route": "/:siteId/:localeId/page/:pageId"
+}

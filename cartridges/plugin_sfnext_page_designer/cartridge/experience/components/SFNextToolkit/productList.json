@@ -1,0 +1,129 @@
+{
+    "name": "Configurable Product List",
+    "description": "Controls the catalog image type and product information displayed by the PLP grid.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "productList",
+            "name": "Configurable Product List",
+            "description": "Controls the catalog image type and product information displayed by the PLP grid.",
+            "attribute_definitions": [
+                {
+                    "id": "imageViewType",
+                    "name": "Catalog image type",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Catalog view type used as the primary image for each product.",
+                    "values": ["hi-res", "large", "medium", "small", "swatch"],
+                    "default_value": "medium"
+                },
+                {
+                    "id": "showBadges",
+                    "name": "Show badges",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Shows product badges such as new or sale.",
+                    "default_value": true
+                },
+                {
+                    "id": "showWishlist",
+                    "name": "Show wishlist action",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Shows the action used to add a product to the wishlist.",
+                    "default_value": true
+                },
+                {
+                    "id": "showQuickAdd",
+                    "name": "Show quick add",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Shows the quick-add action when the shopper interacts with a product.",
+                    "default_value": true
+                },
+                {
+                    "id": "showSwatches",
+                    "name": "Show color swatches",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Shows color variations using swatch images when available.",
+                    "default_value": true
+                },
+                {
+                    "id": "showBrand",
+                    "name": "Show brand",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Shows the configured product or storefront brand.",
+                    "default_value": true
+                },
+                {
+                    "id": "showCategory",
+                    "name": "Show category",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Shows the primary category above the product name.",
+                    "default_value": true
+                },
+                {
+                    "id": "showProductName",
+                    "name": "Show product name",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Shows the product name and link.",
+                    "default_value": true
+                },
+                {
+                    "id": "showSku",
+                    "name": "Show SKU",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Shows the product identifier.",
+                    "default_value": true
+                },
+                {
+                    "id": "showRating",
+                    "name": "Show rating",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Shows the product rating and review count.",
+                    "default_value": true
+                },
+                {
+                    "id": "showPrice",
+                    "name": "Show price",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Shows the current price and, when available, the previous price.",
+                    "default_value": true
+                },
+                {
+                    "id": "showPromotions",
+                    "name": "Show promotions",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Shows promotional messages associated with the product price.",
+                    "default_value": true
+                },
+                {
+                    "id": "maxSwatches",
+                    "name": "Maximum swatches",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Maximum number of visible color swatches per product (between 1 and 12).",
+                    "default_value": 3
+                },
+                {
+                    "id": "additionalAttributes",
+                    "name": "Additional attributes",
+                    "type": "text",
+                    "required": false,
+                    "description": "Up to 5 custom attributes separated by lines or commas. Use material|Material or season=Season. The c_ prefix is optional.",
+                    "default_value": ""
+                }
+            ]
+        }
+    ]
+}

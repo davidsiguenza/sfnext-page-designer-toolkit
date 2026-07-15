@@ -1,0 +1,19 @@
+{
+    "name": "About Us Page",
+    "description": "About Us page containing company information and a contact form.",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "headline",
+            "name": "Headline Region",
+            "max_components": 10
+        },
+        {
+            "id": "additionalinformation",
+            "name": "Additional Information Region",
+            "max_components": 10
+        }
+    ],
+    "supported_aspect_types": [],
+    "route": "/:siteId/:localeId/about-us"
+}

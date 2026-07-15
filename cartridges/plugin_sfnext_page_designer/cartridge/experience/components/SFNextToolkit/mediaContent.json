@@ -1,0 +1,135 @@
+{
+    "name": "Media + Content",
+    "description": "Responsive image and editorial content split with semantic token surfaces and an optional CTA.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "mediaContent",
+            "name": "Media + Content",
+            "description": "Responsive image and editorial content split with semantic token surfaces and an optional CTA.",
+            "attribute_definitions": [
+                {
+                    "id": "imageUrl",
+                    "name": "Image",
+                    "type": "image",
+                    "required": false,
+                    "description": "Field: imageUrl"
+                },
+                {
+                    "id": "imageAlt",
+                    "name": "Image Alt Text",
+                    "type": "string",
+                    "required": false,
+                    "description": "Describe informative images. When empty, the heading is used; without a heading it is decorative."
+                },
+                {
+                    "id": "imageTitle",
+                    "name": "Image Title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: imageTitle"
+                },
+                {
+                    "id": "mediaPosition",
+                    "name": "Desktop Image Position",
+                    "type": "enum",
+                    "required": false,
+                    "description": "The image remains first on small screens and moves to this side on larger screens.",
+                    "values": ["...MEDIA_POSITIONS"],
+                    "default_value": "left"
+                },
+                {
+                    "id": "mediaRatio",
+                    "name": "Image Ratio",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: mediaRatio",
+                    "values": ["...MEDIA_RATIOS"],
+                    "default_value": "landscape"
+                },
+                {
+                    "id": "eyebrow",
+                    "name": "Eyebrow",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: eyebrow"
+                },
+                {
+                    "id": "heading",
+                    "name": "Heading",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: heading"
+                },
+                {
+                    "id": "headingLevel",
+                    "name": "Heading Level",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: headingLevel",
+                    "values": ["...HEADING_LEVELS"],
+                    "default_value": "h2"
+                },
+                {
+                    "id": "content",
+                    "name": "Content",
+                    "type": "markup",
+                    "required": false,
+                    "description": "Field: content"
+                },
+                {
+                    "id": "ctaLabel",
+                    "name": "CTA Label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: ctaLabel"
+                },
+                {
+                    "id": "ctaUrl",
+                    "name": "CTA URL",
+                    "type": "url",
+                    "required": false,
+                    "description": "Field: ctaUrl"
+                },
+                {
+                    "id": "ctaStyle",
+                    "name": "CTA Style",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: ctaStyle",
+                    "values": ["...CTA_STYLES"],
+                    "default_value": "primary"
+                },
+                {
+                    "id": "surface",
+                    "name": "Surface",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: surface",
+                    "values": ["...MEDIA_SURFACES"],
+                    "default_value": "transparent"
+                },
+                {
+                    "id": "contentAlignment",
+                    "name": "Vertical Content Alignment",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: contentAlignment",
+                    "values": ["...CONTENT_ALIGNMENTS"],
+                    "default_value": "center"
+                },
+                {
+                    "id": "contentSpacing",
+                    "name": "Content Spacing",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: contentSpacing",
+                    "values": ["...CONTENT_SPACING"],
+                    "default_value": "md"
+                }
+            ]
+        }
+    ]
+}

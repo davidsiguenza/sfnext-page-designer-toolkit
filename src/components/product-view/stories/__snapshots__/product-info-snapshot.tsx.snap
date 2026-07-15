@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ProductInfo stories snapshot > ControlledSwatchMode story renders and matches snapshot 1`] = `
+<h2>
+  Unexpected Application Error!
+</h2>
+`;
+
+exports[`ProductInfo stories snapshot > OutOfStockStatus story renders and matches snapshot 1`] = `
+<h2>
+  Unexpected Application Error!
+</h2>
+`;
+
+exports[`ProductInfo stories snapshot > Playground story renders and matches snapshot 1`] = `
+<h2>
+  Unexpected Application Error!
+</h2>
+`;
+
+exports[`ProductInfo stories snapshot > WithDisabledVariants story renders and matches snapshot 1`] = `
+<h2>
+  Unexpected Application Error!
+</h2>
+`;

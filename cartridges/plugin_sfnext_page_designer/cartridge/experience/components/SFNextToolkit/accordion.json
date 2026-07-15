@@ -1,0 +1,50 @@
+{
+    "name": "Accordion",
+    "description": "Groups merchant-authored accordion items for FAQs, delivery information, or product content.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "items",
+            "name": "Accordion items",
+            "component_type_inclusions": [
+                {
+                    "type_id": "SFNextToolkit.accordionItem"
+                }
+            ],
+            "max_components": 12
+        }
+    ],
+    "attribute_definition_groups": [
+        {
+            "id": "accordion",
+            "name": "Accordion",
+            "description": "Groups merchant-authored accordion items for FAQs, delivery information, or product content.",
+            "attribute_definitions": [
+                {
+                    "id": "heading",
+                    "name": "Heading",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional heading displayed above the accordion."
+                },
+                {
+                    "id": "intro",
+                    "name": "Introductory text",
+                    "type": "text",
+                    "required": false,
+                    "description": "Optional supporting text displayed below the heading."
+                },
+                {
+                    "id": "maxWidth",
+                    "name": "Maximum width",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Constrains the accordion while keeping it responsive.",
+                    "values": ["full", "large", "medium"],
+                    "default_value": "large"
+                }
+            ]
+        }
+    ]
+}

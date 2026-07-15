@@ -1,0 +1,61 @@
+{
+    "name": "Trust Bar",
+    "description": "Responsive reassurance strip for delivery, returns, secure payment and service benefits. Accepts up to five Trust Items.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "items",
+            "name": "Trust items",
+            "component_type_inclusions": [
+                {
+                    "type_id": "SFNextToolkit.trustItem"
+                }
+            ],
+            "max_components": 5
+        }
+    ],
+    "attribute_definition_groups": [
+        {
+            "id": "trustBar",
+            "name": "Trust Bar",
+            "description": "Responsive reassurance strip for delivery, returns, secure payment and service benefits. Accepts up to five Trust Items.",
+            "attribute_definitions": [
+                {
+                    "id": "title",
+                    "name": "Accessible title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional heading displayed above the benefits. If omitted, add an ARIA label when rendering the component outside Page Designer."
+                },
+                {
+                    "id": "columns",
+                    "name": "Desktop columns",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Benefits stack on mobile, use two columns on tablet and this number on desktop.",
+                    "values": ["2", "3", "4", "5"],
+                    "default_value": "'4' as TrustBarColumns"
+                },
+                {
+                    "id": "density",
+                    "name": "Density",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Controls semantic spacing around and between benefits.",
+                    "values": ["compact", "comfortable"],
+                    "default_value": "'comfortable' as TrustBarDensity"
+                },
+                {
+                    "id": "surface",
+                    "name": "Surface",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Semantic storefront surface applied to the complete trust bar.",
+                    "values": ["transparent", "muted", "card"],
+                    "default_value": "'muted' as TrustBarSurface"
+                }
+            ]
+        }
+    ]
+}

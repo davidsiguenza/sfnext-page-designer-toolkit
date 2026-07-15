@@ -1,0 +1,47 @@
+{
+    "name": "Accordion Item",
+    "description": "A collapsible title and rich-text body intended for the SFNext Toolkit Accordion.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "accordionItem",
+            "name": "Accordion Item",
+            "description": "A collapsible title and rich-text body intended for the SFNext Toolkit Accordion.",
+            "attribute_definitions": [
+                {
+                    "id": "title",
+                    "name": "Title",
+                    "type": "string",
+                    "required": true,
+                    "description": "Question or section title shown in the accordion trigger."
+                },
+                {
+                    "id": "content",
+                    "name": "Content",
+                    "type": "markup",
+                    "required": true,
+                    "description": "Rich-text content revealed when the item is opened."
+                },
+                {
+                    "id": "contentStyle",
+                    "name": "Content style",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Selects a safe presentation for normal text, a bullet list, or a two-column table.",
+                    "values": ["text", "bulleted-list", "table-2-column"],
+                    "default_value": "text"
+                },
+                {
+                    "id": "defaultOpen",
+                    "name": "Open by default",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Displays this item expanded when the page first loads.",
+                    "default_value": false
+                }
+            ]
+        }
+    ]
+}

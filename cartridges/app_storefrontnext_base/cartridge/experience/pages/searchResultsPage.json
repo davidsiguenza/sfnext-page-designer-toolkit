@@ -1,0 +1,24 @@
+{
+    "name": "Search Results Page",
+    "description": "Search results page with product listings and personalized content",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "searchTopFullWidth",
+            "name": "Top Full Width Region",
+            "max_components": 5
+        },
+        {
+            "id": "searchTopContent",
+            "name": "Top Content Region",
+            "max_components": 5
+        },
+        {
+            "id": "searchBottom",
+            "name": "Bottom Region",
+            "max_components": 5
+        }
+    ],
+    "supported_aspect_types": [],
+    "route": "/:siteId/:localeId/search"
+}
