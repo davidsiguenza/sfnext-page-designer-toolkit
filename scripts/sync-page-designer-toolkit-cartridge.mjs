@@ -21,6 +21,7 @@ const requiredToolkitComponentTypes = [
     'categoryCard',
     'categoryCarousel',
     'categoryHero',
+    'embeddedVideo',
     'heroBanner',
     'mediaContent',
     'productCarousel',

@@ -1,6 +1,6 @@
 # Storefront Next Page Designer Toolkit
 
-`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides 3 merchant-facing page types and 18 component types without brand assets, catalog IDs, credentials, or site-specific configuration.
+`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides 3 merchant-facing page types and 19 component types without brand assets, catalog IDs, credentials, or site-specific configuration.
 
 The toolkit has two required parts:
 
@@ -15,7 +15,7 @@ A B2C cartridge cannot execute React by itself. Install and deploy both parts to
 
 | Type ID                                | Use case                                                                                    | Route or assignment                                   |
 | -------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `page.sfnextToolkitBlankPage`          | Build campaign and editorial landing pages from a flexible blank canvas.                     | `/:siteId/:localeId/page/:pageId`                     |
+| `page.sfnextToolkitBlankPage`          | Build campaign and editorial landing pages from a flexible blank canvas.                    | `/:siteId/:localeId/page/:pageId`                     |
 | `page.sfnextToolkitProductListingPage` | Add managed content around the standard category experience and configure the product grid. | PLP aspect, `/:siteId/:localeId/category/:categoryId` |
 | `page.sfnextToolkitProductDetailPage`  | Add promotional and engagement content before and after the standard product experience.    | PDP aspect, `/:siteId/:localeId/product/:productId`   |
 
@@ -23,26 +23,27 @@ The PLP and PDP page types use the standard `plp` and `pdp` aspect definitions f
 
 ### Component types
 
-| Type ID                                           | Best used for                                                                                 | Data dependency          |
-| ------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------ |
-| `component.SFNextToolkit.heroBanner`              | Campaign launches with responsive imagery, safe overlays, semantic headings, and two CTAs.   | None                     |
-| `component.SFNextToolkit.promoStrip`              | Delivery, sale, member, or service messages in a compact themed strip.                        | None                     |
-| `component.SFNextToolkit.section`                 | Page sections with controlled width, spacing, surface, and a nested content region.           | None                     |
-| `component.SFNextToolkit.responsiveColumns`       | Responsive two- or three-column compositions with controlled ratios and mobile order.         | None                     |
-| `component.SFNextToolkit.richText`                | Headings, merchant-authored rich text, and an optional call to action.                        | None                     |
-| `component.SFNextToolkit.mediaContent`            | Editorial image-and-copy layouts for campaigns, brand stories, and PDP storytelling.          | None                     |
-| `component.SFNextToolkit.promoGrid`               | Equal or featured-first collections of promotional cards.                                     | None                     |
-| `component.SFNextToolkit.promoCard`               | Overlay or stacked image, copy, and CTA used inside a Promo Grid.                              | None                     |
-| `component.SFNextToolkit.categoryCarousel`        | A scrollable collection of catalog-backed or manually selected categories.                    | Categories API           |
-| `component.SFNextToolkit.categoryCard`            | One catalog-backed category with optional editorial image and copy overrides.                  | Category API             |
-| `component.SFNextToolkit.productCarousel`         | Category-backed or manually curated product carousel using the storefront Product Tile.       | Product Search API       |
-| `component.SFNextToolkit.productRecommendations` | Einstein-powered personalised product carousel with a clear Page Designer authoring state.    | Einstein + Products APIs |
-| `component.SFNextToolkit.trustBar`                | A responsive row of service and confidence messages.                                          | None                     |
-| `component.SFNextToolkit.trustItem`               | One delivery, returns, payment, support, store, or gift message inside a Trust Bar.           | None                     |
-| `component.SFNextToolkit.accordion`               | FAQ, delivery, returns, care, and long-form supporting information.                           | None                     |
-| `component.SFNextToolkit.accordionItem`           | One accessible disclosure inside an Accordion.                                                | None                     |
-| `component.SFNextToolkit.categoryHero`            | A PLP hero that defaults to the current category and supports editorial overrides.            | Current category route   |
-| `component.SFNextToolkit.productList`             | PLP image view type, product fields, swatches, actions, and custom catalog attributes.        | PLP search runtime       |
+| Type ID                                          | Best used for                                                                                        | Data dependency          |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------- | ------------------------ |
+| `component.SFNextToolkit.heroBanner`             | Campaign launches with responsive imagery, safe overlays, semantic headings, and two CTAs.           | None                     |
+| `component.SFNextToolkit.embeddedVideo`          | Responsive YouTube, Vimeo, or direct video with privacy, playback, caption, and transcript controls. | None                     |
+| `component.SFNextToolkit.promoStrip`             | Delivery, sale, member, or service messages in a compact themed strip.                               | None                     |
+| `component.SFNextToolkit.section`                | Page sections with controlled width, spacing, surface, and a nested content region.                  | None                     |
+| `component.SFNextToolkit.responsiveColumns`      | Responsive two- or three-column compositions with controlled ratios and mobile order.                | None                     |
+| `component.SFNextToolkit.richText`               | Headings, merchant-authored rich text, and an optional call to action.                               | None                     |
+| `component.SFNextToolkit.mediaContent`           | Editorial image-and-copy layouts for campaigns, brand stories, and PDP storytelling.                 | None                     |
+| `component.SFNextToolkit.promoGrid`              | Equal or featured-first collections of promotional cards.                                            | None                     |
+| `component.SFNextToolkit.promoCard`              | Overlay or stacked image, copy, and CTA used inside a Promo Grid.                                    | None                     |
+| `component.SFNextToolkit.categoryCarousel`       | A scrollable collection of catalog-backed or manually selected categories.                           | Categories API           |
+| `component.SFNextToolkit.categoryCard`           | One catalog-backed category with optional editorial image and copy overrides.                        | Category API             |
+| `component.SFNextToolkit.productCarousel`        | Category-backed or manually curated product carousel using the storefront Product Tile.              | Product Search API       |
+| `component.SFNextToolkit.productRecommendations` | Einstein-powered personalised product carousel with a clear Page Designer authoring state.           | Einstein + Products APIs |
+| `component.SFNextToolkit.trustBar`               | A responsive row of service and confidence messages.                                                 | None                     |
+| `component.SFNextToolkit.trustItem`              | One delivery, returns, payment, support, store, or gift message inside a Trust Bar.                  | None                     |
+| `component.SFNextToolkit.accordion`              | FAQ, delivery, returns, care, and long-form supporting information.                                  | None                     |
+| `component.SFNextToolkit.accordionItem`          | One accessible disclosure inside an Accordion.                                                       | None                     |
+| `component.SFNextToolkit.categoryHero`           | A PLP hero that defaults to the current category and supports editorial overrides.                   | Current category route   |
+| `component.SFNextToolkit.productList`            | PLP image view type, product fields, swatches, actions, and custom catalog attributes.               | PLP search runtime       |
 
 Four component types are contextual building blocks rather than root-page blocks: `accordionItem`, `categoryCard`, `promoCard`, and `trustItem`. They appear only inside their compatible parent regions. This keeps the Page Designer palette useful instead of exposing invalid loose fragments.
 
@@ -53,6 +54,14 @@ Four component types are contextual building blocks rather than root-page blocks
 Use Campaign Hero for the primary visual statement on a campaign or landing page. It supports separate desktop and mobile images, focal points, decorative-image mode, eyebrow, semantic heading choice, controlled visual sizes, nine content positions, token-based overlays, responsive height, and two safe CTAs.
 
 The component intentionally does not accept arbitrary CSS, JavaScript, raw color values, or unsanitised links. Use one `h1` on standalone landing pages and `h2` or `h3` where the route already owns the page title.
+
+### Embedded Video
+
+Use Embedded Video for campaign films, product stories, tutorials, interviews, or editorial content. It accepts supported YouTube and Vimeo page URLs and converts them to fixed privacy-enhanced embed origins; it can also render a direct video URL with native browser controls. Merchants configure an accessible title, responsive ratio and width, optional poster, caption and transcript, plus provider-supported autoplay, mute, loop, and start-time presets.
+
+Click-to-play is the recommended default for third-party providers because the iframe is not loaded until the shopper interacts. Vimeo and direct-video autoplay always force muted playback; YouTube remains click-to-play because its documented embed parameters cannot guarantee muted autoplay. Direct videos can include a WebVTT captions URL and language metadata. In Page Designer edit mode the component renders a safe authoring card instead of starting playback or loading a third-party iframe.
+
+The host Storefront Next application must allow `https://www.youtube-nocookie.com` and `https://player.vimeo.com` in CSP `frame-src`. Direct videos require their delivery origin in `media-src`; the included demo configuration allows same-origin and standard B2C Commerce static hosts. Add an approved CDN origin explicitly rather than broadening CSP to every HTTPS host.
 
 ### Promo Strip
 
@@ -136,7 +145,7 @@ pnpm cartridge:validate
 pnpm build
 ```
 
-`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest. Validation also enforces the complete 18-type public contract and rejects unresolved TypeScript expressions or enum defaults that are not present in their value lists.
+`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest. Validation also enforces the complete 19-type public contract and rejects unresolved TypeScript expressions or enum defaults that are not present in their value lists.
 
 `cartridge:validate` validates both the standard Storefront Next metadata and every file in this cartridge with the B2C tooling schema validator.
 
@@ -162,7 +171,7 @@ The MRT environment must be linked to the same B2C Commerce instance and site so
 
 1. Open **Merchant Tools > Content > Page Designer** for the target site.
 2. Create a page and choose one of the `SFNext Toolkit` page types, or open a PLP/PDP assignment using the matching aspect.
-3. Drag components from the `SFNextToolkit` group into compatible regions. Root regions expose 14 complete blocks; the 4 contextual child types appear only inside their matching parents.
+3. Drag components from the `SFNextToolkit` group into compatible regions. Root regions expose 15 complete blocks; the 4 contextual child types appear only inside their matching parents.
 4. Configure the component attributes and save.
 5. Use Preview to verify desktop and mobile behavior.
 6. Publish the page or assignment when it is ready.
@@ -174,7 +183,7 @@ Page Designer changes must be saved before the Storefront Next preview iframe re
 ### Campaign landing page
 
 1. Campaign Hero
-2. Promo Strip
+2. Embedded Video or Promo Strip
 3. Section containing Rich Text or Media + Content
 4. Promo Grid or Category Carousel
 5. Featured Product Carousel
@@ -191,7 +200,7 @@ Page Designer changes must be saved before the Storefront Next preview iframe re
 ### Product detail page
 
 1. Promo Strip, Trust Bar, or Media + Content in `promoContent`
-2. Einstein Product Recommendations, Media + Content, or Accordion in `engagementContent`
+2. Embedded Video, Einstein Product Recommendations, Media + Content, or Accordion in `engagementContent`
 
 ## Install in another Storefront Next project
 
@@ -209,9 +218,10 @@ Then:
 1. Register `SFDC_EXT_PAGE_DESIGNER_TOOLKIT` in `src/extensions/config.json`.
 2. Add the `cartridge:generate`, `cartridge:validate`, and `cartridge:deploy:page-designer` scripts from this project to `package.json`.
 3. Carry over the configurable PLP runtime in `src/components/product-list` and its category-route integration if the target Storefront Next version does not already include equivalent support.
-4. Generate, validate, and deploy the cartridge.
-5. Build and deploy the MRT application.
-6. Add the cartridge to the target site's cartridge path.
+4. Extend the host CSP `frame-src` and `media-src` directives with the approved video origins described under Embedded Video.
+5. Generate, validate, and deploy the cartridge.
+6. Build and deploy the MRT application.
+7. Add the cartridge to the target site's cartridge path.
 
 The toolkit uses standard Storefront Next primitives and semantic theme tokens. It contains no brand-specific assets or IDs.
 
@@ -223,6 +233,7 @@ The toolkit uses standard Storefront Next primitives and semantic theme tokens. 
 - Keep one page-level `h1`. Use Rich Text's `h1` only on a blank page that does not already render one; start managed PLP and PDP content at `h2`.
 - Parent component regions restrict their allowed child types.
 - Interactive controls use native links, buttons, or accessible disclosure primitives.
+- Embedded videos require a descriptive title; direct videos should provide WebVTT captions and all videos should offer a transcript for meaningful spoken content.
 - Loading fallbacks preserve approximate component dimensions to reduce layout shift.
 - Commerce APIs run in MRT loaders, never directly in the browser.
 
@@ -248,6 +259,13 @@ The toolkit uses standard Storefront Next primitives and semantic theme tokens. 
 - Check required images, links, product or category assignments.
 - For Category Hero, verify that the page is previewed with a category aspect or configure editorial overrides.
 - Check MRT logs for component loader errors.
+
+### A video is blank or blocked
+
+- Confirm that the URL resolves to a supported YouTube, Vimeo, or safe direct-video source.
+- Check the browser console for CSP violations and add only the required provider or CDN origin to `frame-src` or `media-src`.
+- Keep provider controls enabled. Vimeo and direct-video autoplay are forced to muted playback; YouTube stays manual and uses click-to-play.
+- For consent-managed sites, connect third-party video loading to the site's CMP policy. Click-to-play reduces eager requests but does not by itself replace legal consent requirements.
 
 ## Removal
 

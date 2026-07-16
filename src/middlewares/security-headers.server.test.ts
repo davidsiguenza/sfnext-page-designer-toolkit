@@ -141,5 +141,19 @@ describe('securityHeadersMiddleware (template wiring)', () => {
         // `PUBLIC__app__security__headers__csp__reportOnly` would be
         // rejected by mergeEnvConfig's path validation.
         expect(headers.csp).toMatchObject({ reportOnly: expect.any(Boolean) });
+
+        const directives = (headers.csp as { directives: Record<string, string[]> }).directives;
+        expect(directives['frame-src']).toEqual(
+            expect.arrayContaining(['https://www.youtube-nocookie.com', 'https://player.vimeo.com'])
+        );
+        expect(directives['media-src']).toEqual(
+            expect.arrayContaining([
+                "'self'",
+                'https:',
+                'https://*.commercecloud.salesforce.com',
+                'https://*.cc.salesforce.com',
+                'https://*.demandware.net',
+            ])
+        );
     });
 });

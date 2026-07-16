@@ -1,0 +1,165 @@
+{
+    "name": "Embedded Video",
+    "description": "Accessible YouTube, Vimeo or direct video with privacy-conscious embeds, safe media URLs, responsive ratios, captions and transcript support.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "embeddedVideo",
+            "name": "Embedded Video",
+            "description": "Accessible YouTube, Vimeo or direct video with privacy-conscious embeds, safe media URLs, responsive ratios, captions and transcript support.",
+            "attribute_definitions": [
+                {
+                    "id": "videoUrl",
+                    "name": "Video URL",
+                    "type": "url",
+                    "required": true,
+                    "description": "HTTPS YouTube or Vimeo URL, or an HTTPS/storefront-relative MP4, WebM or Ogg file. Other hosts and protocols are rejected."
+                },
+                {
+                    "id": "videoTitle",
+                    "name": "Accessible video title",
+                    "type": "string",
+                    "required": true,
+                    "description": "Required concise title announced by assistive technology for the player."
+                },
+                {
+                    "id": "playButtonLabel",
+                    "name": "Play button label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Localised action label shown by click-to-play, for example “Play video” or “Reproducir vídeo”.",
+                    "default_value": "Play video"
+                },
+                {
+                    "id": "posterImage",
+                    "name": "Poster image",
+                    "type": "image",
+                    "required": false,
+                    "description": "Optional poster shown by click-to-play and before a direct video starts."
+                },
+                {
+                    "id": "caption",
+                    "name": "Visible caption",
+                    "type": "text",
+                    "required": false,
+                    "description": "Optional supporting text displayed beneath the player."
+                },
+                {
+                    "id": "captionsUrl",
+                    "name": "WebVTT captions URL",
+                    "type": "url",
+                    "required": false,
+                    "description": "Optional HTTPS or storefront-relative .vtt captions file for direct video."
+                },
+                {
+                    "id": "captionsLanguage",
+                    "name": "Captions language",
+                    "type": "string",
+                    "required": false,
+                    "description": "BCP 47 language code such as en, es or es-ES.",
+                    "default_value": "en"
+                },
+                {
+                    "id": "captionsLabel",
+                    "name": "Captions label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Language name shown in the native player captions menu, for example “Español”.",
+                    "default_value": "Captions"
+                },
+                {
+                    "id": "transcriptUrl",
+                    "name": "Transcript URL",
+                    "type": "url",
+                    "required": false,
+                    "description": "Optional secure HTTPS or storefront-relative transcript destination."
+                },
+                {
+                    "id": "transcriptLabel",
+                    "name": "Transcript link label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Localised text for the optional transcript link.",
+                    "default_value": "View transcript"
+                },
+                {
+                    "id": "aspectRatio",
+                    "name": "Aspect ratio",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Responsive player frame ratio. Portrait is intended for vertical campaign video.",
+                    "values": ["widescreen", "cinematic", "standard", "square", "portrait"],
+                    "default_value": "widescreen"
+                },
+                {
+                    "id": "maxWidth",
+                    "name": "Maximum width",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Full uses the available region; Wide and Narrow apply readable storefront maximum widths.",
+                    "values": ["full", "wide", "narrow"],
+                    "default_value": "wide"
+                },
+                {
+                    "id": "clickToPlay",
+                    "name": "Click to play",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Recommended for YouTube and Vimeo. The third-party iframe is not loaded until the shopper activates the player.",
+                    "default_value": true
+                },
+                {
+                    "id": "startAtSeconds",
+                    "name": "Start time in seconds",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Optional whole-second offset, limited to 24 hours.",
+                    "default_value": 0
+                },
+                {
+                    "id": "autoplay",
+                    "name": "Autoplay",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Disabled by default. Available for Vimeo and direct video; YouTube remains manual because its documented embed parameters cannot guarantee muted autoplay.",
+                    "default_value": false
+                },
+                {
+                    "id": "muted",
+                    "name": "Muted",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Starts Vimeo or direct playback without sound. Supported autoplay forces this option on at runtime.",
+                    "default_value": false
+                },
+                {
+                    "id": "loop",
+                    "name": "Loop",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Restarts the video when playback reaches the end.",
+                    "default_value": false
+                },
+                {
+                    "id": "preload",
+                    "name": "Direct video preload",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Metadata loads video dimensions and duration; None defers media loading until playback.",
+                    "values": ["none", "metadata"],
+                    "default_value": "metadata"
+                },
+                {
+                    "id": "allowFullscreen",
+                    "name": "Allow fullscreen",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Lets shoppers open provider videos in fullscreen mode.",
+                    "default_value": true
+                }
+            ]
+        }
+    ]
+}
