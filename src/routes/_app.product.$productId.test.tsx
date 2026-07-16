@@ -288,6 +288,25 @@ describe('Product Detail Route', () => {
     });
 
     describe('ProductDetailView component', () => {
+        test('reserves the PDP product tools region exclusively for one size guide', async () => {
+            const { ProductPageMetadata } = await import('./_app.product.$productId');
+            const { getRegionDefinition } = await import('@/lib/decorators/region-definition');
+
+            expect(getRegionDefinition(ProductPageMetadata, 'productTools')).toEqual(
+                expect.objectContaining({
+                    id: 'productTools',
+                    maxComponents: 1,
+                    componentTypeInclusions: ['SFNextToolkit.sizeGuide'],
+                })
+            );
+            expect(getRegionDefinition(ProductPageMetadata, 'promoContent')?.componentTypeExclusions).toContain(
+                'SFNextToolkit.sizeGuide'
+            );
+            expect(getRegionDefinition(ProductPageMetadata, 'engagementContent')?.componentTypeExclusions).toContain(
+                'SFNextToolkit.sizeGuide'
+            );
+        });
+
         test('should have correct product utility functions available', () => {
             // Test that the utility functions are properly imported and available
             expect(typeof isProductSet).toBe('function');
@@ -485,6 +504,7 @@ describe('Product Detail Route', () => {
             // Suspense boundary around the product
             expect(getByTestId('product-view')).toBeInTheDocument();
             expect(queryByTestId('product-skeleton')).not.toBeInTheDocument();
+            expect(getByTestId('product-view').querySelector('[data-region-id="productTools"]')).toBeInTheDocument();
         });
 
         test('renders product JSON-LD after main page content', async () => {

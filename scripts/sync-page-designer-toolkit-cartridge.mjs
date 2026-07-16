@@ -263,6 +263,39 @@ async function validateContextualRegionContracts() {
     return failures;
 }
 
+async function validateProductToolsRegionContracts() {
+    const contracts = [
+        [baseExperienceDirectory, 'pages/productDetailPage.json'],
+        [experienceDirectory, 'pages/sfnextToolkitProductDetailPage.json'],
+    ];
+    const expectedTypeIds = ['SFNextToolkit.sizeGuide'];
+    const failures = [];
+
+    for (const [directory, file] of contracts) {
+        const metadata = JSON.parse(await readFile(join(directory, file), 'utf8'));
+        const region = metadata.region_definitions?.find((candidate) => candidate.id === 'productTools');
+        if (!region) {
+            failures.push(`${file}#productTools: required PDP product tools region is missing`);
+            continue;
+        }
+
+        if (region.max_components !== 1) {
+            failures.push(`${file}#productTools: max_components must be 1`);
+        }
+
+        const includedTypeIds = (region.component_type_inclusions ?? []).map((candidate) => candidate.type_id).sort();
+        if (JSON.stringify(includedTypeIds) !== JSON.stringify(expectedTypeIds)) {
+            failures.push(`${file}#productTools: component_type_inclusions must contain only ${expectedTypeIds[0]}`);
+        }
+
+        if (region.component_type_exclusions !== undefined) {
+            failures.push(`${file}#productTools: component_type_exclusions must not be declared with inclusions`);
+        }
+    }
+
+    return failures;
+}
+
 async function pathExists(path) {
     try {
         await access(path);
@@ -358,6 +391,7 @@ async function validateToolkitCartridge() {
     const { validateMetaDefinitionFile } = await loadMetadataValidator();
     const failures = [];
     failures.push(...(await validateContextualRegionContracts()));
+    failures.push(...(await validateProductToolsRegionContracts()));
 
     for (const file of actualFiles) {
         const absolutePath = join(experienceDirectory, file);

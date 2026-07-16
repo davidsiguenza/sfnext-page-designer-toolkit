@@ -537,6 +537,12 @@ The easiest reusable path is to fork this repository at a tagged toolkit release
 - For clothing, supply height and use chest for upper-body categories or inseam for bottoms when the first result needs confirmation. For footwear, measure both feet and use the longer value.
 - Keep values within the documented Mayoral tables. Do not reinterpret an `out_of_coverage` result as the nearest size.
 
+### Page Designer rejects Size Guide in `promoContent`
+
+- This is the expected contract: `promoContent` and `engagementContent` explicitly exclude `SFNextToolkit.sizeGuide` because neither slot owns the current Product context.
+- Use the PDP slot labelled **Product Tools**. It accepts only `SFNextToolkit.sizeGuide` and has `max_components: 1`.
+- If **Product Tools** is absent from an existing PDP, run the full install deployment (`pnpm cartridge:deploy:page-designer:install --reload`) so both `app_storefrontnext_base` and `plugin_sfnext_page_designer` are refreshed, deploy the MRT application from the same commit, and reopen the editing session. Do not recreate the `pdp` content item.
+
 ### The Site Theme visual editor does not load
 
 - Confirm that the generated cartridge contains the editor definition for `SFNextToolkit.themeEditor`, its same-named server module, and every JavaScript/CSS resource referenced by the editor metadata.
