@@ -18,6 +18,7 @@ import type React from 'react';
 import { render, screen } from '@testing-library/react';
 import { vi, describe, test, expect, beforeEach } from 'vitest';
 import type { ShopperSearch } from '@/scapi';
+import { DEFAULT_PRODUCT_LIST_CONFIG, ProductImageViewType } from '@/components/product-list/config';
 import ProductCarousel, { ProductCarouselWithSuspense, ProductCarouselWithData } from './carousel';
 
 let mockIsDesignMode = false;
@@ -79,11 +80,16 @@ vi.mock('@/components/product-tile', () => ({
     ProductTile: ({
         product,
         className,
+        tilePresentation,
     }: {
         product: ShopperSearch.schemas['ProductSearchHit'];
         className?: string;
+        tilePresentation?: { imageViewType?: string };
     }) => (
-        <div data-testid={`product-tile-${product.productId}`} className={className}>
+        <div
+            data-testid={`product-tile-${product.productId}`}
+            className={className}
+            data-image-view-type={tilePresentation?.imageViewType}>
             <h3>{product.productName}</h3>
             <p>${product.price}</p>
         </div>
@@ -272,15 +278,64 @@ describe('ProductCarousel', () => {
             expect(screen.getByTestId('carousel')).toBeInTheDocument();
             expect(screen.getByTestId('region-component-product-tile-a')).toBeInTheDocument();
             expect(screen.getByTestId('region-component-product-tile-b')).toBeInTheDocument();
+            expect(
+                screen.getAllByText('Region Component').map((element) => element.getAttribute('data-testid'))
+            ).toEqual(['region-component-product-tile-a', 'region-component-product-tile-b']);
+        });
+
+        test('prefers loader-backed products over manual region components when requested', () => {
+            const component = {
+                id: 'carousel-comp-1',
+                typeId: 'SFNextToolkit.productCarousel',
+                regions: [
+                    {
+                        id: 'products',
+                        components: [{ id: 'manual-product', typeId: 'Content.productTile' }],
+                    },
+                ],
+            } as any;
+
+            renderComponent(
+                <ProductCarousel products={mockProducts.slice(0, 1)} component={component} preferLoadedProducts />
+            );
+
+            expect(screen.getByTestId('product-tile-test-product-1')).toBeInTheDocument();
+            expect(screen.queryByTestId('region-component-manual-product')).not.toBeInTheDocument();
+        });
+
+        test('does not fall back to manual products when the selected category is empty', () => {
+            const component = {
+                id: 'carousel-comp-1',
+                typeId: 'SFNextToolkit.productCarousel',
+                regions: [
+                    {
+                        id: 'products',
+                        components: [{ id: 'manual-product', typeId: 'Content.productTile' }],
+                    },
+                ],
+            } as any;
+
+            const { container } = renderComponent(
+                <ProductCarousel products={[]} component={component} preferLoadedProducts />
+            );
+
+            expect(container).toBeEmptyDOMElement();
+            expect(screen.queryByTestId('region-component-manual-product')).not.toBeInTheDocument();
         });
     });
 
     describe('ProductTile Integration', () => {
         test('passes correct props to ProductTile', () => {
-            renderComponent(<ProductCarousel products={mockProducts} />);
+            renderComponent(
+                <ProductCarousel
+                    products={mockProducts}
+                    tilePresentation={{ ...DEFAULT_PRODUCT_LIST_CONFIG, imageViewType: ProductImageViewType.HI_RES }}
+                />
+            );
 
             const productTile = screen.getByTestId('product-tile-test-product-1');
             expect(productTile).toHaveClass('h-full', 'w-full');
+            expect(productTile).toHaveAttribute('data-image-view-type', 'hi-res');
             expect(screen.getByText('Test Product 1')).toBeInTheDocument();
             expect(screen.getByText('$29.99')).toBeInTheDocument();
         });

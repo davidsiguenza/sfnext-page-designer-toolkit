@@ -23,6 +23,7 @@ import withSuspense from '@/components/with-suspense';
 import ProductCarouselSkeleton from './skeleton';
 import { cn } from '@/lib/utils';
 import type { ComponentType } from '@/components/region';
+import type { ProductListConfig } from '@/components/product-list/config';
 import { Component } from '@/components/region/component';
 import { usePageDesignerMode } from '@salesforce/storefront-next-runtime/design/react/core';
 import { CarouselSection } from '@/components/carousel-section';
@@ -50,6 +51,10 @@ export interface ProductCarouselProps {
     className?: string;
     /** Optional Page Designer component for container rendering mode */
     component?: ComponentType;
+    /** Prefer loader-backed products over manually authored region components. */
+    preferLoadedProducts?: boolean;
+    /** Product-card presentation used for loader-backed products. */
+    tilePresentation?: ProductListConfig;
 }
 
 /**
@@ -92,17 +97,20 @@ export default function ProductCarousel({
     titleClassName,
     className,
     component,
+    preferLoadedProducts = false,
+    tilePresentation,
 }: ProductCarouselProps): ReactNode {
     const { t } = useTranslation('product');
     const { isDesignMode } = usePageDesignerMode();
     const productsRegion = component?.regions?.find((region) => region.id === 'products');
     const regionComponents = productsRegion?.components ?? [];
+    const useManualProducts = !preferLoadedProducts && regionComponents.length > 0 && Boolean(productsRegion);
     const resolvedTitle = title || ''; // put empty string as the title since dont currently have i18n for these default values.
 
     // When there are no products and no region components, only show the prompt in
     // Page Designer design mode (to guide the content author). On the live storefront
     // render nothing to avoid showing a confusing placeholder to shoppers.
-    if ((!products || products.length === 0) && regionComponents.length === 0) {
+    if ((!products || products.length === 0) && !useManualProducts) {
         if (!isDesignMode) {
             return null;
         }
@@ -124,7 +132,7 @@ export default function ProductCarousel({
             titleClassName={titleClassName}
             className={className}
             ariaLabel={`${resolvedTitle} carousel`}>
-            {regionComponents.length > 0 && productsRegion ? (
+            {useManualProducts && productsRegion ? (
                 regionComponents.map((comp) => {
                     const typedComp = comp as ComponentType;
                     const key = typedComp.contentLinkUuid ?? typedComp.id;
@@ -151,6 +159,7 @@ export default function ProductCarousel({
                                     <ProductTile
                                         product={product}
                                         imgAspectRatio={productCarouselItemAspectRatio}
+                                        tilePresentation={tilePresentation}
                                         className="h-full w-full"
                                     />
                                 </div>

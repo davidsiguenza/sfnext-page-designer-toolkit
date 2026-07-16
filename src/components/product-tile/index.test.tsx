@@ -336,6 +336,36 @@ describe('ProductTile — list-level presentation', () => {
         expect(within(attributes).queryByText('Unsafe:')).not.toBeInTheDocument();
         expect(attributes).not.toHaveTextContent('[object Object]');
     });
+
+    test('reads additional attributes from map and array customProperties responses', () => {
+        const product = {
+            ...mockSingleVariantProduct,
+            customProperties: {
+                c_material: 'Cotton',
+                season: 'Summer',
+            },
+            representedProduct: {
+                id: 'simple-001',
+                customProperties: [{ id: 'c_fit', value: 'Regular' }],
+            },
+        } as unknown as ShopperSearch.schemas['ProductSearchHit'];
+
+        renderTile({
+            product,
+            tilePresentation: createTilePresentation({
+                additionalAttributes: [
+                    { id: 'c_material', label: 'Material' },
+                    { id: 'c_season', label: 'Season' },
+                    { id: 'c_fit', label: 'Fit' },
+                ],
+            }),
+        });
+
+        const attributes = screen.getByTestId('product-tile-additional-attributes');
+        expect(attributes).toHaveTextContent('Material:Cotton');
+        expect(attributes).toHaveTextContent('Season:Summer');
+        expect(attributes).toHaveTextContent('Fit:Regular');
+    });
 });
 
 describe('ProductTile — PDP URL', () => {

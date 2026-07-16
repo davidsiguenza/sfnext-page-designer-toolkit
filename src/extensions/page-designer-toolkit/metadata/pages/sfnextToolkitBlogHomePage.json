@@ -16,13 +16,19 @@
         {
             "id": "featured",
             "name": "Featured Stories",
-            "component_type_inclusions": [{ "type_id": "SFNextToolkit.blogPostGrid" }],
+            "component_type_inclusions": [
+                { "type_id": "SFNextToolkit.blogPostGrid" },
+                { "type_id": "SFNextToolkit.contentCollection" }
+            ],
             "max_components": 1
         },
         {
             "id": "posts",
             "name": "Blog Posts",
-            "component_type_inclusions": [{ "type_id": "SFNextToolkit.blogPostGrid" }],
+            "component_type_inclusions": [
+                { "type_id": "SFNextToolkit.blogPostGrid" },
+                { "type_id": "SFNextToolkit.contentCollection" }
+            ],
             "max_components": 1
         },
         {

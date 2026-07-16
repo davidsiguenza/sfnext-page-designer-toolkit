@@ -160,6 +160,38 @@ describe('convertProductToProductSearchHit', () => {
         });
     });
 
+    it('preserves tile fields, real variants, promotions, and top-level custom attributes', () => {
+        const product = {
+            id: 'master-1',
+            name: 'Complete Product',
+            brand: 'Acme',
+            price: 45,
+            priceMax: 65,
+            currency: 'EUR',
+            type: { master: true },
+            priceRanges: [{ minPrice: 45, maxPrice: 65, pricebook: 'eur-list' }],
+            productPromotions: [{ promotionId: 'summer', calloutMsg: 'Summer offer', promotionalPrice: 39 }],
+            variants: [{ productId: 'variant-red', orderable: true, variationValues: { color: 'red', size: '4Y' } }],
+            variationGroups: [
+                { productId: 'red-group', orderable: true, price: 45, variationValues: { color: 'red' } },
+            ],
+            c_material: 'Cotton',
+        } as ShopperProducts.schemas['Product'];
+
+        const result = convertProductToProductSearchHit(product);
+
+        expect(result).toMatchObject({
+            brand: 'Acme',
+            priceMax: 65,
+            productType: { master: true },
+            c_material: 'Cotton',
+            variants: [{ productId: 'variant-red', variationValues: { color: 'red', size: '4Y' } }],
+            variationGroups: [{ productId: 'red-group', variationValues: { color: 'red' } }],
+            productPromotions: [{ promotionId: 'summer', calloutMsg: 'Summer offer', promotionalPrice: 39 }],
+            promotions: [{ promotionId: 'summer', calloutMsg: 'Summer offer', promotionalPrice: 39 }],
+        });
+    });
+
     it('should use productName as fallback when name is missing', () => {
         const product: ShopperProducts.schemas['Product'] = {
             id: 'test-product',

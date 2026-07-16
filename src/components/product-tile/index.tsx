@@ -81,6 +81,32 @@ const formatAdditionalAttributeValue = (value: unknown): string | null => {
     return null;
 };
 
+const getCustomPropertyValue = (source: unknown, attributeId: string): unknown => {
+    if (!source || typeof source !== 'object') return undefined;
+
+    const record = source as Record<string, unknown>;
+    if (record[attributeId] !== undefined) return record[attributeId];
+
+    const customProperties = record.customProperties;
+    if (Array.isArray(customProperties)) {
+        const match = customProperties.find(
+            (property) =>
+                property &&
+                typeof property === 'object' &&
+                ((property as { id?: unknown }).id === attributeId ||
+                    (property as { id?: unknown }).id === attributeId.replace(/^c_/, ''))
+        ) as { value?: unknown } | undefined;
+        return match?.value;
+    }
+
+    if (customProperties && typeof customProperties === 'object') {
+        const properties = customProperties as Record<string, unknown>;
+        return properties[attributeId] ?? properties[attributeId.replace(/^c_/, '')];
+    }
+
+    return undefined;
+};
+
 const getAdditionalAttributeValue = (
     product: ShopperSearch.schemas['ProductSearchHit'],
     representedVariant: ProductSearchHitVariant | undefined,
@@ -90,7 +116,7 @@ const getAdditionalAttributeValue = (
     // search expansion and B2C version. Preserve the most specific response order.
     const sources: unknown[] = [product, representedVariant, product.representedProduct];
     for (const source of sources) {
-        const value = formatAdditionalAttributeValue((source as Record<string, unknown> | undefined)?.[attributeId]);
+        const value = formatAdditionalAttributeValue(getCustomPropertyValue(source, attributeId));
         if (value !== null) return value;
     }
     return null;

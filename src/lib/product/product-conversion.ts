@@ -31,11 +31,31 @@ export function convertProductToProductSearchHit(
     const productId = (product.id || product.productId || '') as string;
     const productName = (product.name || product.productName || '') as string;
     const productPrice = product.price ?? product.priceMax ?? 0;
+    const customAttributes = Object.fromEntries(
+        Object.entries(product).filter(([attributeId]) => attributeId.startsWith('c_'))
+    );
+    const fallbackVariants = product.variationAttributes?.map((attr) => ({
+        productId,
+        variationValues: attr.values?.reduce(
+            (acc, val) => {
+                if (attr.id && val.value) {
+                    acc[attr.id] = val.value;
+                }
+                return acc;
+            },
+            {} as Record<string, string>
+        ),
+    }));
     const converted: ShopperSearch.schemas['ProductSearchHit'] = {
+        ...customAttributes,
         productId,
         productName,
         price: productPrice,
+        priceMax: product.priceMax,
         currency: product.currency,
+        brand: product.brand,
+        orderable: product.inventory?.orderable ?? product.master?.orderable,
+        productType: product.type,
         image: firstImage
             ? {
                   disBaseLink: firstImage.disBaseLink || firstImage.link || '',
@@ -44,25 +64,17 @@ export function convertProductToProductSearchHit(
               }
             : undefined,
         imageGroups: product.imageGroups,
+        priceRanges: product.priceRanges,
+        productPromotions: product.productPromotions,
+        tieredPrices: product.tieredPrices,
         variationAttributes: product.variationAttributes,
-        variants: product.variationAttributes
-            ? product.variationAttributes.map((attr) => ({
-                  productId,
-                  variationValues: attr.values?.reduce(
-                      (acc, val) => {
-                          if (attr.id && val.value) {
-                              acc[attr.id] = val.value;
-                          }
-                          return acc;
-                      },
-                      {} as Record<string, string>
-                  ),
-              }))
-            : undefined,
+        variants: product.variants ?? fallbackVariants,
+        variationGroups: product.variationGroups,
         inStock:
             product.inventory?.ats !== undefined ? product.inventory.ats > 0 : (product.inventory?.orderable ?? true),
-        // Additional properties that ProductSearchHit might have
-        promotions: [],
+        // Retain the legacy alias consumed by badge integrations as well as the typed
+        // `productPromotions` field used by ProductPrice.
+        promotions: product.productPromotions ?? [],
         customProperties: product.customProperties,
     };
 

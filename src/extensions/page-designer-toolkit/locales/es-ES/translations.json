@@ -19,5 +19,27 @@
         "errorAuthoring": "No se ha podido cargar el contenido del blog",
         "errorAuthoringHelp": "Comprueba el scope de contenidos de Shopper Experience, el ID de carpeta y el índice de búsqueda de contenido.",
         "errorLive": "Los artículos no están disponibles temporalmente."
+    },
+    "contentCollection": {
+        "viewContent": "Ver contenido",
+        "emptyLive": "No hay contenidos disponibles.",
+        "carouselLabel": "Colección de contenidos",
+        "readingTime_one": "{{count}} min de lectura",
+        "readingTime_other": "{{count}} min de lectura",
+        "missingIds": "IDs de Content Assets no disponibles: {{ids}}",
+        "invalidIds_one": "Se ha ignorado {{count}} ID de Content Asset no válido.",
+        "invalidIds_other": "Se han ignorado {{count}} IDs de Content Asset no válidos.",
+        "filteredItems_one": "{{count}} contenido cargado no coincide con el tipo seleccionado.",
+        "filteredItems_other": "{{count}} contenidos cargados no coinciden con el tipo seleccionado.",
+        "selectionTruncated": "Se han ignorado IDs manuales adicionales porque se alcanzó el máximo de contenidos.",
+        "searchTruncated": "La carpeta supera el límite seguro de búsqueda. Utiliza una carpeta más específica.",
+        "errorAuthoring": "No se ha podido cargar la colección de contenidos",
+        "errorAuthoringHelp": "Comprueba el scope de contenidos de Shopper Experience, la carpeta o los IDs y el índice de búsqueda.",
+        "configureManual": "Añade IDs de Content Assets",
+        "configureManualHelp": "Introduce un ID de Content Asset online por línea en la configuración del componente.",
+        "configureLatest": "Conecta una carpeta de la Content Library",
+        "configureLatestHelp": "Elige una carpeta online y reconstruye el índice de contenido después de importaciones masivas.",
+        "emptyAuthoring": "No se han encontrado contenidos que coincidan",
+        "emptyAuthoringHelp": "Comprueba el estado online, la carpeta, los IDs, el tipo de contenido, el locale y el índice de búsqueda."
     }
 }

@@ -21,8 +21,26 @@ import { getRegionDefinition } from '@/lib/decorators/region-definition';
 import SFNextToolkitProductCarousel, { SFNextToolkitProductCarouselMetadata } from './index';
 
 vi.mock('@/components/product-carousel/carousel', () => ({
-    default: ({ products, title, shopAllUrl }: { products: unknown[]; title?: string; shopAllUrl?: string }) => (
-        <div data-testid="product-carousel" data-count={products.length} data-url={shopAllUrl}>
+    default: ({
+        products,
+        title,
+        shopAllUrl,
+        preferLoadedProducts,
+        tilePresentation,
+    }: {
+        products: unknown[];
+        title?: string;
+        shopAllUrl?: string;
+        preferLoadedProducts?: boolean;
+        tilePresentation?: { imageViewType?: string; showPrice?: boolean };
+    }) => (
+        <div
+            data-testid="product-carousel"
+            data-count={products.length}
+            data-url={shopAllUrl}
+            data-prefer-loaded-products={String(preferLoadedProducts)}
+            data-image-view-type={tilePresentation?.imageViewType}
+            data-show-price={String(tilePresentation?.showPrice)}>
             {title}
         </div>
     ),
@@ -39,11 +57,17 @@ describe('SFNext Toolkit product carousel', () => {
         );
         expect(getRegionDefinition(SFNextToolkitProductCarouselMetadata, 'products')).toMatchObject({
             maxComponents: 12,
-            componentTypeInclusions: ['Content.productTile'],
+            componentTypeInclusions: ['Content.productTile', 'SFNextToolkit.productCard'],
         });
         const { fields } = getAttributeDefinitions(SFNextToolkitProductCarouselMetadata.prototype);
         expect(fields.categoryId.type).toBe('category');
         expect(fields.limit.defaultValue).toBe(12);
+        expect(fields.sourceMode).toMatchObject({ values: ['auto', 'manual', 'category'], defaultValue: 'auto' });
+        expect(fields.selectionStrategy).toMatchObject({
+            values: ['catalog-order', 'random-per-request', 'random-daily'],
+            defaultValue: 'catalog-order',
+        });
+        expect(fields.imageViewType.values).toEqual(['hi-res', 'large', 'medium', 'small', 'swatch']);
     });
 
     test('passes loaded products and a safe view-all URL to the shared carousel', () => {
@@ -63,5 +87,25 @@ describe('SFNext Toolkit product carousel', () => {
     test('drops unsafe view-all URLs', () => {
         render(<SFNextToolkitProductCarousel shopAllUrl="javascript:alert(1)" />);
         expect(screen.getByTestId('product-carousel')).not.toHaveAttribute('data-url');
+    });
+
+    test('prefers category data in auto mode and forwards the shared product-card presentation', () => {
+        render(
+            <SFNextToolkitProductCarousel
+                sourceMode="auto"
+                categoryId="girls"
+                imageViewType="hi-res"
+                showPrice={false}
+            />
+        );
+
+        expect(screen.getByTestId('product-carousel')).toHaveAttribute('data-prefer-loaded-products', 'true');
+        expect(screen.getByTestId('product-carousel')).toHaveAttribute('data-image-view-type', 'hi-res');
+        expect(screen.getByTestId('product-carousel')).toHaveAttribute('data-show-price', 'false');
+    });
+
+    test('keeps the authored region active in explicit manual mode', () => {
+        render(<SFNextToolkitProductCarousel sourceMode="manual" categoryId="girls" />);
+        expect(screen.getByTestId('product-carousel')).toHaveAttribute('data-prefer-loaded-products', 'false');
     });
 });

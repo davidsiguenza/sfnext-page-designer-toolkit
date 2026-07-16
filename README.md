@@ -2,14 +2,14 @@
 
 A reusable Page Designer component and template library for Salesforce B2C Commerce Storefront Next, distributed as a clean fork of the official Storefront Next template.
 
-The toolkit adds merchant-configurable PLP, PDP, blank, blog-home, and blog-post page types together with reusable editorial, promotional, trust, FAQ, category, product-list, video, and blog components. It contains no brand assets, catalog IDs, credentials, or site-specific configuration.
+The toolkit adds merchant-configurable PLP, PDP, blank, blog-home, and blog-post page types together with reusable editorial, promotional, trust, FAQ, category, product, video, and Content Asset components. It contains no brand assets, catalog IDs, credentials, or site-specific configuration.
 
 Start with the [complete cartridge and authoring guide](./cartridges/plugin_sfnext_page_designer/README.md), which documents every component, its use case, installation, Business Manager setup, deployment, accessibility guidance, and troubleshooting.
 
 ## Toolkit at a glance
 
 - Page types: blank landing page, product listing page, product detail page, blog home, and shared blog-post layout.
-- Components: 20 reusable blocks, including Campaign Hero, Embedded Video, editorial layouts, category/product experiences, and the Content Asset-backed Blog Post Grid.
+- Components: 22 reusable blocks, including Campaign Hero, Embedded Video, editorial layouts, a responsive single Product Card, curated or category-driven Product Carousel, configurable PLP grid, Blog Post Grid, and the generic Content Collection.
 - Delivery: `plugin_sfnext_page_designer` for B2C metadata plus the matching React implementation for Managed Runtime.
 - Safety: namespaced type IDs, restricted nested regions, safe merchant links, semantic design tokens, and accessible defaults.
 
@@ -99,6 +99,16 @@ PUBLIC__app__site__currency=EUR   →  config.app.site.currency
 Values are automatically parsed (numbers, booleans, JSON arrays/objects).
 
 See [Configuration Guide](./docs/README-CONFIG.md) for complete documentation.
+
+Content Asset-backed components also require the Storefront Next SLAS client to include the `sfcc.shopper-experience.contents` scope. Content must be online and localized for the requested locale; folder-backed modes additionally require the configured folder assignment and an up-to-date site content search index. See the [complete cartridge and authoring guide](./cartridges/plugin_sfnext_page_designer/README.md#install-in-another-storefront-next-project) for the reusable installation sequence.
+
+## Data-driven Page Designer components
+
+- **Product Card** lets a merchant search for one catalog product, choose `hi-res`, `large`, `medium`, `small`, or `swatch` imagery, control the visible commerce fields and custom attributes, and use an automatic container-responsive layout.
+- **Product Carousel** accepts manually ordered Product Cards/Product Tiles or loads up to 12 products from a category. Category mode supports catalog order, a stable daily random selection, or a new random selection on each server loader execution.
+- **Content Collection** displays manually ordered Content Asset IDs or the latest _N_ online assets from a folder, filtered as blog, generic, or all content. Cards can render as a responsive grid or carousel and can map custom Content attribute IDs to title, summary, image, date, author, category, and destination.
+
+Page Designer does not provide a native B2C Content Asset search attribute. Manual Content Collection authoring therefore uses Content Asset IDs, one per line or comma-separated; folder-backed mode avoids maintaining that list.
 
 ## Deployment
 

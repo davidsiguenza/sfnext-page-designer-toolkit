@@ -1,0 +1,253 @@
+{
+    "name": "Content Collection",
+    "description": "Responsive grid or carousel of manually selected Content Assets, or the latest content from a library folder.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "contentCollection",
+            "name": "Content Collection",
+            "description": "Responsive grid or carousel of manually selected Content Assets, or the latest content from a library folder.",
+            "attribute_definitions": [
+                {
+                    "id": "sourceMode",
+                    "name": "Content source",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Choose manual IDs or automatically load the latest online assets from a folder.",
+                    "values": ["manual", "latest"],
+                    "default_value": "latest"
+                },
+                {
+                    "id": "selectedContentIds",
+                    "name": "Selected Content Asset IDs",
+                    "type": "text",
+                    "required": false,
+                    "description": "Manual mode only. Enter one ID per line or separate IDs with commas; authored order is preserved."
+                },
+                {
+                    "id": "folderId",
+                    "name": "Content folder ID",
+                    "type": "string",
+                    "required": false,
+                    "description": "Latest mode only. The online Content Library folder searched by Shopper Experience.",
+                    "default_value": "sfnext-blog"
+                },
+                {
+                    "id": "limit",
+                    "name": "Maximum items",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Between 1 and 24. Manual mode uses the first IDs in authored order.",
+                    "default_value": 6
+                },
+                {
+                    "id": "contentType",
+                    "name": "Content kind",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Show all assets, explicit SFNext blog posts, or non-blog Content Assets.",
+                    "values": ["all", "blog", "generic"],
+                    "default_value": "all"
+                },
+                {
+                    "id": "sort",
+                    "name": "Latest-mode sort",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Manual selections always keep their authored order.",
+                    "values": ["newest", "oldest", "title"],
+                    "default_value": "newest"
+                },
+                {
+                    "id": "layout",
+                    "name": "Layout",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Render the selected assets as a responsive grid or a horizontally scrollable carousel.",
+                    "values": ["grid", "carousel"],
+                    "default_value": "carousel"
+                },
+                {
+                    "id": "columns",
+                    "name": "Maximum cards per row",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Cards adapt to the component container, including when placed inside toolkit columns.",
+                    "values": ["2", "3", "4"],
+                    "default_value": "3"
+                },
+                {
+                    "id": "imageRatio",
+                    "name": "Card image ratio",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Aspect ratio used by every card image in the collection.",
+                    "values": ["landscape", "wide", "square", "portrait"],
+                    "default_value": "landscape"
+                },
+                {
+                    "id": "tone",
+                    "name": "Surface",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Semantic background surface applied to the collection.",
+                    "values": ["default", "muted"],
+                    "default_value": "default"
+                },
+                {
+                    "id": "heading",
+                    "name": "Heading",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional section heading displayed above the cards.",
+                    "default_value": "Featured content"
+                },
+                {
+                    "id": "intro",
+                    "name": "Introduction",
+                    "type": "text",
+                    "required": false,
+                    "description": "Optional supporting text displayed below the heading."
+                },
+                {
+                    "id": "showImage",
+                    "name": "Show image",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show the mapped content image, or a neutral placeholder when an asset has no image.",
+                    "default_value": true
+                },
+                {
+                    "id": "showExcerpt",
+                    "name": "Show summary",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show the mapped summary as plain card text.",
+                    "default_value": true
+                },
+                {
+                    "id": "showCategory",
+                    "name": "Show category",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show the mapped editorial category when available.",
+                    "default_value": true
+                },
+                {
+                    "id": "showAuthor",
+                    "name": "Show author",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show the mapped author when available.",
+                    "default_value": true
+                },
+                {
+                    "id": "showDate",
+                    "name": "Show publication date",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show the localized publication date when available.",
+                    "default_value": true
+                },
+                {
+                    "id": "showReadTime",
+                    "name": "Show reading time",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show the configured or calculated reading time for blog assets.",
+                    "default_value": true
+                },
+                {
+                    "id": "ctaLabel",
+                    "name": "Card link label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Accessible call-to-action label used by linked cards.",
+                    "default_value": "View content"
+                },
+                {
+                    "id": "linkMode",
+                    "name": "Link behavior",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Auto links blog assets to /blog/{id} and uses a configured URL field for generic content. Template substitutes {id}.",
+                    "values": ["auto", "blog", "template", "none"],
+                    "default_value": "auto"
+                },
+                {
+                    "id": "linkTemplate",
+                    "name": "Link template",
+                    "type": "string",
+                    "required": false,
+                    "description": "Template mode only. Example: /stories/{id}. The {id} value is URL encoded."
+                },
+                {
+                    "id": "emptyMessage",
+                    "name": "Empty message",
+                    "type": "string",
+                    "required": false,
+                    "description": "Message shown on the live storefront when a configured collection has no matching assets.",
+                    "default_value": "No content is available."
+                },
+                {
+                    "id": "titleAttribute",
+                    "name": "Title attribute override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional Content attribute ID. The c_ prefix can be omitted."
+                },
+                {
+                    "id": "excerptAttribute",
+                    "name": "Summary attribute override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional Content attribute ID. Markup is converted to plain card text."
+                },
+                {
+                    "id": "imageAttribute",
+                    "name": "Image attribute override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional Content image attribute ID. Unsafe media protocols are rejected."
+                },
+                {
+                    "id": "imageAltAttribute",
+                    "name": "Image alt attribute override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional Content attribute ID containing meaningful alternative text for the image."
+                },
+                {
+                    "id": "dateAttribute",
+                    "name": "Publication date attribute override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional Content attribute ID containing an ISO-compatible publication date."
+                },
+                {
+                    "id": "authorAttribute",
+                    "name": "Author attribute override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional Content attribute ID containing the author name."
+                },
+                {
+                    "id": "categoryAttribute",
+                    "name": "Category attribute override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional Content attribute ID containing the editorial category label."
+                },
+                {
+                    "id": "linkAttribute",
+                    "name": "Link attribute override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional Content URL attribute used by automatic linking for generic assets."
+                }
+            ]
+        }
+    ]
+}

@@ -1,6 +1,6 @@
 {
-    "name": "Featured Product Carousel",
-    "description": "A polished, responsive product carousel populated from a category or with manually selected Product Tiles.",
+    "name": "Product Carousel",
+    "description": "A responsive carousel of manually selected products or N catalog-order, daily-random, or request-random products from a category.",
     "group": "SFNextToolkit",
     "arch_type": "headless",
     "region_definitions": [
@@ -10,6 +10,9 @@
             "component_type_inclusions": [
                 {
                     "type_id": "Content.productTile"
+                },
+                {
+                    "type_id": "SFNextToolkit.productCard"
                 }
             ],
             "max_components": 12
@@ -18,8 +21,8 @@
     "attribute_definition_groups": [
         {
             "id": "productCarousel",
-            "name": "Featured Product Carousel",
-            "description": "A polished, responsive product carousel populated from a category or with manually selected Product Tiles.",
+            "name": "Product Carousel",
+            "description": "A responsive carousel of manually selected products or N catalog-order, daily-random, or request-random products from a category.",
             "attribute_definitions": [
                 {
                     "id": "title",
@@ -37,6 +40,15 @@
                     "description": "Optional short line shown below the heading."
                 },
                 {
+                    "id": "sourceMode",
+                    "name": "Product source",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Auto uses the selected category when present and otherwise uses manually added product cards.",
+                    "values": ["auto", "manual", "category"],
+                    "default_value": "auto"
+                },
+                {
                     "id": "categoryId",
                     "name": "Category",
                     "type": "category",
@@ -45,11 +57,133 @@
                 },
                 {
                     "id": "limit",
-                    "name": "Maximum products",
+                    "name": "Number of products",
                     "type": "integer",
                     "required": false,
-                    "description": "Maximum number of category products loaded into the carousel.",
+                    "description": "Number of category products shown in the carousel (between 1 and 12).",
                     "default_value": 12
+                },
+                {
+                    "id": "selectionStrategy",
+                    "name": "Category selection",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Keep catalog order, randomize on every server load, or use a stable selection that changes daily.",
+                    "values": ["catalog-order", "random-per-request", "random-daily"],
+                    "default_value": "catalog-order"
+                },
+                {
+                    "id": "imageViewType",
+                    "name": "Catalog image type",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Catalog view type used by category-loaded product cards.",
+                    "values": ["hi-res", "large", "medium", "small", "swatch"],
+                    "default_value": "medium"
+                },
+                {
+                    "id": "showBadges",
+                    "name": "Show badges",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show product badges such as new or sale on category-loaded cards.",
+                    "default_value": true
+                },
+                {
+                    "id": "showWishlist",
+                    "name": "Show wishlist action",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show the wishlist action on category-loaded cards.",
+                    "default_value": true
+                },
+                {
+                    "id": "showQuickAdd",
+                    "name": "Show quick add",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show the quick-add action on category-loaded cards.",
+                    "default_value": true
+                },
+                {
+                    "id": "showSwatches",
+                    "name": "Show color swatches",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show color swatches and request swatch imagery for category-loaded products.",
+                    "default_value": true
+                },
+                {
+                    "id": "showBrand",
+                    "name": "Show brand",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show the product brand on category-loaded cards.",
+                    "default_value": true
+                },
+                {
+                    "id": "showCategory",
+                    "name": "Show category",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show the product category when returned by Product Search.",
+                    "default_value": true
+                },
+                {
+                    "id": "showProductName",
+                    "name": "Show product name",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show the product name and PDP link.",
+                    "default_value": true
+                },
+                {
+                    "id": "showSku",
+                    "name": "Show SKU",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show the product identifier.",
+                    "default_value": true
+                },
+                {
+                    "id": "showRating",
+                    "name": "Show rating",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show the rating surface supplied by the host storefront.",
+                    "default_value": true
+                },
+                {
+                    "id": "showPrice",
+                    "name": "Show price",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show current and previous prices when available.",
+                    "default_value": true
+                },
+                {
+                    "id": "showPromotions",
+                    "name": "Show promotions",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Show promotional messages associated with the product price.",
+                    "default_value": true
+                },
+                {
+                    "id": "maxSwatches",
+                    "name": "Maximum swatches",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Maximum visible color swatches per category-loaded product (between 1 and 12).",
+                    "default_value": 3
+                },
+                {
+                    "id": "additionalAttributes",
+                    "name": "Additional attributes",
+                    "type": "text",
+                    "required": false,
+                    "description": "Up to 5 custom attributes separated by lines or commas. Use material|Material or season=Season.",
+                    "default_value": ""
                 },
                 {
                     "id": "shopAllText",
