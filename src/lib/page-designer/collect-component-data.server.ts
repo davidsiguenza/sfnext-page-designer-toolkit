@@ -15,12 +15,13 @@
  */
 import type { LoaderFunctionArgs } from 'react-router';
 import type { ShopperExperience } from '@/scapi';
-import { registry } from '@/lib/page-designer/registry';
+import { registry } from '@/lib/page-designer/initialized-registry';
+import { initializeRegistry } from '@/lib/page-designer/static-registry';
 
 /**
- * Recursively collect component data promises from regions
+ * Recursively collect component data promises from regions.
  */
-export function collectFromRegions(
+function collectFromRegionsInternal(
     ctx: LoaderFunctionArgs,
     regions: ShopperExperience.schemas['Region'][] | undefined,
     map: Record<string, Promise<unknown>>
@@ -46,8 +47,22 @@ export function collectFromRegions(
 
             // Recursively process nested regions (components can have their own regions)
             if (comp.regions && comp.regions.length > 0) {
-                collectFromRegions(ctx, comp.regions, map);
+                collectFromRegionsInternal(ctx, comp.regions, map);
             }
         }
     }
+}
+
+/**
+ * Collects loader promises using a registry refreshed at the request boundary.
+ * Registration is synchronous and idempotent, which protects serverless workers
+ * whose module state can be isolated or reset between bootstrap and route loading.
+ */
+export function collectFromRegions(
+    ctx: LoaderFunctionArgs,
+    regions: ShopperExperience.schemas['Region'][] | undefined,
+    map: Record<string, Promise<unknown>>
+): void {
+    initializeRegistry(registry);
+    collectFromRegionsInternal(ctx, regions, map);
 }

@@ -102,7 +102,7 @@ import { useExecutePendingAction } from '@/hooks/use-execute-pending-action';
 import type { PublicSessionData } from '@/lib/api/types';
 import { getTranslation } from '@salesforce/storefront-next-runtime/i18n';
 import { PageViewTracker } from '@/analytics/page-view-tracker';
-import { initializeRegistry } from '@/lib/page-designer/static-registry';
+import '@/lib/page-designer/initialized-registry';
 import { buildSeoMetaDescriptors } from '@/utils/seo';
 
 // Assets
@@ -660,9 +660,6 @@ export default function App({
     // - These values are serialized directly from the server loader
     // - No client middleware or bootstrap needed - server is the single source of truth
     // - Tokens (accessToken, refreshToken) stay server-side only
-
-    // Initialize Page Designer components
-    initializeRegistry();
 
     const i18next = (typeof window === 'undefined' ? getI18next?.() : i18nextOnClient) as i18n;
 

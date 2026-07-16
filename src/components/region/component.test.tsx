@@ -32,6 +32,7 @@ vi.mock('@/lib/logger', () => ({
 // Mock registry
 vi.mock('@/lib/page-designer/registry', () => ({
     registry: {
+        registerImporter: vi.fn(),
         getFallback: vi.fn(),
         getComponent: vi.fn(),
         preload: vi.fn(),

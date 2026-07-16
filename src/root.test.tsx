@@ -19,6 +19,7 @@ import { createTestContext } from '@/lib/test-utils';
 import { type PropsWithChildren } from 'react';
 import { createRoutesStub, RouterContextProvider } from 'react-router';
 import type { PublicSessionData } from '@/lib/api/types';
+import { registry } from '@/lib/page-designer/registry';
 import type AppComponent from './root';
 import type { ErrorBoundary as RootErrorBoundary, Layout as RootLayout, loader as RootLoader } from './root';
 
@@ -227,6 +228,10 @@ describe('root.tsx', () => {
 
     afterEach(() => {
         vi.restoreAllMocks();
+    });
+
+    it('registers Page Designer component loaders before the first render', () => {
+        expect(registry.hasLoaders('SFNextToolkit.blogPostGrid')).toBe(true);
     });
 
     describe('Layout Component', () => {

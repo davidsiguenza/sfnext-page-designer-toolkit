@@ -15,7 +15,7 @@
  */
 import type { LoaderFunctionArgs } from 'react-router';
 import type { ShopperExperience } from '@/scapi';
-import { registry } from '@/lib/page-designer/registry';
+import { registry } from '@/lib/page-designer/initialized-registry';
 import { PREVIEW_PAGE_ID, PREVIEW_REGION_ID } from './preview-page';
 import type { PageWithComponentData } from './page-loader.server';
 import type { ComponentWithComponentData } from './component-loader.server';

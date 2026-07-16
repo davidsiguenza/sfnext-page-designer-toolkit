@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { type ReactElement, memo, Suspense, useEffect } from 'react';
-import { registry } from '@/lib/page-designer/registry';
+import { registry } from '@/lib/page-designer/initialized-registry';
 import { Await, useAsyncError } from 'react-router';
 import { createLogger } from '@/lib/logger';
 

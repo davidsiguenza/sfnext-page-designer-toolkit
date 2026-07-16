@@ -32,6 +32,7 @@ vi.mock('@salesforce/storefront-next-runtime/design/mode', () => ({
 
 vi.mock('@/lib/page-designer/registry', () => ({
     registry: {
+        registerImporter: vi.fn(),
         callLoader: vi.fn(),
         hasLoaders: vi.fn(),
     },

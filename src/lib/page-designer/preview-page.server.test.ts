@@ -21,6 +21,7 @@ import { PREVIEW_REGION_ID, resolvePreviewPageId, injectIntoPreviewRegion } from
 
 vi.mock('@/lib/page-designer/registry', () => ({
     registry: {
+        registerImporter: vi.fn(),
         callLoader: vi.fn(),
         hasLoaders: vi.fn(),
     },

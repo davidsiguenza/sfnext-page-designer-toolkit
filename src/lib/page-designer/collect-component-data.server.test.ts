@@ -21,6 +21,7 @@ import { registry } from '@/lib/page-designer/registry';
 
 vi.mock('@/lib/page-designer/registry', () => ({
     registry: {
+        registerImporter: vi.fn(),
         callLoader: vi.fn(),
         hasLoaders: vi.fn(),
     },
@@ -105,6 +106,11 @@ describe('collectFromRegions', () => {
         collectFromRegions(createCtx(), regions, map);
 
         expect(Object.keys(map)).toEqual(['hero-1', 'footer-1']);
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        expect(mockedRegistry.registerImporter).toHaveBeenCalled();
+        expect(mockedRegistry.registerImporter.mock.invocationCallOrder[0]).toBeLessThan(
+            mockedRegistry.hasLoaders.mock.invocationCallOrder[0]
+        );
     });
 
     test('skips components that do not have a loader', () => {
