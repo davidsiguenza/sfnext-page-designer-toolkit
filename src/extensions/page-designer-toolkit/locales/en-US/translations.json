@@ -1,0 +1,23 @@
+{
+    "blog": {
+        "breadcrumbLabel": "Breadcrumb",
+        "home": "Home",
+        "title": "Blog",
+        "by": "By",
+        "readingTime_one": "{{count}} min read",
+        "readingTime_other": "{{count}} min read",
+        "readingTimeTemplate": "{minutes} min read",
+        "emptyBody": "Add the article body to the selected Content Asset.",
+        "tags": "Article tags",
+        "paginationLabel": "Blog pagination",
+        "previousPage": "Previous page",
+        "nextPage": "Next page",
+        "readArticle": "Read article",
+        "emptyGrid": "No articles have been published yet.",
+        "connectFolder": "Connect the blog content folder",
+        "connectFolderHelp": "Publish Content Assets in the configured folder and verify the Shopper Experience contents scope.",
+        "errorAuthoring": "The blog content could not be loaded",
+        "errorAuthoringHelp": "Verify the Shopper Experience contents scope, folder ID, and content search index.",
+        "errorLive": "Articles are temporarily unavailable."
+    }
+}

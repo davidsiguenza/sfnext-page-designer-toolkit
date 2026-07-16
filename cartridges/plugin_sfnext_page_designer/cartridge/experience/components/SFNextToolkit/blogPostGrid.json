@@ -1,0 +1,161 @@
+{
+    "name": "Blog Post Grid",
+    "description": "Automatically lists localized, online Content Assets from a blog folder with editorial filters, cards, and pagination.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "blogPostGrid",
+            "name": "Blog Post Grid",
+            "description": "Automatically lists localized, online Content Assets from a blog folder with editorial filters, cards, and pagination.",
+            "attribute_definitions": [
+                {
+                    "id": "folderId",
+                    "name": "Blog folder ID",
+                    "type": "string",
+                    "required": true,
+                    "description": "Content Library folder searched by Shopper Experience, for example sfnext-blog.",
+                    "default_value": "sfnext-blog"
+                },
+                {
+                    "id": "heading",
+                    "name": "Heading",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: heading",
+                    "default_value": "Latest stories"
+                },
+                {
+                    "id": "intro",
+                    "name": "Introduction",
+                    "type": "text",
+                    "required": false,
+                    "description": "Field: intro"
+                },
+                {
+                    "id": "pageSize",
+                    "name": "Posts per page",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Between 1 and 24.",
+                    "default_value": 12
+                },
+                {
+                    "id": "columns",
+                    "name": "Desktop columns",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: columns",
+                    "values": ["2", "3", "4"],
+                    "default_value": "3"
+                },
+                {
+                    "id": "imageRatio",
+                    "name": "Card image ratio",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: imageRatio",
+                    "values": ["landscape", "wide", "square", "portrait"],
+                    "default_value": "landscape"
+                },
+                {
+                    "id": "sort",
+                    "name": "Sort order",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: sort",
+                    "values": ["newest", "oldest", "title"],
+                    "default_value": "newest"
+                },
+                {
+                    "id": "featuredOnly",
+                    "name": "Featured posts only",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: featuredOnly",
+                    "default_value": false
+                },
+                {
+                    "id": "category",
+                    "name": "Category filter",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional exact category value, case-insensitive."
+                },
+                {
+                    "id": "showExcerpt",
+                    "name": "Show excerpt",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showExcerpt",
+                    "default_value": true
+                },
+                {
+                    "id": "showCategory",
+                    "name": "Show category",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showCategory",
+                    "default_value": true
+                },
+                {
+                    "id": "showAuthor",
+                    "name": "Show author",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showAuthor",
+                    "default_value": true
+                },
+                {
+                    "id": "showDate",
+                    "name": "Show publication date",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showDate",
+                    "default_value": true
+                },
+                {
+                    "id": "showReadTime",
+                    "name": "Show reading time",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showReadTime",
+                    "default_value": true
+                },
+                {
+                    "id": "showPagination",
+                    "name": "Show pagination",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showPagination",
+                    "default_value": true
+                },
+                {
+                    "id": "ctaLabel",
+                    "name": "Card link label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: ctaLabel",
+                    "default_value": "Read article"
+                },
+                {
+                    "id": "readTimeTemplate",
+                    "name": "Reading time format",
+                    "type": "string",
+                    "required": false,
+                    "description": "Use {minutes} where the number should appear.",
+                    "default_value": "{minutes} min read"
+                },
+                {
+                    "id": "emptyMessage",
+                    "name": "Empty message",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: emptyMessage",
+                    "default_value": "No articles have been published yet."
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,45 @@
+{
+    "name": "SFNext Toolkit - Blog Home",
+    "description": "Storefront Next editorial landing page with dedicated hero, featured stories, article listing, and closing content regions.",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "hero",
+            "name": "Blog Hero",
+            "component_type_inclusions": [
+                { "type_id": "SFNextToolkit.heroBanner" },
+                { "type_id": "SFNextToolkit.mediaContent" },
+                { "type_id": "SFNextToolkit.richText" }
+            ],
+            "max_components": 1
+        },
+        {
+            "id": "featured",
+            "name": "Featured Stories",
+            "component_type_inclusions": [{ "type_id": "SFNextToolkit.blogPostGrid" }],
+            "max_components": 1
+        },
+        {
+            "id": "posts",
+            "name": "Blog Posts",
+            "component_type_inclusions": [{ "type_id": "SFNextToolkit.blogPostGrid" }],
+            "max_components": 1
+        },
+        {
+            "id": "afterPosts",
+            "name": "After Blog Posts",
+            "component_type_exclusions": [
+                { "type_id": "SFNextToolkit.accordionItem" },
+                { "type_id": "SFNextToolkit.blogPostGrid" },
+                { "type_id": "SFNextToolkit.categoryCard" },
+                { "type_id": "SFNextToolkit.categoryHero" },
+                { "type_id": "SFNextToolkit.productList" },
+                { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.trustItem" }
+            ],
+            "max_components": 5
+        }
+    ],
+    "supported_aspect_types": [],
+    "route": "/:siteId/:localeId/blog"
+}

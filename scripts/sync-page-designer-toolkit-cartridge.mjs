@@ -18,6 +18,7 @@ const componentGroup = 'SFNextToolkit';
 const requiredToolkitComponentTypes = [
     'accordion',
     'accordionItem',
+    'blogPostGrid',
     'categoryCard',
     'categoryCarousel',
     'categoryHero',

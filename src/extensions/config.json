@@ -53,7 +53,7 @@
         },
         "SFDC_EXT_PAGE_DESIGNER_TOOLKIT": {
             "name": "Page Designer Toolkit",
-            "description": "Reusable Storefront Next PLP, PDP, and blank Page Designer templates plus merchant-configurable content and commerce components.",
+            "description": "Reusable Storefront Next PLP, PDP, blank, and blog Page Designer templates plus a merchant-configurable component library.",
             "folder": "page-designer-toolkit",
             "defaultOn": true,
             "dependencies": []

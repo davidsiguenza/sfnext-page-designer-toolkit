@@ -1,6 +1,6 @@
 # Storefront Next Page Designer Toolkit
 
-`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides 3 merchant-facing page types and 19 component types without brand assets, catalog IDs, credentials, or site-specific configuration.
+`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides 5 merchant-facing page types and 20 component types without brand assets, catalog IDs, credentials, or site-specific configuration.
 
 The toolkit has two required parts:
 
@@ -18,6 +18,8 @@ A B2C cartridge cannot execute React by itself. Install and deploy both parts to
 | `page.sfnextToolkitBlankPage`          | Build campaign and editorial landing pages from a flexible blank canvas.                    | `/:siteId/:localeId/page/:pageId`                     |
 | `page.sfnextToolkitProductListingPage` | Add managed content around the standard category experience and configure the product grid. | PLP aspect, `/:siteId/:localeId/category/:categoryId` |
 | `page.sfnextToolkitProductDetailPage`  | Add promotional and engagement content before and after the standard product experience.    | PDP aspect, `/:siteId/:localeId/product/:productId`   |
+| `page.sfnextToolkitBlogHomePage`       | Compose an editorial blog landing page around an automatically populated post grid.         | `/:siteId/:localeId/blog`                             |
+| `page.sfnextToolkitBlogPostPage`       | Define the reusable before/after-article layout shared by every blog post.                  | `/:siteId/:localeId/blog/preview`                     |
 
 The PLP and PDP page types use the standard `plp` and `pdp` aspect definitions from `app_storefrontnext_base` instead of duplicating them.
 
@@ -44,6 +46,7 @@ The PLP and PDP page types use the standard `plp` and `pdp` aspect definitions f
 | `component.SFNextToolkit.accordionItem`          | One accessible disclosure inside an Accordion.                                                       | None                     |
 | `component.SFNextToolkit.categoryHero`           | A PLP hero that defaults to the current category and supports editorial overrides.                   | Current category route   |
 | `component.SFNextToolkit.productList`            | PLP image view type, product fields, swatches, actions, and custom catalog attributes.               | PLP search runtime       |
+| `component.SFNextToolkit.blogPostGrid`           | Search, filter, sort, and paginate localized blog Content Assets in editorial cards.                 | Shopper Experience API   |
 
 Four component types are contextual building blocks rather than root-page blocks: `accordionItem`, `categoryCard`, `promoCard`, and `trustItem`. They appear only inside their compatible parent regions. This keeps the Page Designer palette useful instead of exposing invalid loose fragments.
 
@@ -135,6 +138,28 @@ Place exactly one Product List in the PLP template's `plpProductList` region. Me
 
 `additionalAttributes` accepts up to five custom product attributes separated by commas or lines. Labels can be supplied with `material|Material` or `season=Season`; the `c_` prefix is optional.
 
+### Blog Post Grid
+
+Blog Post Grid turns the online Content Assets assigned to a configured content folder into responsive article cards. Merchants can select the folder, page size, sort order, category or featured-only filter, column count, image ratio, visible metadata, CTA copy, and pagination. The component reads content through Shopper Experience on the server; it does not expose credentials or call SCAPI from the browser.
+
+The default folder ID is `sfnext-blog`. A host project can use a different folder without changing code. The SLAS client must include the `sfcc.shopper-experience.contents` scope, and posts must be online and assigned to the selected folder before content search can return them.
+
+## Blog editorial model
+
+Blog posts are B2C Commerce **Content Assets**, not Custom Objects and not one-off Page Designer pages. This preserves Business Manager's localized rich-content editor, online/offline scheduling, folder assignment, search indexing, and SEO fields while Page Designer remains responsible for the reusable visual layout.
+
+The article body is merchant-authored HTML and follows the storefront's existing trusted Business Manager content boundary. Restrict HTML editing to trusted roles; add an allowlist sanitizer in the host application if less-trusted contributors can author raw markup.
+
+After importing the included metadata extension, editors create a post in **Merchant Tools > Content > Libraries > _your content library_ > Content Assets**. Use the Content Asset ID as the URL slug and complete the standard name, description and page metadata together with the **SFNext Blog** attributes:
+
+- body, hero image and alternative text;
+- author, publication date, category and tags;
+- reading time and featured status.
+
+Assign the asset to the `sfnext-blog` folder and set it online. The public route is `/blog/{content-asset-id}`. The `/blog` Page Designer page lists posts automatically; the fixed `blog-post-layout` Page Designer page supplies optional regions before and after the article shared by every post. The Blog Post page type also exposes `/blog/preview` so authors can verify the common layout in Business Manager without inventing a real article URL.
+
+The metadata-only import package at `site-imports/sfnext-toolkit-blog` contains the reusable Content system-object attributes. It deliberately excludes site libraries, Page Designer page instances, article copy, images, and locale preferences. Follow its README to create the folder and starter pages in the target site, then rebuild the content search index.
+
 ## Build and validate
 
 From the Storefront Next application root:
@@ -145,7 +170,7 @@ pnpm cartridge:validate
 pnpm build
 ```
 
-`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest. Validation also enforces the complete 19-type public contract and rejects unresolved TypeScript expressions or enum defaults that are not present in their value lists.
+`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest. Validation also enforces the complete 20-type public contract and rejects unresolved TypeScript expressions or enum defaults that are not present in their value lists.
 
 `cartridge:validate` validates both the standard Storefront Next metadata and every file in this cartridge with the B2C tooling schema validator.
 
@@ -171,7 +196,7 @@ The MRT environment must be linked to the same B2C Commerce instance and site so
 
 1. Open **Merchant Tools > Content > Page Designer** for the target site.
 2. Create a page and choose one of the `SFNext Toolkit` page types, or open a PLP/PDP assignment using the matching aspect.
-3. Drag components from the `SFNextToolkit` group into compatible regions. Root regions expose 15 complete blocks; the 4 contextual child types appear only inside their matching parents.
+3. Drag components from the `SFNextToolkit` group into compatible regions. Root regions expose 16 complete blocks; the 4 contextual child types appear only inside their matching parents.
 4. Configure the component attributes and save.
 5. Use Preview to verify desktop and mobile behavior.
 6. Publish the page or assignment when it is ready.
@@ -202,6 +227,19 @@ Page Designer changes must be saved before the Storefront Next preview iframe re
 1. Promo Strip, Trust Bar, or Media + Content in `promoContent`
 2. Embedded Video, Einstein Product Recommendations, Media + Content, or Accordion in `engagementContent`
 
+### Blog home
+
+1. Campaign Hero or Rich Text in `hero`
+2. Optional featured-only Blog Post Grid in `featured`
+3. Main Blog Post Grid in `posts`
+4. Newsletter, Promo Strip, Trust Bar, or campaign CTA in `afterPosts`
+
+### Blog post
+
+1. Optional Promo Strip or breadcrumb treatment in `beforeArticle`
+2. The route-owned article header, hero, metadata, rich body, and structured data
+3. Product Carousel, Blog Post Grid, newsletter CTA, or related editorial content in `afterArticle`
+
 ## Install in another Storefront Next project
 
 Copy or merge these paths:
@@ -219,9 +257,11 @@ Then:
 2. Add the `cartridge:generate`, `cartridge:validate`, and `cartridge:deploy:page-designer` scripts from this project to `package.json`.
 3. Carry over the configurable PLP runtime in `src/components/product-list` and its category-route integration if the target Storefront Next version does not already include equivalent support.
 4. Extend the host CSP `frame-src` and `media-src` directives with the approved video origins described under Embedded Video.
-5. Generate, validate, and deploy the cartridge.
-6. Build and deploy the MRT application.
-7. Add the cartridge to the target site's cartridge path.
+5. Import the blog Content metadata and create the `sfnext-blog` folder if the blog templates are required.
+6. Grant the SLAS client `sfcc.shopper-experience.contents` and rebuild the content search index.
+7. Generate, validate, and deploy the cartridge.
+8. Build and deploy the MRT application.
+9. Add the cartridge to the target site's cartridge path.
 
 The toolkit uses standard Storefront Next primitives and semantic theme tokens. It contains no brand-specific assets or IDs.
 
@@ -259,6 +299,14 @@ The toolkit uses standard Storefront Next primitives and semantic theme tokens. 
 - Check required images, links, product or category assignments.
 - For Category Hero, verify that the page is previewed with a category aspect or configure editorial overrides.
 - Check MRT logs for component loader errors.
+
+### Blog posts do not appear
+
+- Confirm that the Content Asset is online, assigned to the exact folder configured on Blog Post Grid, and available in the requested locale.
+- Confirm that the custom Content metadata was imported before creating or importing posts.
+- Confirm that the SLAS client has `sfcc.shopper-experience.contents` and that `/content-search` is allowed by the instance API configuration.
+- Rebuild the content search index after bulk imports or metadata changes.
+- Use the Content Asset ID—not its display name—as the `/blog/{slug}` URL segment.
 
 ### A video is blank or blocked
 

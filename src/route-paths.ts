@@ -116,6 +116,8 @@ export const routes = {
     orderConfirmation: '/order-confirmation/:orderNo',
     search: '/search',
     aboutUs: '/about-us',
+    blog: '/blog',
+    blogPost: '/blog/:postId',
     storeLocator: '/store-locator',
     maintenance: '/maintenance',
     logout: '/logout',

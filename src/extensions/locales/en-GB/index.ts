@@ -21,6 +21,7 @@ import bnplTranslations from '@/extensions/bnpl/locales/en-GB/translations.json'
 import bopisTranslations from '@/extensions/bopis/locales/en-GB/translations.json';
 import customerPreferencesTranslations from '@/extensions/customer-preferences/locales/en-GB/translations.json';
 import multishipTranslations from '@/extensions/multiship/locales/en-GB/translations.json';
+import pageDesignerToolkitTranslations from '@/extensions/page-designer-toolkit/locales/en-GB/translations.json';
 import productContentTranslations from '@/extensions/product-content/locales/en-GB/translations.json';
 import ratingsReviewsTranslations from '@/extensions/ratings-reviews/locales/en-GB/translations.json';
 import storeLocatorTranslations from '@/extensions/store-locator/locales/en-GB/translations.json';
@@ -31,6 +32,7 @@ export default {
     extBopis: bopisTranslations,
     extCustomerPreferences: customerPreferencesTranslations,
     extMultiship: multishipTranslations,
+    extPageDesignerToolkit: pageDesignerToolkitTranslations,
     extProductContent: productContentTranslations,
     extRatingsReviews: ratingsReviewsTranslations,
     extStoreLocator: storeLocatorTranslations,

@@ -2,7 +2,7 @@
 
 This directory contains the Storefront Next side of the reusable Page Designer
 toolkit. It registers the toolkit page types with the application and keeps the
-hand-authored PLP, PDP, and blank-page metadata sources that are copied into
+hand-authored PLP, PDP, blank, blog-home, and blog-post metadata sources that are copied into
 `plugin_sfnext_page_designer` during generation.
 
 The complete merchant and developer guide lives in
@@ -15,6 +15,8 @@ accessibility, troubleshooting, and safe removal.
 
 - `src/components/sfnext-toolkit` owns the decorated React implementations.
 - This extension owns the page-type sources and extension registration.
+- `blog` contains the Content Asset adapter and the shared blog article renderer.
+- `routes/_app.blog*` owns the public blog index, dynamic post, and Page Designer preview routes.
 - `scripts/sync-page-designer-toolkit-cartridge.mjs` discovers the decorated
   components, generates their B2C metadata, and copies the page types.
 - `cartridges/plugin_sfnext_page_designer` is the independently deployable B2C

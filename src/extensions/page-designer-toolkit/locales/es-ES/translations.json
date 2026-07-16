@@ -1,0 +1,23 @@
+{
+    "blog": {
+        "breadcrumbLabel": "Migas de pan",
+        "home": "Inicio",
+        "title": "Blog",
+        "by": "Por",
+        "readingTime_one": "{{count}} min de lectura",
+        "readingTime_other": "{{count}} min de lectura",
+        "readingTimeTemplate": "{minutes} min de lectura",
+        "emptyBody": "Añade el cuerpo del artículo al Content Asset seleccionado.",
+        "tags": "Etiquetas del artículo",
+        "paginationLabel": "Paginación del blog",
+        "previousPage": "Página anterior",
+        "nextPage": "Página siguiente",
+        "readArticle": "Leer artículo",
+        "emptyGrid": "Todavía no hay artículos publicados.",
+        "connectFolder": "Conecta la carpeta de contenidos del blog",
+        "connectFolderHelp": "Publica Content Assets en la carpeta configurada y comprueba el scope de contenidos de Shopper Experience.",
+        "errorAuthoring": "No se ha podido cargar el contenido del blog",
+        "errorAuthoringHelp": "Comprueba el scope de contenidos de Shopper Experience, el ID de carpeta y el índice de búsqueda de contenido.",
+        "errorLive": "Los artículos no están disponibles temporalmente."
+    }
+}

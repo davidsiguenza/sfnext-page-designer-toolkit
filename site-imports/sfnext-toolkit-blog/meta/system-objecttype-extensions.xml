@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+    <type-extension type-id="Content">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="sfnextBlogBody">
+                <display-name xml:lang="x-default">Blog body</display-name>
+                <display-name xml:lang="es-ES">Cuerpo del artículo</display-name>
+                <description xml:lang="x-default">Localized rich-text body rendered on the Storefront Next blog post page.</description>
+                <description xml:lang="es-ES">Contenido HTML localizado que se muestra en la página de detalle del artículo.</description>
+                <type>html</type>
+                <localizable-flag>true</localizable-flag>
+                <visible-flag>true</visible-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="sfnextBlogHeroImage">
+                <display-name xml:lang="x-default">Blog hero image</display-name>
+                <display-name xml:lang="es-ES">Imagen principal</display-name>
+                <description xml:lang="x-default">Localized content-library image used by the article page and listing cards.</description>
+                <description xml:lang="es-ES">Imagen localizada utilizada en el artículo y en las tarjetas del listado.</description>
+                <type>image</type>
+                <localizable-flag>true</localizable-flag>
+                <visible-flag>true</visible-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="sfnextBlogHeroAlt">
+                <display-name xml:lang="x-default">Blog hero alternative text</display-name>
+                <display-name xml:lang="es-ES">Texto alternativo de la imagen</display-name>
+                <description xml:lang="x-default">Localized accessible description of the article hero image.</description>
+                <description xml:lang="es-ES">Descripción accesible y localizada de la imagen principal.</description>
+                <type>string</type>
+                <localizable-flag>true</localizable-flag>
+                <visible-flag>true</visible-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="sfnextBlogAuthor">
+                <display-name xml:lang="x-default">Blog author</display-name>
+                <display-name xml:lang="es-ES">Autor</display-name>
+                <description xml:lang="x-default">Editorial byline shown on the article and listing card.</description>
+                <description xml:lang="es-ES">Firma editorial mostrada en el artículo y su tarjeta.</description>
+                <type>string</type>
+                <localizable-flag>false</localizable-flag>
+                <visible-flag>true</visible-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="sfnextBlogPublishedAt">
+                <display-name xml:lang="x-default">Blog publication date</display-name>
+                <display-name xml:lang="es-ES">Fecha de publicación</display-name>
+                <description xml:lang="x-default">Editorial publication date used to label and order posts.</description>
+                <description xml:lang="es-ES">Fecha editorial utilizada para etiquetar y ordenar los artículos.</description>
+                <type>datetime</type>
+                <localizable-flag>false</localizable-flag>
+                <visible-flag>true</visible-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="sfnextBlogCategory">
+                <display-name xml:lang="x-default">Blog category</display-name>
+                <display-name xml:lang="es-ES">Categoría del blog</display-name>
+                <description xml:lang="x-default">Localized editorial category used for labels and filters.</description>
+                <description xml:lang="es-ES">Categoría editorial localizada utilizada en etiquetas y filtros.</description>
+                <type>string</type>
+                <localizable-flag>true</localizable-flag>
+                <visible-flag>true</visible-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="sfnextBlogTags">
+                <display-name xml:lang="x-default">Blog tags</display-name>
+                <display-name xml:lang="es-ES">Etiquetas del blog</display-name>
+                <description xml:lang="x-default">Localized editorial tags for discovery and future filtering.</description>
+                <description xml:lang="es-ES">Etiquetas editoriales localizadas para descubrimiento y futuros filtros.</description>
+                <type>set-of-string</type>
+                <localizable-flag>true</localizable-flag>
+                <visible-flag>true</visible-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="sfnextBlogReadTime">
+                <display-name xml:lang="x-default">Blog reading time</display-name>
+                <display-name xml:lang="es-ES">Minutos de lectura</display-name>
+                <description xml:lang="x-default">Estimated reading time in whole minutes.</description>
+                <description xml:lang="es-ES">Tiempo de lectura estimado en minutos enteros.</description>
+                <type>int</type>
+                <localizable-flag>false</localizable-flag>
+                <visible-flag>true</visible-flag>
+                <min-value>1</min-value>
+                <max-value>120</max-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="sfnextBlogFeatured">
+                <display-name xml:lang="x-default">Featured blog post</display-name>
+                <display-name xml:lang="es-ES">Artículo destacado</display-name>
+                <description xml:lang="x-default">Makes the post eligible for featured-only Page Designer listings.</description>
+                <description xml:lang="es-ES">Permite mostrar el artículo en listados de destacados de Page Designer.</description>
+                <type>boolean</type>
+                <localizable-flag>false</localizable-flag>
+                <visible-flag>true</visible-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="SFNextBlog">
+                <display-name xml:lang="x-default">SFNext Blog</display-name>
+                <display-name xml:lang="es-ES">Blog SFNext</display-name>
+                <description xml:lang="x-default">Editorial fields consumed by the reusable Storefront Next blog experience.</description>
+                <description xml:lang="es-ES">Campos editoriales utilizados por la experiencia de blog reutilizable de Storefront Next.</description>
+                <attribute attribute-id="sfnextBlogBody"/>
+                <attribute attribute-id="sfnextBlogHeroImage"/>
+                <attribute attribute-id="sfnextBlogHeroAlt"/>
+                <attribute attribute-id="sfnextBlogAuthor"/>
+                <attribute attribute-id="sfnextBlogPublishedAt"/>
+                <attribute attribute-id="sfnextBlogCategory"/>
+                <attribute attribute-id="sfnextBlogTags"/>
+                <attribute attribute-id="sfnextBlogReadTime"/>
+                <attribute attribute-id="sfnextBlogFeatured"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+</metadata>

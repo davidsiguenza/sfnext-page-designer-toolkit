@@ -1,0 +1,36 @@
+{
+    "name": "SFNext Toolkit - Blog Post",
+    "description": "Storefront Next blog article layout with managed content regions before and after the Content Asset body.",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "beforeArticle",
+            "name": "Before Article",
+            "component_type_exclusions": [
+                { "type_id": "SFNextToolkit.accordionItem" },
+                { "type_id": "SFNextToolkit.blogPostGrid" },
+                { "type_id": "SFNextToolkit.categoryCard" },
+                { "type_id": "SFNextToolkit.categoryHero" },
+                { "type_id": "SFNextToolkit.productList" },
+                { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.trustItem" }
+            ],
+            "max_components": 3
+        },
+        {
+            "id": "afterArticle",
+            "name": "After Article",
+            "component_type_exclusions": [
+                { "type_id": "SFNextToolkit.accordionItem" },
+                { "type_id": "SFNextToolkit.categoryCard" },
+                { "type_id": "SFNextToolkit.categoryHero" },
+                { "type_id": "SFNextToolkit.productList" },
+                { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.trustItem" }
+            ],
+            "max_components": 5
+        }
+    ],
+    "supported_aspect_types": [],
+    "route": "/:siteId/:localeId/blog/preview"
+}

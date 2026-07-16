@@ -2,14 +2,14 @@
 
 A reusable Page Designer component and template library for Salesforce B2C Commerce Storefront Next, distributed as a clean fork of the official Storefront Next template.
 
-The toolkit adds merchant-configurable PLP, PDP, and blank page types together with reusable editorial, promotional, trust, FAQ, category, and product-list components. It contains no brand assets, catalog IDs, credentials, or site-specific configuration.
+The toolkit adds merchant-configurable PLP, PDP, blank, blog-home, and blog-post page types together with reusable editorial, promotional, trust, FAQ, category, product-list, video, and blog components. It contains no brand assets, catalog IDs, credentials, or site-specific configuration.
 
 Start with the [complete cartridge and authoring guide](./cartridges/plugin_sfnext_page_designer/README.md), which documents every component, its use case, installation, Business Manager setup, deployment, accessibility guidance, and troubleshooting.
 
 ## Toolkit at a glance
 
-- Page types: blank landing page, product listing page, and product detail page.
-- Components: Section, Rich Text, Media Content, Promo Grid/Card, Trust Bar/Item, Accordion/Item, Category Hero, and Configurable Product List.
+- Page types: blank landing page, product listing page, product detail page, blog home, and shared blog-post layout.
+- Components: 20 reusable blocks, including Campaign Hero, Embedded Video, editorial layouts, category/product experiences, and the Content Asset-backed Blog Post Grid.
 - Delivery: `plugin_sfnext_page_designer` for B2C metadata plus the matching React implementation for Managed Runtime.
 - Safety: namespaced type IDs, restricted nested regions, safe merchant links, semantic design tokens, and accessible defaults.
 
