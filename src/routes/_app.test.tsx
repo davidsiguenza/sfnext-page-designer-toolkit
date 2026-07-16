@@ -20,15 +20,18 @@ import { createRoutesStub } from 'react-router';
 import type { ShopperProducts } from '@/scapi';
 import DefaultLayout, { loader, shouldRevalidate } from './_app';
 import { AllProvidersWrapper } from '@/test-utils/context-provider';
+import { fetchComponentWithMegaMenuFeatureData } from '@/components/sfnext-toolkit/mega-menu-feature/loaders';
 
 vi.mock('@/lib/api/categories.server', () => ({
     fetchCategory: vi.fn(),
     fetchCategoriesByIds: vi.fn(),
 }));
 
-vi.mock('@/lib/page-designer/component-loader.server', () => ({
-    fetchComponentWithComponentData: vi.fn(),
+vi.mock('@/components/sfnext-toolkit/mega-menu-feature/loaders', () => ({
+    fetchComponentWithMegaMenuFeatureData: vi.fn(),
 }));
+
+const mockedFetchHeader = vi.mocked(fetchComponentWithMegaMenuFeatureData);
 
 vi.mock('@/components/region/embedded-component-region', () => ({
     EmbeddedComponentRegion: ({ component, regionId }: { component: unknown; regionId: string }) => (
@@ -54,8 +57,20 @@ vi.mock('@/components/footer', () => ({
 }));
 
 vi.mock('@/components/navigation-menu-mega', () => ({
-    default: ({ resolve, defer }: { resolve?: unknown; defer?: unknown }) => (
-        <nav data-testid="navigation-menu-mega" data-has-resolve={!!resolve} data-has-defer={!!defer}>
+    default: ({
+        resolve,
+        defer,
+        megaMenuComponent,
+    }: {
+        resolve?: unknown;
+        defer?: unknown;
+        megaMenuComponent?: unknown;
+    }) => (
+        <nav
+            data-testid="navigation-menu-mega"
+            data-has-resolve={!!resolve}
+            data-has-defer={!!defer}
+            data-has-mega-menu={!!megaMenuComponent}>
             Navigation
         </nav>
     ),
@@ -109,6 +124,7 @@ describe('_app.tsx - Default Layout Route', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        mockedFetchHeader.mockResolvedValue(null);
     });
 
     describe('rendering', () => {
@@ -255,6 +271,7 @@ describe('_app.tsx - Default Layout Route', () => {
         });
 
         it('should pass category data to CategoryNavigationMenuMega', async () => {
+            const megaMenuComponent = Promise.resolve({ id: 'authored-mega-menu-42' });
             const Stub = createRoutesStub([
                 {
                     id: 'root',
@@ -263,6 +280,7 @@ describe('_app.tsx - Default Layout Route', () => {
                     loader: () => ({
                         root: Promise.resolve(mockCategory),
                         subs: Promise.resolve(mockSubCategories),
+                        megaMenuComponent,
                     }),
                     children: [
                         {
@@ -283,6 +301,7 @@ describe('_app.tsx - Default Layout Route', () => {
                 const nav = screen.getByTestId('navigation-menu-mega');
                 expect(nav).toHaveAttribute('data-has-resolve', 'true');
                 expect(nav).toHaveAttribute('data-has-defer', 'true');
+                expect(nav).toHaveAttribute('data-has-mega-menu', 'true');
             });
         });
 
@@ -391,38 +410,56 @@ describe('_app.tsx - Default Layout Route', () => {
             expect(result).toHaveProperty('root');
             expect(result).toHaveProperty('subs');
             expect(result).toHaveProperty('headerComponent');
+            expect(result).toHaveProperty('megaMenuComponent');
 
             const rootCategory = await result.root;
             expect(rootCategory).toEqual(mockRootCategory);
         });
 
-        it('should fetch header embedded component data with componentId="header"', async () => {
+        it('should fetch Header once and derive its authored toolkit mega-menu child with shared component data', async () => {
             const { fetchCategory } = await import('@/lib/api/categories.server');
-            const { fetchComponentWithComponentData } = await import('@/lib/page-designer/component-loader.server');
             const mockFetchCategory = vi.mocked(fetchCategory);
-            const mockFetchComponent = vi.mocked(fetchComponentWithComponentData);
 
             mockFetchCategory.mockResolvedValue({ id: 'root', name: 'Root', categories: [] });
-            mockFetchComponent.mockResolvedValue({ id: 'header-component' } as never);
+            const componentData = { 'feature-1': Promise.resolve({ status: 'ready' }) };
+            const megaMenu = {
+                id: 'authored-mega-menu-42',
+                typeId: 'SFNextToolkit.megaMenu',
+                data: { enabled: true },
+                regions: [{ id: 'panels', components: [] }],
+            };
+            const header = {
+                id: 'header',
+                typeId: 'Layout.header',
+                embedded: true,
+                componentData,
+                regions: [
+                    { id: 'announcement', components: [] },
+                    { id: 'megaMenuEnhancements', components: [megaMenu] },
+                ],
+            };
+            mockedFetchHeader.mockResolvedValue(header as never);
 
             const mockContext = {} as any;
             const request = new Request('https://example.test/');
             const result = loader({ context: mockContext, request } as any);
 
-            expect(mockFetchComponent).toHaveBeenCalledTimes(1);
-            const [args, options] = mockFetchComponent.mock.calls[0];
-            expect(args).toMatchObject({ context: mockContext, request, params: {} });
-            expect(options).toEqual({ componentId: 'header' });
+            expect(mockedFetchHeader).toHaveBeenCalledTimes(1);
+            expect(mockedFetchHeader).toHaveBeenCalledWith(
+                expect.objectContaining({ context: mockContext, request, params: {} }),
+                'header'
+            );
 
             const headerComponent = await result.headerComponent;
-            expect(headerComponent).toEqual({ id: 'header-component' });
+            expect(headerComponent).toBe(header);
+            await expect(result.megaMenuComponent).resolves.toEqual({ ...megaMenu, embedded: true, componentData });
+            expect((await result.megaMenuComponent)?.componentData).toBe(componentData);
         });
 
-        it('should propagate null when fetchComponentWithComponentData resolves to null', async () => {
+        it('should propagate null when the Header owner resolves to null', async () => {
             const { fetchCategory } = await import('@/lib/api/categories.server');
-            const { fetchComponentWithComponentData } = await import('@/lib/page-designer/component-loader.server');
             vi.mocked(fetchCategory).mockResolvedValue({ id: 'root', name: 'Root', categories: [] });
-            vi.mocked(fetchComponentWithComponentData).mockResolvedValue(null);
+            mockedFetchHeader.mockResolvedValue(null);
 
             const result = loader({
                 context: {} as any,
@@ -430,6 +467,7 @@ describe('_app.tsx - Default Layout Route', () => {
             } as any);
 
             await expect(result.headerComponent).resolves.toBeNull();
+            await expect(result.megaMenuComponent).resolves.toBeNull();
         });
 
         it('should fetch subcategories for categories with onlineSubCategoriesCount > 0 in a single batch call', async () => {

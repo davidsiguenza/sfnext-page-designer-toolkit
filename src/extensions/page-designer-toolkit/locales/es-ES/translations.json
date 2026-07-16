@@ -41,5 +41,15 @@
         "configureLatestHelp": "Elige una carpeta online y reconstruye el índice de contenido después de importaciones masivas.",
         "emptyAuthoring": "No se han encontrado contenidos que coincidan",
         "emptyAuthoringHelp": "Comprueba el estado online, la carpeta, los IDs, el tipo de contenido, el locale y el índice de búsqueda."
+    },
+    "megaMenu": {
+        "viewAll": "Ver todo",
+        "discover": "Descubrir",
+        "configurePanel": "Selecciona la categoría raíz que debe enriquecer este panel",
+        "configureLink": "Añade una etiqueta y un destino válido",
+        "configureFeature": "Elige una fuente o añade contenido gráfico personalizado",
+        "disabledAuthoring": "Las mejoras del Mega Menu están desactivadas. Los paneles creados siguen disponibles debajo.",
+        "featureNotFound": "El contenido gráfico seleccionado no está disponible",
+        "featureError": "No se ha podido cargar el contenido gráfico"
     }
 }

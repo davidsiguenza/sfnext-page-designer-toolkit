@@ -2,15 +2,15 @@
 
 A reusable Page Designer component and template library for Salesforce B2C Commerce Storefront Next, distributed as a clean fork of the official Storefront Next template.
 
-The toolkit adds merchant-configurable PLP, PDP, blank, blog-home, and blog-post page types together with reusable editorial, promotional, trust, FAQ, category, product, video, and Content Asset components. It contains no brand assets, catalog IDs, credentials, or site-specific configuration.
+The toolkit adds merchant-configurable PLP, PDP, blank, blog-home, and blog-post page types together with reusable editorial, promotional, trust, FAQ, navigation, category, product, video, and Content Asset components. It contains no brand assets, catalog IDs, credentials, or site-specific configuration.
 
 Start with the [complete cartridge and authoring guide](./cartridges/plugin_sfnext_page_designer/README.md), which documents every component, its use case, installation, Business Manager setup, deployment, accessibility guidance, and troubleshooting.
 
 ## Toolkit at a glance
 
 - Page types: blank landing page, product listing page, product detail page, blog home, and shared blog-post layout.
-- Components: 22 reusable blocks, including Campaign Hero, Embedded Video, editorial layouts, a responsive single Product Card, curated or category-driven Product Carousel, configurable PLP grid, Blog Post Grid, and the generic Content Collection.
-- Delivery: `plugin_sfnext_page_designer` for B2C metadata plus the matching React implementation for Managed Runtime.
+- Components: 26 reusable types, including Campaign Hero, Embedded Video, editorial layouts, a responsive single Product Card, curated or category-driven Product Carousel, configurable PLP grid, Blog Post Grid, Content Collection, and the four-part Mega Menu enhancement.
+- Delivery: 31 Page Designer metadata definitions in `plugin_sfnext_page_designer`—26 components plus 5 pages—and the matching React implementation for Managed Runtime.
 - Safety: namespaced type IDs, restricted nested regions, safe merchant links, semantic design tokens, and accessible defaults.
 
 ## Prerequisites
@@ -109,6 +109,18 @@ Content Asset-backed components also require the Storefront Next SLAS client to 
 - **Content Collection** displays manually ordered Content Asset IDs or the latest _N_ online assets from a folder, filtered as blog, generic, or all content. Cards can render as a responsive grid or carousel and can map custom Content attribute IDs to title, summary, image, date, author, category, and destination.
 
 Page Designer does not provide a native B2C Content Asset search attribute. Manual Content Collection authoring therefore uses Content Asset IDs, one per line or comma-separated; folder-backed mode avoids maintaining that list.
+
+## Mega Menu enhancement
+
+The toolkit Mega Menu augments the standard Storefront Next catalog navigation instead of replacing it. The inherited category hierarchy, keyboard behavior, mobile disclosure, catalog links, and category banners continue to work when no Page Designer enhancement exists or when the enhancement is disabled.
+
+The `Mega Menu Enhancements` content block contains up to 12 `Mega Menu Panel` children. Author at most one panel for each root navigation category; that panel can add up to eight curated `Mega Menu Link` items and at most one `Mega Menu Feature`. A feature can be driven by a category, product, B2C Content Asset, Salesforce CMS record, or custom editorial content. Custom mode can optionally start from a CMS record before applying overrides; product mode includes a selectable catalog image view type, and every source supports safe editorial copy/link overrides.
+
+Authoring uses Salesforce's [Site-Wide Regions for Content Blocks](https://developer.salesforce.com/docs/commerce/sfra/guide/sfnext-page-designer-content-blocks.html), which is currently **Beta**. Enable **Administration > Feature Switches > Enable Embedded Content Blocks**, create a temporary unpublished Blank Page, drag `Mega Menu Enhancements` to its root region, configure its nested panels, choose **Save as Content Block**, and then use **Set Site-Wide Region > Header > Mega Menu Enhancements**. `Layout.header` is the only fixed embedded owner; the enhancement itself is an ordinary content block used by that header region, not a second menu.
+
+The initial toolkit install must deploy both the updated `app_storefrontnext_base` header definition and `plugin_sfnext_page_designer`: run `pnpm cartridge:deploy:page-designer:install --reload`. The plugin-only deploy command is for later metadata-only updates that do not change the host Header contract.
+
+Catalog banners and Page Designer features can coexist predictably: **Fallback** uses the inherited category banner only when no feature is available, **Replace** gives the Page Designer feature its place, and **Alongside** displays both. Each panel can inherit or override the global mode. See the [cartridge guide](./cartridges/plugin_sfnext_page_designer/README.md#mega-menu-enhancements-mega-menu-panel-mega-menu-link-and-mega-menu-feature) for authoring and cross-environment installation details.
 
 ## Deployment
 

@@ -41,5 +41,15 @@
         "configureLatestHelp": "Choose an online folder and rebuild the content search index after bulk imports.",
         "emptyAuthoring": "No matching content was found",
         "emptyAuthoringHelp": "Check online status, folder assignment, selected IDs, content kind, locale, and search index."
+    },
+    "megaMenu": {
+        "viewAll": "View all",
+        "discover": "Discover",
+        "configurePanel": "Select the root category this panel should enhance",
+        "configureLink": "Add a label and valid destination",
+        "configureFeature": "Choose a source or add custom feature content",
+        "disabledAuthoring": "Mega Menu enhancements are disabled. Authored panels remain available below.",
+        "featureNotFound": "Selected feature content is unavailable",
+        "featureError": "Feature content could not be loaded"
     }
 }

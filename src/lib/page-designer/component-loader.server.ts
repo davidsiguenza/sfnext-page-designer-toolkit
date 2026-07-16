@@ -28,9 +28,21 @@ export type ComponentWithComponentData = Component & {
 
 type ComponentParams = Omit<PageDesignerComponentParams, 'mode' | 'pdToken'>;
 
+export interface FetchComponentLoaderOptions {
+    /**
+     * Embedded global owners must keep their fixed component ID even while a
+     * nested Page Designer component is focused. The design token and mode are
+     * still forwarded so SCAPI returns the draft owner subtree.
+     */
+    preserveRequestedComponentId?: boolean;
+    /** Skip child loader types that a specialized parent loader resolves as one batch. */
+    excludeDescendantLoaderTypeIds?: readonly string[];
+}
+
 export async function fetchComponentFromLoader(
     { context, request }: LoaderFunctionArgs,
-    params: ComponentParams
+    params: ComponentParams,
+    options: FetchComponentLoaderOptions = {}
 ): Promise<ShopperExperience.schemas['Component']> {
     const isPageDesignerActive = isDesignModeActive(request) || isPreviewModeActive(request);
     const url = new URL(request.url);
@@ -42,7 +54,9 @@ export async function fetchComponentFromLoader(
     const pageDesignerParams: Partial<PageDesignerComponentParams> = {
         mode: url.searchParams.get('mode') || undefined,
         pdToken: url.searchParams.get('pdToken') || undefined,
-        componentId: url.searchParams.get('componentId') || undefined,
+        ...(!options.preserveRequestedComponentId
+            ? { componentId: url.searchParams.get('componentId') || undefined }
+            : {}),
     };
 
     const cleanParams = Object.fromEntries(
@@ -54,11 +68,12 @@ export async function fetchComponentFromLoader(
 
 export async function fetchComponentWithComponentData(
     args: LoaderFunctionArgs,
-    params: ComponentParams
+    params: ComponentParams,
+    options: FetchComponentLoaderOptions = {}
 ): Promise<ComponentWithComponentData | null> {
     let component: ShopperExperience.schemas['Component'];
     try {
-        component = await fetchComponentFromLoader(args, params);
+        component = await fetchComponentFromLoader(args, params, options);
     } catch (e) {
         if (e instanceof ApiError) {
             if (e.status !== 404) {
@@ -74,7 +89,9 @@ export async function fetchComponentWithComponentData(
     }
 
     const componentData: Record<string, Promise<unknown>> = {};
-    collectFromRegions(args, component.regions, componentData);
+    collectFromRegions(args, component.regions, componentData, {
+        excludeLoaderTypeIds: options.excludeDescendantLoaderTypeIds,
+    });
     return {
         ...component,
         componentData,

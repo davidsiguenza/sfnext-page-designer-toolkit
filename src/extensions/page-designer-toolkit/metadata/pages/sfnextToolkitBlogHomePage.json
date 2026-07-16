@@ -39,6 +39,10 @@
                 { "type_id": "SFNextToolkit.blogPostGrid" },
                 { "type_id": "SFNextToolkit.categoryCard" },
                 { "type_id": "SFNextToolkit.categoryHero" },
+                { "type_id": "SFNextToolkit.megaMenu" },
+                { "type_id": "SFNextToolkit.megaMenuFeature" },
+                { "type_id": "SFNextToolkit.megaMenuLink" },
+                { "type_id": "SFNextToolkit.megaMenuPanel" },
                 { "type_id": "SFNextToolkit.productList" },
                 { "type_id": "SFNextToolkit.promoCard" },
                 { "type_id": "SFNextToolkit.trustItem" }

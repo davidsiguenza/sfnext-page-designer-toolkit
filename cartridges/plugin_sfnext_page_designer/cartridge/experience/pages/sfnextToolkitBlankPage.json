@@ -9,6 +9,9 @@
             "component_type_exclusions": [
                 { "type_id": "SFNextToolkit.accordionItem" },
                 { "type_id": "SFNextToolkit.categoryCard" },
+                { "type_id": "SFNextToolkit.megaMenuFeature" },
+                { "type_id": "SFNextToolkit.megaMenuLink" },
+                { "type_id": "SFNextToolkit.megaMenuPanel" },
                 { "type_id": "SFNextToolkit.promoCard" },
                 { "type_id": "SFNextToolkit.trustItem" }
             ]

@@ -1,0 +1,107 @@
+{
+    "name": "Mega Menu Link",
+    "description": "Curated submenu link with optional description, icon and badge. It can target a URL, category, product or B2C Content Asset.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "megaMenuLink",
+            "name": "Mega Menu Link",
+            "description": "Curated submenu link with optional description, icon and badge. It can target a URL, category, product or B2C Content Asset.",
+            "attribute_definitions": [
+                {
+                    "id": "label",
+                    "name": "Label",
+                    "type": "string",
+                    "required": true,
+                    "description": "Visible link label."
+                },
+                {
+                    "id": "description",
+                    "name": "Description",
+                    "type": "text",
+                    "required": false,
+                    "description": "Optional supporting text displayed beneath the label."
+                },
+                {
+                    "id": "badge",
+                    "name": "Badge",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional short badge such as New, Sale or Guide."
+                },
+                {
+                    "id": "destinationType",
+                    "name": "Destination type",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Select which destination field drives the link.",
+                    "values": ["url", "category", "product", "content"],
+                    "default_value": "url"
+                },
+                {
+                    "id": "url",
+                    "name": "URL",
+                    "type": "url",
+                    "required": false,
+                    "description": "Safe relative or HTTP(S) URL used when Destination type is URL."
+                },
+                {
+                    "id": "category",
+                    "name": "Category",
+                    "type": "category",
+                    "required": false,
+                    "description": "Catalog category used when Destination type is Category."
+                },
+                {
+                    "id": "product",
+                    "name": "Product",
+                    "type": "product",
+                    "required": false,
+                    "description": "Catalog product used when Destination type is Product."
+                },
+                {
+                    "id": "contentId",
+                    "name": "B2C Content Asset ID",
+                    "type": "string",
+                    "required": false,
+                    "description": "Exact online Content Asset ID used when Destination type is Content."
+                },
+                {
+                    "id": "contentPathTemplate",
+                    "name": "Content path template",
+                    "type": "string",
+                    "required": false,
+                    "description": "Relative route containing {id}. The default matches the toolkit blog route.",
+                    "default_value": "/blog/{id}"
+                },
+                {
+                    "id": "icon",
+                    "name": "Icon",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Optional predefined icon; no arbitrary SVG or script is accepted.",
+                    "values": ["none", "sparkles", "gift", "star", "truck", "tag"],
+                    "default_value": "none"
+                },
+                {
+                    "id": "visualStyle",
+                    "name": "Visual style",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Plain link, highlighted card or compact chip.",
+                    "values": ["plain", "highlight", "chip"],
+                    "default_value": "plain"
+                },
+                {
+                    "id": "ariaLabel",
+                    "name": "Accessible label override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional screen-reader label when the visible label needs extra context."
+                }
+            ]
+        }
+    ]
+}

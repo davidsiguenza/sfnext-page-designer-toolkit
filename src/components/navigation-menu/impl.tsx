@@ -64,6 +64,9 @@ type CategoryNavigationMenuProps = ComponentPropsWithoutRef<typeof NavigationMen
     // Maximum depth (0=no display, 1=only top-level categories, ...). Default: unlimited
     maxDepth?: number;
 
+    /** Treat a category as a branch when an external slot supplies submenu content. */
+    hasSupplementalContent?: (category: ShopperProducts.schemas['Category']) => boolean;
+
     // Optional element props customizations
     propsViewport?: PropsSlot<CategoryNavigationMenuListCtx, ComponentProps<typeof NavigationMenuViewport>>;
     propsList?: PropsSlot<CategoryNavigationMenuListCtx, ComponentProps<typeof NavigationMenuList>>;
@@ -127,9 +130,9 @@ function CategoryNavigationMenuNested(
         path: ReadonlyArray<ShopperProducts.schemas['Category']>;
     }
 ) {
-    const { category: rawCategory, level, maxDepth } = props;
+    const { category: rawCategory, level, maxDepth, hasSupplementalContent } = props;
     const category = useSubCategory(rawCategory.id) ?? rawCategory;
-    if (!hasChildren(category) || level >= maxDepth) {
+    if ((!hasChildren(category) && !hasSupplementalContent?.(category)) || level >= maxDepth) {
         return null;
     }
 
@@ -167,7 +170,9 @@ function CategoryNavigationMenuNested(
                         index,
                         isFirst: index === 0,
                         isLast: index === length - 1,
-                        isLeaf: !hasChildren(subCategory) || maxDepth === level + 1,
+                        isLeaf:
+                            (!hasChildren(subCategory) && !hasSupplementalContent?.(subCategory)) ||
+                            maxDepth === level + 1,
                     };
 
                     return (
@@ -273,6 +278,7 @@ export default function CategoryNavigationMenu({
 
     const listCtx: CategoryNavigationMenuListCtx = { level: 0, path: [], parent: undefined, categories };
     const {
+        hasSupplementalContent,
         propsViewport,
         propsList,
         propsListItem,
@@ -302,7 +308,7 @@ export default function CategoryNavigationMenu({
                         index,
                         isFirst: index === 0,
                         isLast: index === length - 1,
-                        isLeaf: !hasChildren(category) || maxDepth === 1,
+                        isLeaf: (!hasChildren(category) && !hasSupplementalContent?.(category)) || maxDepth === 1,
                     };
 
                     return (

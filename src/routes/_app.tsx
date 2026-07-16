@@ -26,15 +26,15 @@ import Footer from '@/components/footer';
 import ResponsiveNavigationMenu from '@/components/navigation-menu-mega';
 import { WishlistMergeToast } from '@/components/wishlist/wishlist-merge-toast';
 import { EmbeddedComponentRegion } from '@/components/region/embedded-component-region';
-import {
-    fetchComponentWithComponentData,
-    type ComponentWithComponentData,
-} from '@/lib/page-designer/component-loader.server';
+import type { ComponentWithComponentData } from '@/lib/page-designer/component-loader.server';
+import { extractMegaMenuFromHeader, HEADER_COMPONENT_ID } from '@/components/sfnext-toolkit/mega-menu/header-region';
+import { fetchComponentWithMegaMenuFeatureData } from '@/components/sfnext-toolkit/mega-menu-feature/loaders';
 
 type LoaderData = {
     root: Promise<ShopperProducts.schemas['Category']>;
     subs: Promise<ShopperProducts.schemas['Category'][]>;
     headerComponent: Promise<ComponentWithComponentData | null>;
+    megaMenuComponent: Promise<ComponentWithComponentData | null>;
 };
 
 /**
@@ -87,15 +87,17 @@ export function loader({ context, request }: Route.LoaderArgs): LoaderData {
             : Promise.resolve([]);
 
     // Fetch header embedded component data (non-blocking, streamed to client, should be blocking once data is available from KVS to avoid layout shift)
-    const headerComponentPromise = fetchComponentWithComponentData(
+    const headerComponentPromise = fetchComponentWithMegaMenuFeatureData(
         { context, request, params: {} } as Route.LoaderArgs,
-        { componentId: 'header' }
+        HEADER_COMPONENT_ID
     );
+    const megaMenuComponentPromise = headerComponentPromise.then(extractMegaMenuFromHeader);
 
     return {
         root: rootCategoryPromise,
         subs: subCategoriesPromise,
         headerComponent: headerComponentPromise,
+        megaMenuComponent: megaMenuComponentPromise,
     };
 }
 
@@ -110,15 +112,19 @@ export function loader({ context, request }: Route.LoaderArgs): LoaderData {
  * Routes that need this layout should be prefixed with `_app.` in their filename.
  * For routes without default header/footer (e.g., login), use the `_empty.` prefix instead.
  */
-export default function DefaultLayout({ loaderData: { root, subs, headerComponent } }: { loaderData: LoaderData }) {
+export default function DefaultLayout({
+    loaderData: { root, subs, headerComponent, megaMenuComponent },
+}: {
+    loaderData: LoaderData;
+}) {
     const refRoot = useRef<Promise<ShopperProducts.schemas['Category']> | undefined>(undefined);
     const refSubs = useRef<Promise<ShopperProducts.schemas['Category'][]> | undefined>(undefined);
     const refHeaderComponent = useRef<Promise<ComponentWithComponentData | null> | undefined>(undefined);
-    if (!refRoot.current && !refSubs.current && !refHeaderComponent.current) {
-        refRoot.current = root;
-        refSubs.current = subs;
-        refHeaderComponent.current = headerComponent;
-    }
+    const refMegaMenuComponent = useRef<Promise<ComponentWithComponentData | null> | undefined>(undefined);
+    if (!refRoot.current) refRoot.current = root;
+    if (!refSubs.current) refSubs.current = subs;
+    if (!refHeaderComponent.current) refHeaderComponent.current = headerComponent;
+    if (!refMegaMenuComponent.current) refMegaMenuComponent.current = megaMenuComponent;
 
     // Reflect the route's `handle.ui` config onto <main> as data-* attributes
     // during render, so the correct top padding is present in the SSR'd HTML.
@@ -138,7 +144,11 @@ export default function DefaultLayout({ loaderData: { root, subs, headerComponen
                 announcementSlot={
                     <EmbeddedComponentRegion component={refHeaderComponent.current} regionId="announcement" />
                 }>
-                <ResponsiveNavigationMenu resolve={refRoot.current} defer={refSubs.current} />
+                <ResponsiveNavigationMenu
+                    resolve={refRoot.current}
+                    defer={refSubs.current}
+                    megaMenuComponent={refMegaMenuComponent.current}
+                />
             </Header>
             <main className="grow pt-8" {...mainPaddingAttrs}>
                 <Outlet />

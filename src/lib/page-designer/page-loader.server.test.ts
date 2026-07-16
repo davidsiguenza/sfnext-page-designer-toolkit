@@ -24,6 +24,10 @@ import {
 import { fetchPage } from '@/lib/api/page.server';
 import { registry } from '@/lib/page-designer/registry';
 import { isDesignModeActive, isPreviewModeActive } from '@salesforce/storefront-next-runtime/design/mode';
+import {
+    attachMegaMenuFeatureData,
+    MEGA_MENU_FEATURE_TYPE_ID,
+} from '@/components/sfnext-toolkit/mega-menu-feature/loaders';
 
 vi.mock('@/lib/api/page.server', () => ({
     fetchPage: vi.fn(),
@@ -32,6 +36,11 @@ vi.mock('@/lib/api/page.server', () => ({
 vi.mock('@salesforce/storefront-next-runtime/design/mode', () => ({
     isDesignModeActive: vi.fn(),
     isPreviewModeActive: vi.fn(),
+}));
+
+vi.mock('@/components/sfnext-toolkit/mega-menu-feature/loaders', () => ({
+    attachMegaMenuFeatureData: vi.fn(),
+    MEGA_MENU_FEATURE_TYPE_ID: 'SFNextToolkit.megaMenuFeature',
 }));
 
 vi.mock('@/lib/page-designer/registry', () => ({
@@ -51,6 +60,7 @@ const mockedFetchPage = vi.mocked(fetchPage);
 const mockedRegistry = vi.mocked(registry);
 const mockedIsDesignModeActive = vi.mocked(isDesignModeActive);
 const mockedIsPreviewModeActive = vi.mocked(isPreviewModeActive);
+const mockedAttachMegaMenuFeatureData = vi.mocked(attachMegaMenuFeatureData);
 
 // Test constants
 const TEST_CONTEXT = { get: vi.fn(), set: vi.fn() };
@@ -89,6 +99,7 @@ describe('pageLoader', () => {
         // Set default mock behavior for design mode functions
         mockedIsDesignModeActive.mockReturnValue(false);
         mockedIsPreviewModeActive.mockReturnValue(false);
+        mockedAttachMegaMenuFeatureData.mockReturnValue(false);
     });
 
     afterEach(() => {
@@ -239,6 +250,46 @@ describe('pageLoader', () => {
             expect(Object.keys(result.componentData ?? {})).toEqual(['hero-1', 'footer-1']);
             await expect(result.componentData?.['hero-1']).resolves.toEqual(heroData);
             await expect(result.componentData?.['footer-1']).resolves.toEqual(footerData);
+        });
+
+        test('skips individual mega-menu feature loaders and attaches one shared page batch for nested features', async () => {
+            mockedRegistry.hasLoaders.mockReturnValue(true);
+            mockedRegistry.callLoader.mockImplementation((typeId) => Promise.resolve({ typeId }));
+            mockedAttachMegaMenuFeatureData.mockImplementation((_context, _regions, componentData) => {
+                componentData['feature-a'] = Promise.resolve({ status: 'ready', item: { title: 'Girls' } });
+                componentData['feature-b'] = Promise.resolve({ status: 'not-found' });
+                return true;
+            });
+
+            const featureA = createMockComponent('feature-a', MEGA_MENU_FEATURE_TYPE_ID);
+            const featureB = createMockComponent('feature-b', MEGA_MENU_FEATURE_TYPE_ID);
+            const panelA = createMockComponent('panel-a', 'SFNextToolkit.megaMenuPanel', {
+                regions: [createMockRegion([featureA])],
+            });
+            const panelB = createMockComponent('panel-b', 'SFNextToolkit.megaMenuPanel', {
+                regions: [createMockRegion([featureB])],
+            });
+            const owner = createMockComponent('mega-menu-1', 'SFNextToolkit.megaMenu', {
+                regions: [createMockRegion([panelA, panelB])],
+            });
+            const mockPage = createMockPage([createMockRegion([owner, createMockComponent('hero-1', 'hero')])]);
+            mockedFetchPage.mockResolvedValue(mockPage);
+
+            const result = await fetchPageWithComponentData(createLoaderArgs(BASE_URL), { pageId: MOCK_PAGE_ID });
+            if (!result) throw new Error('Expected non-null result');
+
+            expect(mockedAttachMegaMenuFeatureData).toHaveBeenCalledTimes(1);
+            expect(mockedAttachMegaMenuFeatureData).toHaveBeenCalledWith(
+                TEST_CONTEXT,
+                mockPage.regions,
+                result.componentData
+            );
+            expect(mockedRegistry.callLoader.mock.calls.map(([typeId]) => typeId)).not.toContain(
+                MEGA_MENU_FEATURE_TYPE_ID
+            );
+            await expect(result.componentData?.['feature-a']).resolves.toMatchObject({ status: 'ready' });
+            await expect(result.componentData?.['feature-b']).resolves.toEqual({ status: 'not-found' });
+            await expect(result.componentData?.['hero-1']).resolves.toEqual({ typeId: 'hero' });
         });
 
         test('server loader receives componentData, context, and request', async () => {

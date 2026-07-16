@@ -9,6 +9,16 @@
         {
             "id": "announcement",
             "name": "Announcement"
+        },
+        {
+            "id": "megaMenuEnhancements",
+            "name": "Mega Menu Enhancements",
+            "component_type_inclusions": [
+                {
+                    "type_id": "SFNextToolkit.megaMenu"
+                }
+            ],
+            "max_components": 1
         }
     ],
     "attribute_definition_groups": [

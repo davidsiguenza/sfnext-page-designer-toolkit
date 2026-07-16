@@ -15,12 +15,12 @@
  */
 import type { Route } from './+types/_empty.preview.component';
 import { isDesignModeActive, isPreviewModeActive } from '@salesforce/storefront-next-runtime/design/mode';
-import { fetchComponentWithComponentData } from '@/lib/page-designer/component-loader.server';
 import { injectIntoPreviewRegion } from '@/lib/page-designer/preview-page.server';
 import { PREVIEW_REGION_ID } from '@/lib/page-designer/preview-page';
 import { PageType } from '@/lib/decorators/page-type';
 import { RegionDefinition } from '@/lib/decorators/region-definition';
 import { Region } from '@/components/region';
+import { fetchComponentWithMegaMenuFeatureData } from '@/components/sfnext-toolkit/mega-menu-feature/loaders';
 
 /**
  * Mini-PD component-preview route.
@@ -74,7 +74,11 @@ export async function loader(args: Route.LoaderArgs) {
         throw new Response('Not Found', { status: 404 });
     }
 
-    const component = await fetchComponentWithComponentData(args, { componentId });
+    // The shared helper remains a generic component fetch for every other type,
+    // but batches any nested Mega Menu Feature children when the focused block is
+    // the toolkit owner. Content-block instance IDs are authored by Page Designer,
+    // so they cannot be recognized through one hard-coded singleton ID.
+    const component = await fetchComponentWithMegaMenuFeatureData(args, componentId);
     if (!component) {
         throw new Response('Not Found', { status: 404 });
     }

@@ -22,6 +22,10 @@ import {
     type PageDesignerMode,
 } from '@salesforce/storefront-next-runtime/design/mode';
 import { getLogger } from '@/lib/logger.server';
+import {
+    attachMegaMenuFeatureData,
+    MEGA_MENU_FEATURE_TYPE_ID,
+} from '@/components/sfnext-toolkit/mega-menu-feature/loaders';
 import { collectFromRegions } from './collect-component-data.server';
 
 export type Page = ShopperExperience.schemas['Page'];
@@ -32,7 +36,10 @@ export type PageWithComponentData = Page & {
 
 function attachComponentData(args: LoaderFunctionArgs, page: Page): PageWithComponentData {
     const componentData: Record<string, Promise<unknown>> = {};
-    collectFromRegions(args, page.regions, componentData);
+    collectFromRegions(args, page.regions, componentData, {
+        excludeLoaderTypeIds: [MEGA_MENU_FEATURE_TYPE_ID],
+    });
+    attachMegaMenuFeatureData(args.context, page.regions, componentData);
 
     return {
         ...page,

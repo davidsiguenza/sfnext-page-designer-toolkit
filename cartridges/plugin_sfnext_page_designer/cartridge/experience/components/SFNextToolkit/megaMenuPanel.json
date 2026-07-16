@@ -1,0 +1,125 @@
+{
+    "name": "Mega Menu Panel",
+    "description": "Targets one standard root category and adds curated links plus one optional graphical feature to its submenu.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "extraItems",
+            "name": "Extra links",
+            "component_type_inclusions": [
+                {
+                    "type_id": "SFNextToolkit.megaMenuLink"
+                }
+            ],
+            "max_components": 8
+        },
+        {
+            "id": "feature",
+            "name": "Graphical feature",
+            "component_type_inclusions": [
+                {
+                    "type_id": "SFNextToolkit.megaMenuFeature"
+                }
+            ],
+            "max_components": 1
+        }
+    ],
+    "attribute_definition_groups": [
+        {
+            "id": "megaMenuPanel",
+            "name": "Mega Menu Panel",
+            "description": "Targets one standard root category and adds curated links plus one optional graphical feature to its submenu.",
+            "attribute_definitions": [
+                {
+                    "id": "targetCategory",
+                    "name": "Target root category",
+                    "type": "category",
+                    "required": true,
+                    "description": "Select the top-level catalog category whose standard submenu this panel augments."
+                },
+                {
+                    "id": "heading",
+                    "name": "Panel heading",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional editorial heading above the extra links and feature."
+                },
+                {
+                    "id": "intro",
+                    "name": "Supporting text",
+                    "type": "text",
+                    "required": false,
+                    "description": "Optional short introduction for the panel."
+                },
+                {
+                    "id": "extraItemsHeading",
+                    "name": "Extra links heading",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional accessible label displayed above the curated links."
+                },
+                {
+                    "id": "showViewAll",
+                    "name": "Show category link",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Adds a direct link to the target category below the panel heading.",
+                    "default_value": true
+                },
+                {
+                    "id": "viewAllLabel",
+                    "name": "Category link label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Defaults to “View all” in the current storefront language when empty."
+                },
+                {
+                    "id": "layout",
+                    "name": "Content order",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Choose whether curated links or the graphical feature appears first.",
+                    "values": ["links-first", "feature-first"],
+                    "default_value": "links-first"
+                },
+                {
+                    "id": "surface",
+                    "name": "Panel surface",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Token-based surface that remains compatible with storefront themes and dark mode.",
+                    "values": ["transparent", "card", "muted", "accent"],
+                    "default_value": "transparent"
+                },
+                {
+                    "id": "density",
+                    "name": "Density",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Controls spacing inside the editorial panel.",
+                    "values": ["compact", "comfortable"],
+                    "default_value": "comfortable"
+                },
+                {
+                    "id": "editorialWidth",
+                    "name": "Desktop width",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Width reserved for this editorial panel beside the inherited category navigation.",
+                    "values": ["compact", "standard", "wide"],
+                    "default_value": "standard"
+                },
+                {
+                    "id": "standardBannerMode",
+                    "name": "Catalog banner behavior",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Inherit the global setting, use the catalog banner only as fallback, replace it, or show it alongside the Page Designer feature.",
+                    "values": ["inherit", "fallback", "replace", "alongside"],
+                    "default_value": "inherit"
+                }
+            ]
+        }
+    ]
+}

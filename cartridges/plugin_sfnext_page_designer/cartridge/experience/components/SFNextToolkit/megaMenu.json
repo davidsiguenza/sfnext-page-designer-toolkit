@@ -1,0 +1,52 @@
+{
+    "name": "Mega Menu Enhancements",
+    "description": "Global Page Designer enhancement for the standard catalog navigation. Add one targeted panel per root category.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "panels",
+            "name": "Submenu panels",
+            "component_type_inclusions": [
+                {
+                    "type_id": "SFNextToolkit.megaMenuPanel"
+                }
+            ],
+            "max_components": 12
+        }
+    ],
+    "attribute_definition_groups": [
+        {
+            "id": "megaMenu",
+            "name": "Mega Menu Enhancements",
+            "description": "Global Page Designer enhancement for the standard catalog navigation. Add one targeted panel per root category.",
+            "attribute_definitions": [
+                {
+                    "id": "enabled",
+                    "name": "Enabled",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Disable the Page Designer enhancements while preserving all authored panels.",
+                    "default_value": true
+                },
+                {
+                    "id": "mobileEditorial",
+                    "name": "Show editorial content on mobile",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Includes panel links and the graphical feature inside expanded mobile categories.",
+                    "default_value": true
+                },
+                {
+                    "id": "defaultStandardBannerMode",
+                    "name": "Default catalog banner behavior",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Fallback shows the existing category banner only when a Page Designer feature is absent. Panels can override this value.",
+                    "values": ["fallback", "replace", "alongside"],
+                    "default_value": "fallback"
+                }
+            ]
+        }
+    ]
+}

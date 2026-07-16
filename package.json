@@ -33,6 +33,7 @@
     "cartridge:validate": "sfnext validate-cartridge && node scripts/sync-page-designer-toolkit-cartridge.mjs --validate-only",
     "cartridge:deploy": "sfnext deploy-cartridge",
     "cartridge:deploy:page-designer": "sfnext deploy-cartridge -c plugin_sfnext_page_designer",
+    "cartridge:deploy:page-designer:install": "sfnext deploy-cartridge -c app_storefrontnext_base,plugin_sfnext_page_designer",
     "locales:aggregate-extensions": "sfnext locales aggregate-extensions",
     "config:aggregate-extensions": "sfnext config aggregate-extensions",
     "config:inspect": "sfnext config inspect && echo \"Tip: Run \\`pnpm config:push-env\\` to sync local .env overrides to MRT.\"",

@@ -1,0 +1,220 @@
+{
+    "name": "Mega Menu Feature",
+    "description": "One lightweight graphical card sourced from a category, product, B2C Content Asset, Salesforce CMS record or custom editorial content.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "megaMenuFeature",
+            "name": "Mega Menu Feature",
+            "description": "One lightweight graphical card sourced from a category, product, B2C Content Asset, Salesforce CMS record or custom editorial content.",
+            "attribute_definitions": [
+                {
+                    "id": "sourceType",
+                    "name": "Content source",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Choose the system that supplies the card defaults. Manual overrides below always win.",
+                    "values": ["category", "product", "content", "cms", "custom"],
+                    "default_value": "custom"
+                },
+                {
+                    "id": "category",
+                    "name": "Source category",
+                    "type": "category",
+                    "required": false,
+                    "description": "Used when Content source is Category. Name, description, main image and destination are inherited."
+                },
+                {
+                    "id": "product",
+                    "name": "Source product",
+                    "type": "product",
+                    "required": false,
+                    "description": "Used when Content source is Product. Product imagery, name, destination and optional price are inherited."
+                },
+                {
+                    "id": "contentId",
+                    "name": "B2C Content Asset ID",
+                    "type": "string",
+                    "required": false,
+                    "description": "Exact online Content Asset ID used when Content source is B2C Content."
+                },
+                {
+                    "id": "cmsRecord",
+                    "name": "Salesforce CMS record",
+                    "type": "cms_record",
+                    "required": false,
+                    "description": "Used for Salesforce CMS or as a starting point for Custom content. Configure field mappings when the record uses non-standard attribute IDs."
+                },
+                {
+                    "id": "imageViewType",
+                    "name": "Product image type",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Preferred catalog image view type for Product sources. If unavailable, the card falls back to another supported configured type.",
+                    "values": ["hi-res", "large", "medium", "small", "swatch"],
+                    "default_value": "medium"
+                },
+                {
+                    "id": "eyebrow",
+                    "name": "Eyebrow override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional short context label above the title."
+                },
+                {
+                    "id": "title",
+                    "name": "Title override",
+                    "type": "string",
+                    "required": false,
+                    "description": "Overrides the source title. Required for a purely Custom card."
+                },
+                {
+                    "id": "copy",
+                    "name": "Copy override",
+                    "type": "text",
+                    "required": false,
+                    "description": "Overrides the source description or excerpt."
+                },
+                {
+                    "id": "imageOverride",
+                    "name": "Image override",
+                    "type": "image",
+                    "required": false,
+                    "description": "Page Designer image used ahead of any catalog, Content or CMS image. Its focal point is preserved."
+                },
+                {
+                    "id": "imageAlt",
+                    "name": "Image alternative text",
+                    "type": "string",
+                    "required": false,
+                    "description": "Overrides inherited alternative text when the image conveys information."
+                },
+                {
+                    "id": "decorativeImage",
+                    "name": "Decorative image",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Uses empty alternative text for a purely decorative image. The linked card keeps its visible text as the accessible name.",
+                    "default_value": false
+                },
+                {
+                    "id": "badge",
+                    "name": "Badge",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional short campaign marker such as New, Sale or Exclusive."
+                },
+                {
+                    "id": "ctaLabel",
+                    "name": "CTA label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Visible call-to-action text. A localized default is used when the card has a destination."
+                },
+                {
+                    "id": "ctaUrl",
+                    "name": "Destination override",
+                    "type": "url",
+                    "required": false,
+                    "description": "Safe relative or HTTP(S) URL used ahead of the source destination."
+                },
+                {
+                    "id": "openInNewWindow",
+                    "name": "Open in new window",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Intended for external campaign destinations. The link receives safe rel attributes.",
+                    "default_value": false
+                },
+                {
+                    "id": "showProductPrice",
+                    "name": "Show product price",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Shows the storefront price when the source is Product.",
+                    "default_value": true
+                },
+                {
+                    "id": "layout",
+                    "name": "Card layout",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: layout",
+                    "values": ["stacked", "overlay"],
+                    "default_value": "stacked"
+                },
+                {
+                    "id": "imageRatio",
+                    "name": "Image ratio",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: imageRatio",
+                    "values": ["landscape", "square", "portrait"],
+                    "default_value": "landscape"
+                },
+                {
+                    "id": "objectFit",
+                    "name": "Image fit",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: objectFit",
+                    "values": ["cover", "contain"],
+                    "default_value": "cover"
+                },
+                {
+                    "id": "tone",
+                    "name": "Color tone",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Semantic storefront tokens only; compatible with theme changes and dark mode.",
+                    "values": ["default", "muted", "accent", "dark"],
+                    "default_value": "default"
+                },
+                {
+                    "id": "titleAttribute",
+                    "name": "CMS/Content title attribute",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: titleAttribute"
+                },
+                {
+                    "id": "excerptAttribute",
+                    "name": "CMS/Content copy attribute",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: excerptAttribute"
+                },
+                {
+                    "id": "imageAttribute",
+                    "name": "CMS/Content image attribute",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: imageAttribute"
+                },
+                {
+                    "id": "imageAltAttribute",
+                    "name": "CMS/Content image alt attribute",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: imageAltAttribute"
+                },
+                {
+                    "id": "linkAttribute",
+                    "name": "CMS/Content link attribute",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: linkAttribute"
+                },
+                {
+                    "id": "eyebrowAttribute",
+                    "name": "CMS eyebrow attribute",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: eyebrowAttribute"
+                }
+            ]
+        }
+    ]
+}

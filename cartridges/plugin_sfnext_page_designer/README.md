@@ -1,6 +1,6 @@
 # Storefront Next Page Designer Toolkit
 
-`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides 5 merchant-facing page types and 22 component types without brand assets, catalog IDs, credentials, or site-specific configuration.
+`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides 5 merchant-facing page types and 26 component types without brand assets, catalog IDs, credentials, or site-specific configuration.
 
 The toolkit has two required parts:
 
@@ -34,6 +34,10 @@ The PLP and PDP page types use the standard `plp` and `pdp` aspect definitions f
 | `component.SFNextToolkit.responsiveColumns`      | Responsive two- or three-column compositions with controlled ratios and mobile order.                  | None                     |
 | `component.SFNextToolkit.richText`               | Headings, merchant-authored rich text, and an optional call to action.                                 | None                     |
 | `component.SFNextToolkit.mediaContent`           | Editorial image-and-copy layouts for campaigns, brand stories, and PDP storytelling.                   | None                     |
+| `component.SFNextToolkit.megaMenu`               | `Mega Menu Enhancements` content block assigned to the standard header's site-wide region.             | Standard navigation      |
+| `component.SFNextToolkit.megaMenuPanel`          | Editorial additions for one root category, with curated links and at most one graphical feature.       | Target root category     |
+| `component.SFNextToolkit.megaMenuLink`           | Safe curated menu destination for a URL, category, product, or B2C Content Asset.                      | Selected destination     |
+| `component.SFNextToolkit.megaMenuFeature`        | Graphical menu card driven by category, product, B2C Content, Salesforce CMS, or custom data.          | Source-dependent         |
 | `component.SFNextToolkit.promoGrid`              | Equal or featured-first collections of promotional cards.                                              | None                     |
 | `component.SFNextToolkit.promoCard`              | Overlay or stacked image, copy, and CTA used inside a Promo Grid.                                      | None                     |
 | `component.SFNextToolkit.categoryCarousel`       | A scrollable collection of catalog-backed or manually selected categories.                             | Categories API           |
@@ -50,7 +54,7 @@ The PLP and PDP page types use the standard `plp` and `pdp` aspect definitions f
 | `component.SFNextToolkit.blogPostGrid`           | Search, filter, sort, and paginate localized blog Content Assets in editorial cards.                   | Shopper Experience API   |
 | `component.SFNextToolkit.contentCollection`      | Manually selected or latest folder content, including blog and generic assets, in a grid or carousel.  | Shopper Experience API   |
 
-Four component types are contextual building blocks rather than root-page blocks: `accordionItem`, `categoryCard`, `promoCard`, and `trustItem`. They appear only inside their compatible parent regions. This keeps the Page Designer palette useful instead of exposing invalid loose fragments.
+Eighteen component types are general-purpose root-page blocks. Seven are contextual building blocks rather than loose page blocks: `accordionItem`, `categoryCard`, `megaMenuPanel`, `megaMenuLink`, `megaMenuFeature`, `promoCard`, and `trustItem`. `megaMenu`, displayed as **Mega Menu Enhancements**, is the remaining root-capable type and is intended only for the Site-Wide Regions Beta workflow: drag it onto a temporary unpublished Blank Page, configure it, and save it as a content block for the header. It is not embedded, has no fixed component ID, and must not be published as ordinary page content. These restrictions keep the Page Designer palette useful and prevent invalid compositions.
 
 ## Component guide
 
@@ -105,6 +109,66 @@ Use this pair for campaign tiles, gender or age navigation, seasonal stories, or
 Category Carousel can populate itself from the children of a selected parent category or render manually placed Category Cards. Use automatic population for catalog navigation that should stay in sync, and manual cards when the campaign needs editorial ordering or image/copy overrides.
 
 Category Card never invents catalog content or falls back to a demo asset. If a selected category has no usable image, configure an editorial image or correct the category data.
+
+### Mega Menu Enhancements, Mega Menu Panel, Mega Menu Link, and Mega Menu Feature
+
+The Mega Menu family is an editorial enhancement of the standard Storefront Next navigation—not a second catalog menu. The existing root categories and descendants remain authoritative, and the host `navigation-menu-mega` keeps its normal links, keyboard behavior, focus management, mobile disclosure, category banners, and empty-state behavior. If no Mega Menu Enhancements content block is assigned, the enhancement is disabled, or a root category has no matching panel, shoppers receive the unmodified standard menu.
+
+`SFNextToolkit.megaMenu`, displayed as **Mega Menu Enhancements**, is an ordinary content block with no fixed component ID. `Layout.header` is the single embedded owner: it has fixed `component_id: header` and a `megaMenuEnhancements` region that accepts at most one enhancement block. The application shell fetches that header once through Shopper Experience, extracts its optional enhancement child, resolves all graphical feature data as a batch, and passes the result to the existing navigation. This is an editorial overlay on that one standard menu, not another header or navigation tree.
+
+The enhancement component appears only in the Blank Page root palette so it can be staged on a temporary unpublished page, saved as a content block, and assigned through **Set Site-Wide Region > Header > Mega Menu Enhancements**; it is excluded from PLP, PDP, and blog authoring regions. Its root renderer also returns no live page content if the temporary page is published accidentally. When the content block is focused in Page Designer, its component renderer is the authoring canvas and displays the complete `panels` region; on the live storefront, `editorial-slot.tsx` selects only the panel for the currently open root category. The region accepts up to 12 Mega Menu Panels; create **one panel per root navigation category** and select that exact root category in `targetCategory`. Duplicating a target makes author intent ambiguous and should be treated as a configuration error rather than a way to merge panels.
+
+Each Mega Menu Panel preserves the inherited category columns and adds a controlled editorial area. It supports an optional heading, introduction and direct category link, compact or comfortable density, semantic surfaces, links-first or feature-first order, and compact, standard or wide desktop allocation. Its two nested regions deliberately enforce the composition:
+
+- `extraItems` accepts up to eight `SFNextToolkit.megaMenuLink` children for campaigns, services, guides, or deep links.
+- `feature` accepts at most one `SFNextToolkit.megaMenuFeature`. Use a single strong visual message rather than competing promotional cards inside one root-category submenu.
+
+Mega Menu Link supports a safe URL, catalog category, catalog product, or exact B2C Content Asset ID. Content destinations use a configurable relative path containing `{id}`; `/blog/{id}` is the default. Merchants can add supporting text, a short badge, a controlled icon, an accessible-label override, and plain, highlighted, or chip presentation. Invalid or incomplete links remain visible as diagnostics in Page Designer but are omitted from the live menu.
+
+Mega Menu Feature has five source modes:
+
+- **Category** loads the selected category and its catalog image.
+- **Product** loads the selected product and prefers the chosen catalog image view type (`hi-res`, `large`, `medium`, `small`, or `swatch`). If that type is absent, it falls back deterministically to another configured supported type while exposing the requested and resolved types for diagnostics.
+- **Content** loads an exact online B2C Content Asset and can map its editorial image/copy/link data.
+- **Salesforce CMS** uses a native `cms_record` as the structured editorial source.
+- **Custom** uses merchant-authored image, copy, and destination fields. It can optionally start from a `cms_record`, then apply the same safe overrides to create a bespoke treatment without a separate component type.
+
+Source data provides the default card, while safe editorial overrides let the merchant replace the eyebrow, title, description, image, alternative text, badge, CTA label, or destination without duplicating commerce behavior. The feature supports stacked or overlay composition, landscape/square/portrait ratios, cover or contain image fit, semantic tones, focal points, safe external-link handling, and an optional storefront price for Product sources. B2C Content Assets and Salesforce CMS records are different sources: the former uses Shopper Experience content permissions, while the latter uses the native `cms_record` selector and the host CMS configuration.
+
+The server resolves all feature children as a batch: one bounded request family for selected categories, one for selected products, and one for B2C Content Assets, rather than an API waterfall per panel. CMS records arrive in Page Designer component data and do not trigger Shopper API calls. Only the normalized, navigation-safe projection reaches the renderer.
+
+The global **Catalog banner behavior** and each panel's optional override decide how the inherited category banner and graphical feature interact:
+
+- **Fallback** keeps the standard catalog banner when no usable Page Designer feature exists and avoids two competing graphics.
+- **Replace** reserves the graphical position for the Page Designer feature.
+- **Alongside** displays the inherited category banner and Page Designer feature together.
+- **Inherit**, available on a panel, uses the Mega Menu Enhancements block's global choice.
+
+The enhancement block can include editorial links/features inside expanded mobile categories or keep mobile navigation catalog-only. This is a presentation choice; it does not create a separate mobile information architecture.
+
+Recommended authoring sequence (Site-Wide Regions for Content Blocks is currently **Beta** and subject to Salesforce Beta Services terms):
+
+1. In Business Manager, open **Administration > Feature Switches** and enable **Enable Embedded Content Blocks** under Enable Content Blocks.
+2. Open **Merchant Tools > your site > Content > Page Designer**, create a temporary **SFNext Toolkit - Blank Page** for the authoring canvas, and do not publish that page.
+3. Drag `Mega Menu Enhancements` from the `SFNextToolkit` group onto the Blank Page root region and leave **Enabled** on. Add Mega Menu Panels only inside its `panels` region; do not drag Panel, Link, or Feature components to the page root.
+4. Choose the global banner mode and whether editorial content appears on mobile. Add one Mega Menu Panel for each root category that needs enrichment; categories without panels remain standard.
+5. Add only the genuinely useful curated links and no more than one Mega Menu Feature per panel. Verify that every selected category/product is online for the target site and has at least one supported configured image view type.
+6. Save the configured component, choose **Save as Content Block**, open its settings, and choose **Set Site-Wide Region > Header > Mega Menu Enhancements**.
+7. Keep the temporary page unpublished. Preview keyboard, pointer, narrow desktop, and mobile behavior from the site-wide content block before making the assignment live.
+
+This flow follows Salesforce's official [Manage Content for Site-Wide Regions in Storefront Next with Content Blocks (Beta)](https://developer.salesforce.com/docs/commerce/sfra/guide/sfnext-page-designer-content-blocks.html) guidance.
+
+#### Host integration contract
+
+When porting the toolkit, preserve these behaviors from this repository:
+
+- Keep `Layout.header` as the only embedded owner, with fixed `component_id: header` and a `megaMenuEnhancements` region limited to one `SFNextToolkit.megaMenu` child. Fetch the header once, preserve its fixed ID while forwarding Page Designer `mode` and `pdToken`, extract the optional enhancement child, and resolve that child's features as one batch. Do not add a second fetch for `SFNextToolkit.megaMenu` or assign it a fixed ID.
+- Keep the enhancement component as its own authoring canvas: while focused it renders the complete draft `panels` region. Live contextual rendering belongs in `mega-menu/editorial-slot.tsx`, which receives the child extracted from the fetched header.
+- Resolve all feature children through the shared batch loader. Adding individual component loaders creates eager requests for every feature even when its submenu is closed.
+- Render one navigation-menu state machine. Do not mount separate hidden desktop/mobile copies that duplicate IDs, listeners, or Page Designer content.
+- Treat a root category with editorial panel content as expandable even when it has no online catalog children. Categories without a matching panel keep their original behavior.
+- Add editorial content beside the standard category links inside the existing Radix panel; never nest a feature/link anchor inside the category trigger anchor.
+- Preserve the stock banner contract before applying Fallback, Replace, or Alongside: `c_headerMenuBanner` opts the category into the banner column and `c_slotBannerImage`, when present, remains its image source. A generic category image must not create a new standard banner by itself.
 
 ### Product Card
 
@@ -209,7 +273,7 @@ pnpm cartridge:validate
 pnpm build
 ```
 
-`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest. Validation also enforces the complete 22-type public contract and rejects unresolved TypeScript expressions or enum defaults that are not present in their value lists.
+`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest. Validation also enforces the complete 26-type public component contract and rejects unresolved TypeScript expressions or enum defaults that are not present in their value lists. A complete generated toolkit contains 31 metadata files: 26 component definitions and 5 page definitions.
 
 `cartridge:validate` validates both the standard Storefront Next metadata and every file in this cartridge with the B2C tooling schema validator.
 
@@ -218,10 +282,17 @@ pnpm build
 Deploy the B2C metadata separately from the Managed Runtime application:
 
 ```bash
-pnpm cartridge:deploy:page-designer
+pnpm cartridge:deploy:page-designer:install --reload
 pnpm build
 pnpm push
 ```
+
+The install command deploys both `app_storefrontnext_base` and
+`plugin_sfnext_page_designer`. The base cartridge carries the required
+`Layout.header` region, while the plugin carries the toolkit components. A
+plugin-only deployment cannot make **Header > Mega Menu Enhancements** appear.
+Use `pnpm cartridge:deploy:page-designer` only for subsequent metadata-only
+updates that do not change the Header contract.
 
 Add `plugin_sfnext_page_designer` to the storefront site's cartridge path before `app_storefrontnext_base`:
 
@@ -235,7 +306,7 @@ The MRT environment must be linked to the same B2C Commerce instance and site so
 
 1. Open **Merchant Tools > Content > Page Designer** for the target site.
 2. Create a page and choose one of the `SFNext Toolkit` page types, or open a PLP/PDP assignment using the matching aspect.
-3. Drag components from the `SFNextToolkit` group into compatible regions. Root regions expose 18 complete blocks; the 4 contextual child types appear only inside their matching parents.
+3. Drag components from the `SFNextToolkit` group into compatible regions. General toolkit page regions expose the appropriate subset of 18 root-page blocks; the Blank Page additionally exposes `Mega Menu Enhancements` solely for staging the Header content block. The 7 contextual child types appear only inside their matching parents. Never publish Mega Menu Enhancements as ordinary page content.
 4. Configure the component attributes and save.
 5. Use Preview to verify desktop and mobile behavior.
 6. Publish the page or assignment when it is ready.
@@ -243,6 +314,15 @@ The MRT environment must be linked to the same B2C Commerce instance and site so
 Page Designer changes must be saved before the Storefront Next preview iframe refreshes. Unsaved property changes are not reflected live.
 
 ## Recommended page recipes
+
+### Global catalog navigation
+
+1. Keep the standard Storefront Next root category hierarchy and submenu depth configured by the host application.
+2. Enable Embedded Content Blocks, stage `Mega Menu Enhancements` on a temporary unpublished Blank Page, save it as a content block, and assign it through **Header > Mega Menu Enhancements**. Do not create a parallel page-level navigation.
+3. Add one Mega Menu Panel only for each root category that needs editorial enrichment.
+4. Add up to eight focused Mega Menu Links and at most one Mega Menu Feature to each panel.
+5. Use Fallback for conservative catalog-banner behavior, Replace for a campaign-led visual, or Alongside only when both graphics remain clear at the available width.
+6. Verify desktop keyboard/focus behavior and expanded mobile categories in the same locales and catalogs used by shoppers.
 
 ### Campaign landing page
 
@@ -292,29 +372,39 @@ Copy or merge these paths:
 
 ```text
 cartridges/plugin_sfnext_page_designer
+cartridges/app_storefrontnext_base/cartridge/experience/components/Layout/header.json
 scripts/sync-page-designer-toolkit-cartridge.mjs
 src/components/sfnext-toolkit
 src/extensions/page-designer-toolkit
+src/components/header/index.tsx
 src/components/product-carousel
 src/components/product-list
 src/components/product-tile
+src/components/navigation-menu-mega
+src/components/navigation-menu/impl.tsx
 src/lib/product/product-conversion.ts
+src/lib/page-designer/collect-component-data.server.ts
+src/lib/page-designer/component-loader.server.ts
+src/lib/page-designer/page-loader.server.ts
+src/routes/_app.tsx
+src/routes/_empty.preview.component.tsx
 site-imports/sfnext-toolkit-blog
 ```
 
 Then:
 
 1. Register `SFDC_EXT_PAGE_DESIGNER_TOOLKIT` in `src/extensions/config.json`.
-2. Add the `cartridge:generate`, `cartridge:validate`, and `cartridge:deploy:page-designer` scripts from this project to `package.json`.
+2. Add the `cartridge:generate`, `cartridge:validate`, `cartridge:deploy:page-designer`, and `cartridge:deploy:page-designer:install` scripts from this project to `package.json`. The `:install` command must include both `app_storefrontnext_base` and `plugin_sfnext_page_designer`; the shorter command remains plugin-only for later metadata updates.
 3. Merge the shared Product Carousel, Product List, Product Tile, and product-conversion adapters rather than replacing newer host implementations blindly. Product Card and category-loaded Product Carousel rely on those shared contracts for requested image types, fields, prices, promotions, and custom attributes. Run their tests after resolving any Storefront Next release differences.
-4. Extend the host CSP `frame-src` and `media-src` directives with the approved video origins described under Embedded Video.
-5. Run `pnpm cartridge:generate` and `pnpm cartridge:validate`. Do not copy a stale generated registry or edit it manually.
-6. Deploy the generated cartridge, activate its code version, and place `plugin_sfnext_page_designer` before `app_storefrontnext_base` in the target site's cartridge path.
-7. If Blog Post Grid, Content Collection, or the blog routes are required, import `site-imports/sfnext-toolkit-blog`, create the desired library folder (the default is `sfnext-blog`), and create online assets in the locales the storefront serves. Generic Content Collection use does not require the SFNext Blog custom fields, but its mapped attributes must exist on `Content`.
-8. Preserve the SLAS client's existing scopes and add `sfcc.shopper-experience.contents`. Also confirm that the instance API configuration allows the Shopper Experience content and content-search resources used by the runtime.
-9. Rebuild the target site's content search index after importing metadata/assets or assigning folders. Latest mode and Blog Post Grid cannot discover an asset until the index exposes its online, localized folder membership; Manual mode still requires the requested IDs to be readable through Shopper Experience.
-10. Build and deploy the MRT application from the same commit as the cartridge. Configure the MRT environment for the target organization, short code, site, locale, currency, and SLAS client.
-11. Give authoring users Page Designer permission plus access to the target content library and catalog, then create or assign the toolkit page types in Business Manager.
+4. Merge the Mega Menu host integration into the target release's standard application shell and `navigation-menu-mega` implementation. `Layout.header` must remain the only embedded component, with fixed `component_id: header` and a max-one `megaMenuEnhancements` region. Fetch that header once on the server, preserve its requested ID with Page Designer `mode`/`pdToken`, extract the optional `SFNextToolkit.megaMenu` child, batch its feature data, and pass it into the existing catalog navigation. Do not fetch the enhancement separately or give it a fixed ID. Keep the enhancement's authoring canvas and verify that its focused draft renders the complete nested panel region while live `editorial-slot.tsx` renders only the matching category panel. Preserve the host category tree, focus/keyboard behavior, single menu state, mobile menu, category banners, and standard no-enhancement fallback instead of replacing the navigation wholesale.
+5. Extend the host CSP `frame-src` and `media-src` directives with the approved video origins described under Embedded Video.
+6. Run `pnpm cartridge:generate` and `pnpm cartridge:validate`. Do not copy a stale generated registry or edit it manually. Validation should report 31 toolkit metadata files.
+7. Deploy both the updated `app_storefrontnext_base` and generated `plugin_sfnext_page_designer` cartridges with `pnpm cartridge:deploy:page-designer:install --reload`, activate the code version, and place `plugin_sfnext_page_designer` before `app_storefrontnext_base` in the target site's cartridge path. Repeat the dual-cartridge deployment whenever the Header host metadata changes; plugin-only deployment is sufficient only for later metadata-only updates that preserve that contract.
+8. If Blog Post Grid, Content Collection, blog routes, or Content-backed Mega Menu Features are required, import `site-imports/sfnext-toolkit-blog` when its fields are used, create the desired library folder (the default is `sfnext-blog`), and create online assets in the locales the storefront serves. Generic Content use does not require the SFNext Blog custom fields, but mapped attributes must exist on `Content`.
+9. Preserve the SLAS client's existing scopes and add `sfcc.shopper-experience.contents`. Also confirm that the instance API configuration allows the Shopper Experience component, content, and content-search resources used by the runtime. Product/category Mega Menu sources use the target storefront's existing Shopper Products access; Salesforce CMS mode and a Custom feature seeded from `cms_record` use the host Salesforce CMS/Page Designer configuration instead of the B2C Content Asset API.
+10. Rebuild the target site's content search index after importing metadata/assets or assigning folders. Latest mode and Blog Post Grid cannot discover an asset until the index exposes its online, localized folder membership; manually selected Content Assets and menu features still require the requested IDs to be readable through Shopper Experience.
+11. Build and deploy the MRT application from the same commit as the cartridge. Configure the MRT environment for the target organization, short code, site, locale, currency, and SLAS client.
+12. Give authoring users Page Designer permission plus access to the target content library, CMS workspace when applicable, and catalog. For the Mega Menu, enable **Administration > Feature Switches > Enable Embedded Content Blocks**, stage `Mega Menu Enhancements` on an unpublished temporary Blank Page, save it as a content block, and assign it through **Set Site-Wide Region > Header > Mega Menu Enhancements**. This site-wide capability is Beta. Then create or assign the remaining toolkit page types in Business Manager.
 
 The easiest reusable path is to fork this repository at a tagged toolkit release and apply project branding on top. When integrating into a different Storefront Next template release, treat the cartridge metadata and React implementation as one versioned unit, port the small shared-adapter changes, regenerate the registry, and validate the full build before deployment. The toolkit uses standard Storefront Next primitives and semantic theme tokens and contains no brand-specific assets or IDs.
 
@@ -325,6 +415,8 @@ The easiest reusable path is to fork this repository at a tagged toolkit release
 - Use the content library image picker, meaningful alternative text, and decorative-image mode only when the image conveys no information.
 - Keep one page-level `h1`. Use Rich Text's `h1` only on a blank page that does not already render one; start managed PLP and PDP content at `h2`.
 - Parent component regions restrict their allowed child types.
+- Keep one Mega Menu Panel per root category, no more than eight curated links per panel, and no more than one graphical feature. The catalog navigation remains the primary information architecture.
+- Verify mega-menu trigger state, focus return, arrow/Tab behavior, escape handling, and mobile category disclosure after porting the integration to another Storefront Next release.
 - Interactive controls use native links, buttons, or accessible disclosure primitives.
 - Embedded videos require a descriptive title; direct videos should provide WebVTT captions and all videos should offer a transcript for meaningful spoken content.
 - Loading fallbacks preserve approximate component dimensions to reduce layout shift.
@@ -334,7 +426,7 @@ The easiest reusable path is to fork this repository at a tagged toolkit release
 
 ### Components do not appear
 
-- Confirm that the cartridge is deployed to the active code version.
+- Confirm that both `app_storefrontnext_base` and `plugin_sfnext_page_designer` were deployed to the active code version. Initial Mega Menu installation requires the dual-cartridge `pnpm cartridge:deploy:page-designer:install` command; the plugin-only command does not add the Header region.
 - Confirm that `plugin_sfnext_page_designer` is in the site's cartridge path before `app_storefrontnext_base`.
 - Run `pnpm cartridge:validate` and fix every schema error.
 - Rebuild the MRT application so the static component registry contains the same type IDs as Business Manager.
@@ -354,6 +446,17 @@ The easiest reusable path is to fork this repository at a tagged toolkit release
 - For Product Carousel Manual mode, add Product Cards or `Content.productTile` children to the `products` region. In Category mode, select a category assigned to the site and containing searchable online products.
 - For Category Hero, verify that the page is previewed with a category aspect or configure editorial overrides.
 - Check MRT logs for component loader errors.
+
+### The standard menu works but Mega Menu enhancements do not appear
+
+- Confirm that the generated cartridge contains all four `megaMenu*` metadata types and that the MRT registry was built from the same commit.
+- Confirm that the updated `app_storefrontnext_base` was deployed alongside `plugin_sfnext_page_designer`; otherwise the existing Header metadata has no `megaMenuEnhancements` region and the site-wide assignment target cannot appear.
+- Confirm that **Enable Embedded Content Blocks** is on, `Mega Menu Enhancements` was saved as a content block, and that block is assigned through **Header > Mega Menu Enhancements**. The temporary authoring page itself must remain unpublished.
+- Confirm that generated `Layout.header` metadata has `embedded: true`, `component_id: header`, and a max-one `megaMenuEnhancements` region that includes `SFNextToolkit.megaMenu`. The enhancement component itself must not be embedded and must not have a fixed component ID.
+- Select the exact root navigation category on each panel. A descendant category does not target its root menu trigger, and duplicate panels for one root category are invalid authoring.
+- Check that the application shell fetches `Layout.header` once, extracts the assigned enhancement child, batches its feature data, and passes that child to the standard `navigation-menu-mega` integration. Keep the normal menu visible while diagnosing; the integration must fail open to catalog navigation.
+- For a missing feature, verify that its selected category, product, or Content Asset is online for the site/locale and that a supported product image view type exists. The component exposes both requested and resolved product image types for diagnostics. In Custom mode, supply a usable title, copy, or editorial image; CTA-only content is intentionally treated as unconfigured.
+- Check the selected Fallback, Replace, or Alongside banner mode before treating the inherited category banner as a rendering defect.
 
 ### Content Assets or blog posts do not appear
 
@@ -379,7 +482,7 @@ The easiest reusable path is to fork this repository at a tagged toolkit release
 
 ## Removal
 
-Take pages and aspect assignments that use `SFNextToolkit` types offline or migrate them before removing the cartridge. Removing the cartridge metadata does not remove the React code from an already-deployed MRT bundle, and deploying another MRT bundle still replaces the entire application bundle.
+Take pages and aspect assignments that use `SFNextToolkit` types offline, and unassign or migrate the `Mega Menu Enhancements` content block from **Header > Mega Menu Enhancements**, before removing the cartridge. The integration is deliberately fail-open: when that optional header region has no enhancement child, the inherited catalog navigation continues to render. Removing the cartridge metadata does not remove the React code from an already-deployed MRT bundle, and deploying another MRT bundle still replaces the entire application bundle.
 
 ## License
 

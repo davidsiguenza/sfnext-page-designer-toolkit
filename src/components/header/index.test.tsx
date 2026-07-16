@@ -91,8 +91,9 @@ describe('Header', () => {
                     <nav data-testid="nav-menu">menu</nav>
                 </Header>
             );
-            // Children render twice: desktop slot + mobile slot
-            expect(screen.getAllByTestId('nav-menu').length).toBeGreaterThanOrEqual(1);
+            // The responsive navigation owns both desktop and mobile behavior, so Header
+            // must mount that stateful subtree exactly once.
+            expect(screen.getAllByTestId('nav-menu')).toHaveLength(1);
         });
 
         it('does not render an announcement slot when announcementSlot is omitted', () => {
@@ -132,10 +133,18 @@ describe('Header', () => {
 });
 
 describe('HeaderMetadata', () => {
-    it('declares a single announcement region', () => {
+    it('declares the announcement region and one toolkit mega-menu enhancement slot', () => {
         const definitions = getRegionDefinitions(HeaderMetadata);
-        expect(definitions).toHaveLength(1);
-        expect(definitions[0].id).toBe('announcement');
-        expect(definitions[0].name).toBe('Announcement');
+        expect(definitions).toHaveLength(2);
+        expect(definitions.find((definition) => definition.id === 'announcement')).toMatchObject({
+            id: 'announcement',
+            name: 'Announcement',
+        });
+        expect(definitions.find((definition) => definition.id === 'megaMenuEnhancements')).toMatchObject({
+            id: 'megaMenuEnhancements',
+            name: 'Mega Menu Enhancements',
+            maxComponents: 1,
+            componentTypeInclusions: ['SFNextToolkit.megaMenu'],
+        });
     });
 });

@@ -78,6 +78,31 @@ describe('CategoryNavigationMenu Component', () => {
             expect(leafLink).not.toHaveAttribute('data-has-submenu');
         });
 
+        it('turns a catalog leaf into a disclosure when supplemental content targets it', async () => {
+            const leaf = testData.basic[2];
+            const hasSupplementalContent = vi.fn((category) => category.id === leaf.id);
+            const renderSlotListAfter = vi.fn(({ parent }) =>
+                parent?.id === leaf.id ? <div data-testid="supplemental-panel">Editorial panel</div> : null
+            );
+            const { getByRole, getByTestId, queryByRole } = renderComponent({
+                categories: testData.basic,
+                hasSupplementalContent,
+                renderSlotListAfter,
+            });
+
+            expect(queryByRole('link', { name: leaf.name })).not.toBeInTheDocument();
+            const trigger = getByRole('button', { name: leaf.name });
+            expect(trigger).toHaveAttribute('data-has-submenu', 'true');
+
+            await act(async () => {
+                fireEvent.click(trigger);
+                await Promise.resolve();
+            });
+
+            expect(getByTestId('supplemental-panel')).toBeInTheDocument();
+            expect(hasSupplementalContent).toHaveBeenCalledWith(expect.objectContaining({ id: leaf.id }));
+        });
+
         it('should render nested structure correctly', async () => {
             const { container, getByRole, getByText } = renderComponent({
                 categories: testData.deepNesting,

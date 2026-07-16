@@ -18,16 +18,16 @@ import type { Route } from './+types/_empty.preview.component';
 import PreviewComponentRoute, { loader, meta } from './_empty.preview.component';
 import { createLoaderArgs } from '@/lib/test-utils/loader-action-args';
 import { isDesignModeActive, isPreviewModeActive } from '@salesforce/storefront-next-runtime/design/mode';
-import { fetchComponentWithComponentData } from '@/lib/page-designer/component-loader.server';
 import { injectIntoPreviewRegion } from '@/lib/page-designer/preview-page.server';
+import { fetchComponentWithMegaMenuFeatureData } from '@/components/sfnext-toolkit/mega-menu-feature/loaders';
 
 vi.mock('@salesforce/storefront-next-runtime/design/mode', () => ({
     isDesignModeActive: vi.fn(),
     isPreviewModeActive: vi.fn(),
 }));
 
-vi.mock('@/lib/page-designer/component-loader.server', () => ({
-    fetchComponentWithComponentData: vi.fn(),
+vi.mock('@/components/sfnext-toolkit/mega-menu-feature/loaders', () => ({
+    fetchComponentWithMegaMenuFeatureData: vi.fn(),
 }));
 
 vi.mock('@/lib/page-designer/preview-page.server', () => ({
@@ -36,7 +36,7 @@ vi.mock('@/lib/page-designer/preview-page.server', () => ({
 
 const mockedIsDesignModeActive = vi.mocked(isDesignModeActive);
 const mockedIsPreviewModeActive = vi.mocked(isPreviewModeActive);
-const mockedFetch = vi.mocked(fetchComponentWithComponentData);
+const mockedFetch = vi.mocked(fetchComponentWithMegaMenuFeatureData);
 const mockedInject = vi.mocked(injectIntoPreviewRegion);
 
 const mockContext = {} as any;
@@ -88,7 +88,7 @@ describe('_empty.preview.component', () => {
 
             await runLoader(`${BASE}?mode=PREVIEW&componentId=c-1`);
 
-            expect(mockedFetch).toHaveBeenCalledWith(expect.anything(), { componentId: 'c-1' });
+            expect(mockedFetch).toHaveBeenCalledWith(expect.anything(), 'c-1');
         });
 
         it('passes the gate in EDIT mode', async () => {
@@ -98,7 +98,7 @@ describe('_empty.preview.component', () => {
 
             await runLoader(`${BASE}?mode=EDIT&componentId=c-1`);
 
-            expect(mockedFetch).toHaveBeenCalledWith(expect.anything(), { componentId: 'c-1' });
+            expect(mockedFetch).toHaveBeenCalledWith(expect.anything(), 'c-1');
         });
     });
 
@@ -116,6 +116,26 @@ describe('_empty.preview.component', () => {
         it('404s when the component cannot be fetched (null)', async () => {
             mockedFetch.mockResolvedValue(null);
             await expect404(`${BASE}?mode=PREVIEW&componentId=missing`);
+        });
+
+        it('uses the batch-aware helper for an arbitrary authored mega-menu owner ID', async () => {
+            const component = { id: 'campaign-menu-42', typeId: 'SFNextToolkit.megaMenu' } as any;
+            mockedFetch.mockResolvedValue(component);
+            mockedInject.mockReturnValue({ id: 'p', regions: [], componentData: {} } as any);
+
+            await runLoader(`${BASE}?mode=PREVIEW&componentId=campaign-menu-42`);
+
+            expect(mockedFetch).toHaveBeenCalledWith(expect.anything(), 'campaign-menu-42');
+        });
+
+        it('routes ordinary component IDs through the same helper generic fetch path', async () => {
+            const component = { id: 'other-component', typeId: 'hero' } as any;
+            mockedFetch.mockResolvedValue(component);
+            mockedInject.mockReturnValue({ id: 'p', regions: [], componentData: {} } as any);
+
+            await runLoader(`${BASE}?mode=PREVIEW&componentId=other-component`);
+
+            expect(mockedFetch).toHaveBeenCalledWith(expect.anything(), 'other-component');
         });
     });
 

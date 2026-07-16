@@ -18,13 +18,19 @@ import type { ShopperExperience } from '@/scapi';
 import { registry } from '@/lib/page-designer/initialized-registry';
 import { initializeRegistry } from '@/lib/page-designer/static-registry';
 
+export interface CollectFromRegionsOptions {
+    /** Component types whose descendant loaders are resolved by a parent batch loader. */
+    excludeLoaderTypeIds?: readonly string[];
+}
+
 /**
  * Recursively collect component data promises from regions.
  */
 function collectFromRegionsInternal(
     ctx: LoaderFunctionArgs,
     regions: ShopperExperience.schemas['Region'][] | undefined,
-    map: Record<string, Promise<unknown>>
+    map: Record<string, Promise<unknown>>,
+    excludedLoaderTypeIds: ReadonlySet<string>
 ): void {
     if (!regions) return;
 
@@ -33,7 +39,7 @@ function collectFromRegionsInternal(
             // Check if component has a loader before calling it
             const hasLoaders = registry.hasLoaders(comp.typeId);
 
-            if (hasLoaders) {
+            if (hasLoaders && !excludedLoaderTypeIds.has(comp.typeId)) {
                 map[comp.id] = registry.callLoader(
                     comp.typeId,
                     {
@@ -47,7 +53,7 @@ function collectFromRegionsInternal(
 
             // Recursively process nested regions (components can have their own regions)
             if (comp.regions && comp.regions.length > 0) {
-                collectFromRegionsInternal(ctx, comp.regions, map);
+                collectFromRegionsInternal(ctx, comp.regions, map, excludedLoaderTypeIds);
             }
         }
     }
@@ -61,8 +67,9 @@ function collectFromRegionsInternal(
 export function collectFromRegions(
     ctx: LoaderFunctionArgs,
     regions: ShopperExperience.schemas['Region'][] | undefined,
-    map: Record<string, Promise<unknown>>
+    map: Record<string, Promise<unknown>>,
+    options: CollectFromRegionsOptions = {}
 ): void {
     initializeRegistry(registry);
-    collectFromRegionsInternal(ctx, regions, map);
+    collectFromRegionsInternal(ctx, regions, map, new Set(options.excludeLoaderTypeIds));
 }

@@ -17,6 +17,7 @@ import {
     createContext,
     useContext,
     useState,
+    useEffect,
     useCallback,
     type ComponentPropsWithoutRef,
     type ReactElement,
@@ -34,12 +35,25 @@ import { NavigationMenuLink } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
 import { useSubCategory } from '@/components/navigation-menu/context';
 import { routes, routeHref } from '@/route-paths';
+import type { ComponentWithComponentData } from '@/lib/page-designer/component-loader.server';
+import {
+    getMegaMenuPanelCategoryIds,
+    MegaMenuEditorialSlot,
+} from '@/components/sfnext-toolkit/mega-menu/editorial-slot';
+
+type MegaMenuComponentInput =
+    | ComponentWithComponentData
+    | null
+    | Promise<ComponentWithComponentData | null>
+    | undefined;
 
 interface MobileMenuContextType {
     isOpen: boolean;
     toggle: () => void;
     close: () => void;
     categories: ShopperProducts.schemas['Category'][];
+    megaMenuComponent: MegaMenuComponentInput;
+    megaMenuPanelCategoryIds: Set<string>;
 }
 
 const MobileMenuContext = createContext<MobileMenuContextType | null>(null);
@@ -50,7 +64,10 @@ export function useMobileMenu() {
 }
 
 function hasBanner(category?: ShopperProducts.schemas['Category']): category is ShopperProducts.schemas['Category'] {
-    return typeof category?.c_headerMenuBanner === 'string' && category?.c_headerMenuBanner?.length > 0;
+    // Preserve the stock Storefront Next contract exactly. Category/product images are
+    // valid editorial feature sources, but must not opt a category into the standard
+    // banner column when no Page Designer enhancement is configured.
+    return typeof category?.c_headerMenuBanner === 'string' && category.c_headerMenuBanner.length > 0;
 }
 
 function isVertical(category?: ShopperProducts.schemas['Category']): category is ShopperProducts.schemas['Category'] {
@@ -67,14 +84,17 @@ function CategoryBanner({
     ...props
 }: ComponentPropsWithoutRef<'a'> & { category: ShopperProducts.schemas['Category'] }) {
     const config = useConfig();
-    const imageSrc = toImageUrl({ src: (category?.c_slotBannerImage as string) ?? '', config });
+    const imageSrc = toImageUrl({ src: (category.c_slotBannerImage as string) ?? '', config });
 
     // Transform any image URLs in the HTML banner to use DIS with WebP optimization
     const transformedBannerHtml = transformHtmlImageUrls((category.c_headerMenuBanner as string) || '', config);
 
     return (
         <NavigationMenuLink asChild>
-            <NavLink {...props} to={routeHref(routes.category, { categoryId: category.id })}>
+            <NavLink
+                {...props}
+                data-slot="standard-category-banner"
+                to={routeHref(routes.category, { categoryId: category.id })}>
                 {imageSrc ? (
                     <img
                         className="object-contain w-full max-w-full max-h-[512px]"
@@ -104,16 +124,20 @@ function MobileMenuCategory({
     expandedCategories,
     onToggle,
     onNavigate,
+    megaMenuComponent,
+    megaMenuPanelCategoryIds,
 }: {
     category: ShopperProducts.schemas['Category'];
     expandedCategories: Set<string>;
     onToggle: (categoryId: string) => void;
     onNavigate: () => void;
+    megaMenuComponent: MegaMenuComponentInput;
+    megaMenuPanelCategoryIds: Set<string>;
 }): ReactElement {
     const { t } = useTranslation('header');
     const enrichedCategory = useSubCategory(rawCategory.id);
     const category = enrichedCategory ?? rawCategory;
-    const hasChildren = hasSubcategories(category);
+    const hasChildren = hasSubcategories(category) || megaMenuPanelCategoryIds.has(category.id);
     const isExpanded = expandedCategories.has(category.id);
 
     const renderSubcategoryLinks = (
@@ -164,7 +188,8 @@ function MobileMenuCategory({
                                       defaultValue: `Expand ${category.name}`,
                                   })
                         }
-                        aria-expanded={isExpanded}>
+                        aria-expanded={isExpanded}
+                        aria-controls={`mobile-menu-category-${encodeURIComponent(category.id)}`}>
                         <ChevronDown
                             className={cn('size-5 transition-transform duration-200', {
                                 'rotate-180': isExpanded,
@@ -175,9 +200,19 @@ function MobileMenuCategory({
             </div>
 
             {hasChildren && isExpanded && (
-                <ul className="pl-4 pb-2 space-y-1 border-l border-header-foreground/10">
-                    {renderSubcategoryLinks(category.categories)}
-                </ul>
+                <div id={`mobile-menu-category-${encodeURIComponent(category.id)}`}>
+                    {hasSubcategories(category) && (
+                        <ul className="space-y-1 border-l border-header-foreground/10 pb-2 pl-4">
+                            {renderSubcategoryLinks(category.categories)}
+                        </ul>
+                    )}
+                    <MegaMenuEditorialSlot
+                        component={megaMenuComponent}
+                        targetCategoryId={category.id}
+                        variant="mobile"
+                        onNavigate={onNavigate}
+                    />
+                </div>
             )}
         </li>
     );
@@ -225,6 +260,8 @@ export function MobileMenuDropdown(): ReactElement | null {
                             expandedCategories={expandedCategories}
                             onToggle={toggleCategory}
                             onNavigate={context.close}
+                            megaMenuComponent={context.megaMenuComponent}
+                            megaMenuPanelCategoryIds={context.megaMenuPanelCategoryIds}
                         />
                     ))}
                 </ul>
@@ -253,10 +290,44 @@ export function MobileMenuDropdown(): ReactElement | null {
 export default function ResponsiveNavigationMenu({
     resolve,
     defer,
-}: ComponentPropsWithoutRef<typeof WithCategoryNavigationMenu>): ReactElement {
+    megaMenuComponent,
+}: ComponentPropsWithoutRef<typeof WithCategoryNavigationMenu> & {
+    megaMenuComponent?: MegaMenuComponentInput;
+}): ReactElement {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [desktopMenuValue, setDesktopMenuValue] = useState('');
     const { t } = useTranslation('header');
     const navigate = useNavigate();
+    const [desktopMegaMenuPanelCategoryIds, setDesktopMegaMenuPanelCategoryIds] = useState<Set<string>>(
+        megaMenuComponent && !(megaMenuComponent instanceof Promise)
+            ? getMegaMenuPanelCategoryIds(megaMenuComponent, 'desktop')
+            : new Set()
+    );
+    const [mobileMegaMenuPanelCategoryIds, setMobileMegaMenuPanelCategoryIds] = useState<Set<string>>(
+        megaMenuComponent && !(megaMenuComponent instanceof Promise)
+            ? getMegaMenuPanelCategoryIds(megaMenuComponent, 'mobile')
+            : new Set()
+    );
+
+    useEffect(() => {
+        let active = true;
+        void Promise.resolve(megaMenuComponent)
+            .then((component) => {
+                if (active) {
+                    setDesktopMegaMenuPanelCategoryIds(getMegaMenuPanelCategoryIds(component ?? null, 'desktop'));
+                    setMobileMegaMenuPanelCategoryIds(getMegaMenuPanelCategoryIds(component ?? null, 'mobile'));
+                }
+            })
+            .catch(() => {
+                if (active) {
+                    setDesktopMegaMenuPanelCategoryIds(new Set());
+                    setMobileMegaMenuPanelCategoryIds(new Set());
+                }
+            });
+        return () => {
+            active = false;
+        };
+    }, [megaMenuComponent]);
 
     const defaultListStyle = {
         width: '100%',
@@ -270,6 +341,10 @@ export default function ResponsiveNavigationMenu({
         },
         [navigate]
     );
+
+    const closeDesktopMenu = useCallback(() => {
+        setDesktopMenuValue('');
+    }, []);
 
     // Element props generator
     const getElementProps = useCallback(
@@ -316,6 +391,8 @@ export default function ResponsiveNavigationMenu({
                     toggle: () => setMobileMenuOpen(!mobileMenuOpen),
                     close: () => setMobileMenuOpen(false),
                     categories,
+                    megaMenuComponent,
+                    megaMenuPanelCategoryIds: mobileMegaMenuPanelCategoryIds,
                 };
 
                 return (
@@ -335,6 +412,9 @@ export default function ResponsiveNavigationMenu({
                         <div className="hidden lg:flex items-center h-full">
                             <CategoryNavigationMenu
                                 categories={categories}
+                                value={desktopMenuValue}
+                                onValueChange={setDesktopMenuValue}
+                                hasSupplementalContent={(category) => desktopMegaMenuPanelCategoryIds.has(category.id)}
                                 delayDuration={0}
                                 propsViewport={() => ({
                                     className:
@@ -354,21 +434,30 @@ export default function ResponsiveNavigationMenu({
                                     className:
                                         '!p-0 !left-auto !right-auto !w-full md:!w-full !animate-none !transition-none',
                                 })}
-                                propsContent={({ category }) => ({
-                                    className: cn(
-                                        'section-container pb-6',
-                                        hasBanner(category) &&
-                                            (isVertical(category)
-                                                ? 'grid md:grid-cols-[1fr_.3fr] items-start'
-                                                : 'grid md:grid-cols-[1fr_.6fr] items-start')
-                                    ),
-                                })}
+                                propsContent={({ category }) => {
+                                    const hasEditorialPanel = desktopMegaMenuPanelCategoryIds.has(category.id);
+                                    return {
+                                        className: cn(
+                                            'section-container pb-6',
+                                            hasEditorialPanel
+                                                ? 'flex min-w-0 flex-col items-start gap-6 lg:flex-row'
+                                                : hasBanner(category) &&
+                                                      (isVertical(category)
+                                                          ? 'grid md:grid-cols-[1fr_.3fr] items-start'
+                                                          : 'grid md:grid-cols-[1fr_.6fr] items-start')
+                                        ),
+                                    };
+                                }}
                                 propsList={({ parent, categories: subCategories, level }) => {
-                                    if (level === 1) {
+                                    if (level === 1 && parent) {
+                                        const hasEditorialPanel = desktopMegaMenuPanelCategoryIds.has(parent.id);
                                         if (isVertical(parent)) {
                                             return {
                                                 style: defaultListStyle,
-                                                className: 'flex flex-col gap-0 p-0',
+                                                className: cn(
+                                                    'flex flex-col gap-0 p-0',
+                                                    hasEditorialPanel && 'min-w-0 flex-1'
+                                                ),
                                             };
                                         }
                                         return {
@@ -376,17 +465,23 @@ export default function ResponsiveNavigationMenu({
                                                 ...defaultListStyle,
                                                 gridTemplateColumns: `repeat(${subCategories.length}, minmax(0, 1fr))`,
                                             },
-                                            className: 'grid p-0',
+                                            className: cn('grid p-0', hasEditorialPanel && 'min-w-0 flex-1'),
                                         };
                                     }
                                 }}
                                 propsElement={getElementProps}
                                 renderSlotListAfter={({ level, parent }) => {
-                                    if (level === 1 && hasBanner(parent)) {
+                                    if (level === 1 && parent) {
                                         return (
-                                            <aside className="self-stretch">
-                                                <CategoryBanner category={parent} />
-                                            </aside>
+                                            <MegaMenuEditorialSlot
+                                                component={megaMenuComponent}
+                                                targetCategoryId={parent.id}
+                                                variant="desktop"
+                                                onNavigate={closeDesktopMenu}
+                                                fallback={
+                                                    hasBanner(parent) ? <CategoryBanner category={parent} /> : undefined
+                                                }
+                                            />
                                         );
                                     }
                                 }}

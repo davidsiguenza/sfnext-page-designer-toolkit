@@ -114,6 +114,25 @@ describe('componentLoader', () => {
             });
         });
 
+        test('preserves the requested embedded owner ID in EDIT mode while forwarding mode and pdToken', async () => {
+            mockedIsDesignModeActive.mockReturnValue(true);
+            const args = createLoaderArgs(
+                `${BASE_URL}?mode=EDIT&pdToken=${MOCK_PD_TOKEN}&componentId=focused-nested-component`
+            );
+
+            await fetchComponentFromLoader(
+                args,
+                { componentId: 'sfnext-toolkit-mega-menu' },
+                { preserveRequestedComponentId: true }
+            );
+
+            expect(fetchComponent).toHaveBeenCalledWith(TEST_CONTEXT, {
+                componentId: 'sfnext-toolkit-mega-menu',
+                mode: 'EDIT',
+                pdToken: MOCK_PD_TOKEN,
+            });
+        });
+
         test('includes mode=PREVIEW and pdToken when present', async () => {
             mockedIsPreviewModeActive.mockReturnValue(true);
             const previewToken = 'xyz789';
@@ -203,6 +222,33 @@ describe('componentLoader', () => {
             await expect(result.componentData?.['tile-2']).resolves.toEqual(tileData2);
         });
 
+        test('propagates excluded descendant loader types while retaining their nested loaders', async () => {
+            mockedRegistry.hasLoaders.mockReturnValue(true);
+            mockedRegistry.callLoader.mockReturnValueOnce(Promise.resolve({ id: 'leaf-data' }));
+
+            const leaf = createMockComponent('leaf-1', 'leaf');
+            const batchedFeature = createMockComponent('feature-1', 'batched-feature', {
+                regions: [createMockRegion([leaf])],
+            });
+            mockedFetchComponent.mockResolvedValue(createMockComponentResponse([createMockRegion([batchedFeature])]));
+
+            const result = await fetchComponentWithComponentData(
+                createLoaderArgs(BASE_URL),
+                { componentId: MOCK_COMPONENT_ID },
+                { excludeDescendantLoaderTypeIds: ['batched-feature'] }
+            );
+
+            expect(Object.keys(result?.componentData ?? {})).toEqual(['leaf-1']);
+            // eslint-disable-next-line @typescript-eslint/unbound-method
+            expect(mockedRegistry.callLoader).toHaveBeenCalledTimes(1);
+            // eslint-disable-next-line @typescript-eslint/unbound-method
+            expect(mockedRegistry.callLoader).toHaveBeenCalledWith(
+                'leaf',
+                expect.objectContaining({ componentData: leaf }),
+                'loader'
+            );
+        });
+
         test('includes design mode parameters when in EDIT mode', async () => {
             mockedIsDesignModeActive.mockReturnValue(true);
             const args = createLoaderArgs(`${BASE_URL}?mode=EDIT&pdToken=${MOCK_PD_TOKEN}`);
@@ -215,6 +261,26 @@ describe('componentLoader', () => {
                 componentId: MOCK_COMPONENT_ID,
                 mode: 'EDIT',
                 pdToken: MOCK_PD_TOKEN,
+            });
+        });
+
+        test('preserves the requested embedded owner ID through the component-data loader in PREVIEW mode', async () => {
+            mockedIsPreviewModeActive.mockReturnValue(true);
+            const args = createLoaderArgs(
+                `${BASE_URL}?mode=PREVIEW&pdToken=preview-token&componentId=focused-nested-component`
+            );
+            mockedFetchComponent.mockResolvedValue(createMockComponentResponse([]));
+
+            await fetchComponentWithComponentData(
+                args,
+                { componentId: 'sfnext-toolkit-mega-menu' },
+                { preserveRequestedComponentId: true }
+            );
+
+            expect(fetchComponent).toHaveBeenCalledWith(TEST_CONTEXT, {
+                componentId: 'sfnext-toolkit-mega-menu',
+                mode: 'PREVIEW',
+                pdToken: 'preview-token',
             });
         });
 

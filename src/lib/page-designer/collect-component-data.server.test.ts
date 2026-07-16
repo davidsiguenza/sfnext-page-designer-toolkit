@@ -178,6 +178,29 @@ describe('collectFromRegions', () => {
         expect(Object.keys(map)).toEqual(['nested-1']);
     });
 
+    test('skips excluded loader types while continuing to collect descendant loaders', () => {
+        mockedRegistry.hasLoaders.mockReturnValue(true);
+        mockedRegistry.callLoader.mockReturnValueOnce(Promise.resolve({ id: 'nested' }));
+
+        const nested = createComponent('nested-1', 'nested');
+        const batchedParent = createComponent('batched-1', 'batched-feature', [createRegion([nested])]);
+        const map: Record<string, Promise<unknown>> = {};
+
+        collectFromRegions(createCtx(), [createRegion([batchedParent])], map, {
+            excludeLoaderTypeIds: ['batched-feature'],
+        });
+
+        expect(Object.keys(map)).toEqual(['nested-1']);
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        expect(mockedRegistry.callLoader).toHaveBeenCalledTimes(1);
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        expect(mockedRegistry.callLoader).toHaveBeenCalledWith(
+            'nested',
+            expect.objectContaining({ componentData: nested }),
+            'loader'
+        );
+    });
+
     test('preserves existing entries in the map', () => {
         mockedRegistry.hasLoaders.mockReturnValue(true);
         mockedRegistry.callLoader.mockReturnValue(Promise.resolve({ id: 'new' }));

@@ -37,7 +37,16 @@ import { RegionDefinition } from '@/lib/decorators';
     embedded: true,
     component_id: 'header',
 })
-@RegionDefinition([{ id: 'announcement', name: 'Announcement', description: 'Displayed above the header' }])
+@RegionDefinition([
+    { id: 'announcement', name: 'Announcement', description: 'Displayed above the header' },
+    {
+        id: 'megaMenuEnhancements',
+        name: 'Mega Menu Enhancements',
+        description: 'Optional Page Designer editorial layer for the standard catalog navigation',
+        maxComponents: 1,
+        componentTypeInclusions: ['SFNextToolkit.megaMenu'],
+    },
+])
 export class HeaderMetadata {}
 
 interface HeaderProps extends PropsWithChildren {
@@ -116,7 +125,7 @@ export default function Header({
                 {/* Top row: Logo left, Icons right */}
                 <div className="flex items-center gap-x-1 lg:gap-x-6">
                     {/* Logo - color swapped by theme via --header-logo-filter in app.css */}
-                    <Link to="/" className="flex-shrink-0 flex items-center" data-testid="header-logo">
+                    <Link to="/" className="order-1 flex flex-shrink-0 items-center" data-testid="header-logo">
                         <img
                             src={logo}
                             alt={t('logoAlt')}
@@ -124,19 +133,20 @@ export default function Header({
                         />
                     </Link>
 
-                    {/* Navigation Menu - desktop only, next to logo */}
-                    <div className="hidden lg:flex items-center">{children}</div>
+                    {/* One responsive navigation instance. CSS order places it beside the logo on
+                        desktop and after the action icons on mobile without mounting it twice. */}
+                    <div className="order-5 flex items-center lg:order-2">{children}</div>
 
                     {/* Spacer - takes remaining space */}
-                    <div className="flex-1" />
+                    <div className="order-2 flex-1 lg:order-3" />
 
                     {/* Search - desktop only */}
-                    <div className="hidden lg:block" data-testid="header-search-desktop">
+                    <div className="order-4 hidden lg:block" data-testid="header-search-desktop">
                         <LocationKeyedSearch />
                     </div>
 
                     {/* Icons group - includes mobile hamburger */}
-                    <div className="flex items-center">
+                    <div className="order-3 flex items-center lg:order-5">
                         <UITarget targetId="sfcc.header.before.cart" />
                         {showChat && (
                             <Button
@@ -151,7 +161,6 @@ export default function Header({
                         <UserActions />
                         <WishlistIcon />
                         <CartBadge />
-                        <div className="lg:hidden">{children}</div>
                     </div>
                 </div>
 

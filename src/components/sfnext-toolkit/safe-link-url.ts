@@ -29,7 +29,10 @@ export function normalizeSafeLinkUrl(value: string | undefined): string | undefi
         return code <= 31 || code === 127;
     });
 
-    if (!trimmed || hasControlCharacters || trimmed.startsWith('//') || trimmed.startsWith('\\')) {
+    // WHATWG URL parsing treats backslashes as path separators for special
+    // schemes. Reject every occurrence so `/\\evil.example` cannot escape the
+    // storefront origin after browser normalization.
+    if (!trimmed || hasControlCharacters || trimmed.startsWith('//') || trimmed.includes('\\')) {
         return undefined;
     }
 
