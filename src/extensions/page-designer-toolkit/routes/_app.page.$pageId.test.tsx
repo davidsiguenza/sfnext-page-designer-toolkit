@@ -18,7 +18,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { ApiError, type ShopperExperience } from '@/scapi';
 import { fetchPageWithComponentDataOrThrow } from '@/lib/page-designer/page-loader.server';
 import { isDesignModeActive, isPreviewModeActive } from '@salesforce/storefront-next-runtime/design/mode';
-import BlankPage, { BLANK_PAGE_TYPE_ID, loader } from './_app.page.$pageId';
+import ToolkitGenericPage, { BLANK_PAGE_TYPE_ID, BRANDING_STUDIO_PAGE_TYPE_ID, loader } from './_app.page.$pageId';
 
 vi.mock('@/lib/page-designer/page-loader.server', () => ({
     fetchPageWithComponentDataOrThrow: vi.fn(),
@@ -55,7 +55,7 @@ function createArgs(pageId = mockPage.id) {
     } as never;
 }
 
-describe('SFNext Toolkit blank page route', () => {
+describe('SFNext Toolkit generic page route', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.mocked(fetchPageWithComponentDataOrThrow).mockResolvedValue(mockPage);
@@ -75,6 +75,24 @@ describe('SFNext Toolkit blank page route', () => {
             isAuthoring: false,
         });
     });
+
+    test.each([BRANDING_STUDIO_PAGE_TYPE_ID, `page.${BRANDING_STUDIO_PAGE_TYPE_ID}`])(
+        'loads Branding Studio page type %s through the shared route',
+        async (typeId) => {
+            const brandingPage = {
+                ...mockPage,
+                id: 'branding-studio',
+                typeId,
+                name: 'Branding Studio',
+            } as ShopperExperience.schemas['Page'];
+            vi.mocked(fetchPageWithComponentDataOrThrow).mockResolvedValue(brandingPage);
+
+            await expect(loader(createArgs('branding-studio'))).resolves.toMatchObject({
+                page: brandingPage,
+                isAuthoring: false,
+            });
+        }
+    );
 
     test('rejects pages created from a different page type', async () => {
         vi.mocked(fetchPageWithComponentDataOrThrow).mockResolvedValue({
@@ -109,7 +127,7 @@ describe('SFNext Toolkit blank page route', () => {
     });
 
     test('renders SEO metadata and the unrestricted main region', () => {
-        const Component = BlankPage as unknown as (props: {
+        const Component = ToolkitGenericPage as unknown as (props: {
             loaderData: { page: typeof mockPage; pageUrl: string; isAuthoring: boolean };
         }) => React.ReactNode;
 

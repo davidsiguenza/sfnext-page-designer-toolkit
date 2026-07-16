@@ -27,8 +27,8 @@ import ResponsiveNavigationMenu from '@/components/navigation-menu-mega';
 import { WishlistMergeToast } from '@/components/wishlist/wishlist-merge-toast';
 import { EmbeddedComponentRegion } from '@/components/region/embedded-component-region';
 import type { ComponentWithComponentData } from '@/lib/page-designer/component-loader.server';
-import { extractMegaMenuFromHeader, HEADER_COMPONENT_ID } from '@/components/sfnext-toolkit/mega-menu/header-region';
-import { fetchComponentWithMegaMenuFeatureData } from '@/components/sfnext-toolkit/mega-menu-feature/loaders';
+import { extractMegaMenuFromHeader } from '@/components/sfnext-toolkit/mega-menu/header-region';
+import { fetchHeaderOwnerWithMegaMenuDataOnce } from '@/components/sfnext-toolkit/header-owner.server';
 
 type LoaderData = {
     root: Promise<ShopperProducts.schemas['Category']>;
@@ -86,11 +86,20 @@ export function loader({ context, request }: Route.LoaderArgs): LoaderData {
               })
             : Promise.resolve([]);
 
-    // Fetch header embedded component data (non-blocking, streamed to client, should be blocking once data is available from KVS to avoid layout shift)
-    const headerComponentPromise = fetchComponentWithMegaMenuFeatureData(
-        { context, request, params: {} } as Route.LoaderArgs,
-        HEADER_COMPONENT_ID
-    );
+    // Root may resolve the same raw Header owner for a cold Site Theme projection.
+    // Reuse that request-scoped promise, attach only the `_app` Mega Menu batches,
+    // and keep the optional component streamed so Shopper Experience latency can
+    // never block the standard storefront shell.
+    const headerComponentPromise = fetchHeaderOwnerWithMegaMenuDataOnce({
+        context,
+        request,
+        params: {},
+    } as Route.LoaderArgs).catch((error) => {
+        logger.warn('AppLayout: optional Header Page Designer component failed', {
+            error: error instanceof Error ? error.name : 'UnknownError',
+        });
+        return null;
+    });
     const megaMenuComponentPromise = headerComponentPromise.then(extractMegaMenuFromHeader);
 
     return {

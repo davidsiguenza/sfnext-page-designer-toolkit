@@ -18,6 +18,7 @@ import { describe, expect, test, vi } from 'vitest';
 import type { ComponentType } from '@/components/region';
 import { getAttributeDefinitions, getRegionDefinitions } from '@/lib/decorators';
 import { TYPE_ID_KEY } from '@/lib/decorators/component';
+import { TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS } from '@/components/sfnext-toolkit/authoring-constraints';
 import ResponsiveColumns, { ResponsiveColumnsFallback, ResponsiveColumnsMetadata } from './index';
 
 vi.mock('@/components/region', () => ({
@@ -41,10 +42,7 @@ describe('SFNext Toolkit responsive columns', () => {
                     componentTypeExclusions: [
                         'SFNextToolkit.responsiveColumns',
                         'SFNextToolkit.section',
-                        'SFNextToolkit.accordionItem',
-                        'SFNextToolkit.categoryCard',
-                        'SFNextToolkit.promoCard',
-                        'SFNextToolkit.trustItem',
+                        ...TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS,
                     ],
                 })
             )

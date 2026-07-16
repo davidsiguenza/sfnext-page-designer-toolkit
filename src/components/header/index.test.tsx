@@ -19,6 +19,7 @@ import { MemoryRouter } from 'react-router';
 import 'reflect-metadata';
 import Header, { HeaderMetadata } from './index';
 import { getRegionDefinitions } from '@/lib/decorators/region-definition';
+import { TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS } from '@/components/sfnext-toolkit/authoring-constraints';
 import { AllProvidersWrapper } from '@/test-utils/context-provider';
 
 vi.mock('@/components/link', () => ({
@@ -133,12 +134,19 @@ describe('Header', () => {
 });
 
 describe('HeaderMetadata', () => {
-    it('declares the announcement region and one toolkit mega-menu enhancement slot', () => {
+    it('declares the global theme, announcement, and toolkit mega-menu regions', () => {
         const definitions = getRegionDefinitions(HeaderMetadata);
-        expect(definitions).toHaveLength(2);
+        expect(definitions).toHaveLength(3);
+        expect(definitions.find((definition) => definition.id === 'siteTheme')).toMatchObject({
+            id: 'siteTheme',
+            name: 'Site Theme',
+            maxComponents: 1,
+            componentTypeInclusions: ['SFNextToolkit.siteTheme'],
+        });
         expect(definitions.find((definition) => definition.id === 'announcement')).toMatchObject({
             id: 'announcement',
             name: 'Announcement',
+            componentTypeExclusions: TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS,
         });
         expect(definitions.find((definition) => definition.id === 'megaMenuEnhancements')).toMatchObject({
             id: 'megaMenuEnhancements',

@@ -26,6 +26,19 @@ const SECTION_SURFACES = ['transparent', 'background', 'muted', 'card', 'primary
 const SECTION_SPACING = ['none', 'sm', 'md', 'lg', 'xl'] as const;
 const SECTION_WIDTHS = ['full', 'contained', 'narrow'] as const;
 const SECTION_ALIGNMENTS = ['left', 'center', 'right'] as const;
+const SECTION_COMPONENT_EXCLUSIONS = [
+    'SFNextToolkit.accordionItem',
+    'SFNextToolkit.categoryCard',
+    'SFNextToolkit.megaMenu',
+    'SFNextToolkit.megaMenuFeature',
+    'SFNextToolkit.megaMenuLink',
+    'SFNextToolkit.megaMenuPanel',
+    'SFNextToolkit.promoCard',
+    'SFNextToolkit.siteTheme',
+    'SFNextToolkit.sizeGuide',
+    'SFNextToolkit.trustItem',
+    'SFNextToolkit.section',
+];
 
 type SectionSurface = (typeof SECTION_SURFACES)[number];
 type SectionSpacing = (typeof SECTION_SPACING)[number];
@@ -100,13 +113,7 @@ function normalizeAnchorId(value: string | undefined, fallback: string | undefin
         id: 'content',
         name: 'Content',
         description: 'Components displayed inside this section.',
-        componentTypeExclusions: [
-            'SFNextToolkit.section',
-            'SFNextToolkit.accordionItem',
-            'SFNextToolkit.categoryCard',
-            'SFNextToolkit.promoCard',
-            'SFNextToolkit.trustItem',
-        ],
+        componentTypeExclusions: SECTION_COMPONENT_EXCLUSIONS,
     },
 ])
 export class SFNextToolkitSectionMetadata {

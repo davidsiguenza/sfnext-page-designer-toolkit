@@ -104,6 +104,8 @@ import { getTranslation } from '@salesforce/storefront-next-runtime/i18n';
 import { PageViewTracker } from '@/analytics/page-view-tracker';
 import '@/lib/page-designer/initialized-registry';
 import { buildSeoMetaDescriptors } from '@/utils/seo';
+import { getLogger } from '@/lib/logger.server';
+import type { ComponentWithComponentData } from '@/lib/page-designer/component-loader.server';
 
 // Assets
 import favicon from '/favicon.ico';
@@ -125,6 +127,8 @@ import { type Maintenance, maintenanceContext } from '@/lib/maintenance';
 // Layout Components - logo for error page. Imported via `@/...` so different
 // logo implementations (raster, inline-SVG, etc.) can be provided per brand.
 import Logo from '@/components/logo';
+import { fetchPublishedSiteThemeHeader } from '@/components/sfnext-toolkit/header-owner.server';
+import { HeaderSiteTheme } from '@/components/sfnext-toolkit/site-theme/header-site-theme';
 
 export const links: Route.LinksFunction = () => {
     return [
@@ -177,10 +181,9 @@ import { i18nextOnClient } from '@/i18n-client-init';
 
 export { shouldRevalidate } from '@/lib/revalidation/routes/root';
 
-export const loader = ({
-    context,
-    request,
-}: Route.LoaderArgs): {
+export const loader = async (
+    args: Route.LoaderArgs
+): Promise<{
     // Public auth data - only non-sensitive fields, safe to serialize
     clientAuth: PublicSessionData;
     // Client-safe view: extractClientConfig strips app.serverExtension before this loader
@@ -205,7 +208,10 @@ export const loader = ({
     errorTranslations: Record<string, unknown>;
     // CSP nonce for inline scripts; null when security headers middleware is disabled
     nonce: string | null;
-} => {
+    // Minimal Header projection containing only the published Site Theme child.
+    siteThemeHeader: ComponentWithComponentData | null;
+}> => {
+    const { context, request } = args;
     const session = getAuthServer(context);
 
     const appConfig = getConfig(context);
@@ -255,6 +261,26 @@ export const loader = ({
     // CSP nonce produced by securityHeadersMiddleware; null when middleware is disabled.
     const nonce = getSecurityNonce(context);
 
+    // Theme CSS is global and must be present before every layout (storefront,
+    // checkout, and authentication) paints. Published values use a bounded,
+    // per-site/locale projection cache; a cold or expired request waits at most
+    // one second and fails closed instead of serving stale branding. When root
+    // and `_app` do need the same raw owner
+    // in one request, their fetch is still deduplicated by the request context.
+    // Keep this optional integration fail-open so a Page Designer outage does
+    // not take down the storefront shell.
+    let siteThemeHeader: ComponentWithComponentData | null = null;
+    try {
+        siteThemeHeader = await fetchPublishedSiteThemeHeader(args, {
+            siteId: site.id,
+            localeId: locale.id,
+        });
+    } catch (error) {
+        getLogger(context).warn('Root: optional Header Site Theme failed', {
+            error: error instanceof Error ? error.name : 'UnknownError',
+        });
+    }
+
     return {
         // Read the precomputed client view from the context — `appConfigMiddlewareServer`
         // strips server-only namespaces once at module init and stashes the result, so this
@@ -276,13 +302,12 @@ export const loader = ({
         errorTranslations: (i18next.getResourceBundle(i18next.language, 'routeError') as Record<string, unknown>) ?? {},
         pageDesignerMode: isDesignModeActive(request) ? 'EDIT' : isPreviewModeActive(request) ? 'PREVIEW' : undefined,
         nonce,
+        siteThemeHeader,
     };
 };
 
-// This creates a union type where properties unique to either loader are optional
-// Properties present in both loaders remain required
-type ServerLoaderData = ReturnType<typeof loader>;
-type LoaderData = ServerLoaderData;
+export type RootLoaderData = Awaited<ReturnType<typeof loader>>;
+type LoaderData = RootLoaderData;
 
 export function Layout({ children }: PropsWithChildren) {
     const data = useRouteLoaderData<LoaderData>('root');
@@ -638,6 +663,7 @@ export default function App({
         // @sfdc-extension-block-start SFDC_EXT_STORE_LOCATOR
         selectedStoreInfo,
         // @sfdc-extension-block-end SFDC_EXT_STORE_LOCATOR
+        siteThemeHeader,
     },
 }: {
     loaderData: LoaderData;
@@ -707,6 +733,7 @@ export default function App({
                     targetOrigin="*"
                     usid={clientAuth?.usid}
                     mode={pageDesignerMode}>
+                    <HeaderSiteTheme header={siteThemeHeader} />
                     <PageDesignerInit />
                     <Outlet />
                 </PageDesignerProvider>

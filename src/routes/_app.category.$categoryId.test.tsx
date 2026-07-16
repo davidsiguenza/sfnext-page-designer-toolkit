@@ -21,6 +21,7 @@ import { MemoryRouter } from 'react-router';
 import { ApiError, type ShopperExperience, type ShopperProducts, type ShopperSearch } from '@/scapi';
 import { NormalizedApiError } from '@/lib/api/normalized-api-error';
 import CategoryPage, { loader, ProductListingPageMetadata, shouldRevalidate } from './_app.category.$categoryId';
+import { TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS } from '@/components/sfnext-toolkit/authoring-constraints';
 import { shouldRevalidate as sharedShouldRevalidate } from '@/lib/revalidation/routes/category';
 import { createTestContext } from '@/lib/test-utils';
 import { fetchCategory } from '@/lib/api/categories.server';
@@ -309,11 +310,13 @@ describe('CategoryPage', () => {
             expect(topFullWidthRegion?.id).toBe('plpTopFullWidth');
             expect(topFullWidthRegion?.name).toBe('Top Full Width Region');
             expect(topFullWidthRegion?.maxComponents).toBe(5);
+            expect(topFullWidthRegion?.componentTypeExclusions).toEqual(TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS);
 
             const topContentRegion = getRegionDefinition(ProductListingPageMetadata, 'plpTopContent');
             expect(topContentRegion).toBeDefined();
             expect(topContentRegion?.id).toBe('plpTopContent');
             expect(topContentRegion?.name).toBe('Top Content Region');
+            expect(topContentRegion?.componentTypeExclusions).toEqual(TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS);
 
             const productListRegion = getRegionDefinition(ProductListingPageMetadata, 'plpProductList');
             expect(productListRegion).toBeDefined();
@@ -325,6 +328,7 @@ describe('CategoryPage', () => {
             expect(bottomRegion).toBeDefined();
             expect(bottomRegion?.id).toBe('plpBottom');
             expect(bottomRegion?.name).toBe('Bottom Region');
+            expect(bottomRegion?.componentTypeExclusions).toEqual(TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS);
         });
     });
 

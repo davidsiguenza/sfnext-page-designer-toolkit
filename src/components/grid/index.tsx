@@ -21,6 +21,19 @@ import { AttributeDefinition } from '@/lib/decorators/attribute-definition';
 import { RegionDefinition } from '@/lib/decorators';
 import { type ComponentType, Region } from '@/components/region';
 
+const GRID_COLUMN_COMPONENT_EXCLUSIONS = [
+    'SFNextToolkit.accordionItem',
+    'SFNextToolkit.categoryCard',
+    'SFNextToolkit.megaMenu',
+    'SFNextToolkit.megaMenuFeature',
+    'SFNextToolkit.megaMenuLink',
+    'SFNextToolkit.megaMenuPanel',
+    'SFNextToolkit.promoCard',
+    'SFNextToolkit.siteTheme',
+    'SFNextToolkit.sizeGuide',
+    'SFNextToolkit.trustItem',
+];
+
 // Based on Radix UI Themes Grid component API
 // Reference: https://www.radix-ui.com/themes/docs/components/grid
 
@@ -34,26 +47,32 @@ import { type ComponentType, Region } from '@/components/region';
     {
         id: 'column_1',
         name: 'Column 1',
+        componentTypeExclusions: GRID_COLUMN_COMPONENT_EXCLUSIONS,
     },
     {
         id: 'column_2',
         name: 'Column 2',
+        componentTypeExclusions: GRID_COLUMN_COMPONENT_EXCLUSIONS,
     },
     {
         id: 'column_3',
         name: 'Column 3',
+        componentTypeExclusions: GRID_COLUMN_COMPONENT_EXCLUSIONS,
     },
     {
         id: 'column_4',
         name: 'Column 4',
+        componentTypeExclusions: GRID_COLUMN_COMPONENT_EXCLUSIONS,
     },
     {
         id: 'column_5',
         name: 'Column 5',
+        componentTypeExclusions: GRID_COLUMN_COMPONENT_EXCLUSIONS,
     },
     {
         id: 'column_6',
         name: 'Column 6',
+        componentTypeExclusions: GRID_COLUMN_COMPONENT_EXCLUSIONS,
     },
 ])
 export class GridMetadata {

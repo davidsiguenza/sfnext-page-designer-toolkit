@@ -20,6 +20,7 @@ import { type PropsWithChildren } from 'react';
 import { createRoutesStub, RouterContextProvider } from 'react-router';
 import type { PublicSessionData } from '@/lib/api/types';
 import { registry } from '@/lib/page-designer/registry';
+import { fetchPublishedSiteThemeHeader } from '@/components/sfnext-toolkit/header-owner.server';
 import type AppComponent from './root';
 import type { ErrorBoundary as RootErrorBoundary, Layout as RootLayout, loader as RootLoader } from './root';
 
@@ -41,6 +42,12 @@ import itITTranslations from '@/locales/it-IT/translations.json';
 const itITRouteError = itITTranslations.routeError;
 import enGBTranslations from '@/locales/en-GB/translations.json';
 const enGBRouteError = enGBTranslations.routeError;
+
+vi.mock('@/components/sfnext-toolkit/header-owner.server', () => ({
+    fetchPublishedSiteThemeHeader: vi.fn().mockResolvedValue(null),
+}));
+
+const mockedFetchSiteTheme = vi.mocked(fetchPublishedSiteThemeHeader);
 
 const mockSite = {
     ...mockSiteObject,
@@ -904,14 +911,33 @@ describe('root.tsx', () => {
 
             const context = createLoaderContext();
             mockI18nContext(context, { locale: 'en-US', instance: testInstance });
+            mockedFetchSiteTheme.mockResolvedValueOnce({
+                id: 'header',
+                typeId: 'Layout.header',
+                embedded: true,
+                regions: [
+                    {
+                        id: 'siteTheme',
+                        components: [
+                            {
+                                id: 'theme-1',
+                                typeId: 'SFNextToolkit.siteTheme',
+                                visible: true,
+                                data: { enabled: true, theme: { version: 1, tokens: { primary: '#8A1538' } } },
+                            },
+                        ],
+                    },
+                ],
+            } as never);
 
-            const result = loader({
+            const loaderArgs = {
                 context,
                 request: new Request('http://localhost'),
                 url: new URL('http://localhost'),
                 params: {},
                 pattern: '/',
-            }) as any;
+            } as any;
+            const result = (await loader(loaderArgs)) as any;
 
             expect(result).toHaveProperty('clientAuth');
             expect(result).toHaveProperty('appConfig');
@@ -920,6 +946,16 @@ describe('root.tsx', () => {
             expect(typeof result.clientAuth).toBe('object');
             expect(typeof result.getI18next).toBe('function');
             expect(result.locale).toEqual({ id: 'en-GB', preferredCurrency: 'GBP' });
+            expect(mockedFetchSiteTheme).toHaveBeenCalledTimes(1);
+            expect(mockedFetchSiteTheme).toHaveBeenCalledWith(loaderArgs, {
+                siteId: mockSite.id,
+                localeId: 'en-GB',
+            });
+            expect(result.siteThemeHeader).toMatchObject({
+                id: 'header',
+                regions: [{ id: 'siteTheme', components: [{ id: 'theme-1' }] }],
+            });
+            expect(result.siteThemeHeader?.regions).toHaveLength(1);
         });
 
         it('should return clientAuth with non-sensitive session data', async () => {
@@ -947,13 +983,13 @@ describe('root.tsx', () => {
             const context = createLoaderContext({ authSession: mockClientAuth });
             mockI18nContext(context, { locale: 'en-US', instance: testInstance });
 
-            const result = loader({
+            const result = (await loader({
                 context,
                 request: new Request('http://localhost'),
                 url: new URL('http://localhost'),
                 params: {},
                 pattern: '/',
-            }) as any;
+            })) as any;
 
             // clientAuth should contain only non-sensitive fields
             expect(result.clientAuth).toEqual(expect.objectContaining(mockClientAuth));
@@ -964,22 +1000,22 @@ describe('root.tsx', () => {
             expect(typeof result.getI18next).toBe('function');
         });
 
-        it('should throw error when i18next data is not found in context', () => {
+        it('should throw error when i18next data is not found in context', async () => {
             const context = createLoaderContext({ skipI18next: true });
             // Simulate server environment so getTranslation() checks context instead of falling back to global i18next
             const savedWindow = global.window;
             // @ts-expect-error — simulate server
             delete global.window;
 
-            expect(() => {
+            await expect(
                 loader({
                     context,
                     request: new Request('http://localhost'),
                     params: {},
                     pattern: '/',
                     url: new URL('http://localhost'),
-                });
-            }).toThrow('i18next data not found in context. Ensure i18next middleware runs before loaders.');
+                })
+            ).rejects.toThrow('i18next data not found in context. Ensure i18next middleware runs before loaders.');
 
             global.window = savedWindow;
         });
@@ -1003,13 +1039,13 @@ describe('root.tsx', () => {
             const context = createLoaderContext();
             mockI18nContext(context, { locale: 'en', instance: testInstance });
 
-            const result = loader({
+            const result = (await loader({
                 context,
                 request: new Request('http://localhost?mode=EDIT'),
                 url: new URL('http://localhost?mode=EDIT'),
                 params: {},
                 pattern: '/',
-            }) as any;
+            })) as any;
 
             expect(result.pageDesignerMode).toBe('EDIT');
         });
@@ -1033,13 +1069,13 @@ describe('root.tsx', () => {
             const context = createLoaderContext();
             mockI18nContext(context, { locale: 'en', instance: testInstance });
 
-            const result = loader({
+            const result = (await loader({
                 context,
                 request: new Request('http://localhost?mode=PREVIEW'),
                 url: new URL('http://localhost?mode=PREVIEW'),
                 params: {},
                 pattern: '/',
-            }) as any;
+            })) as any;
 
             expect(result.pageDesignerMode).toBe('PREVIEW');
         });
@@ -1063,13 +1099,13 @@ describe('root.tsx', () => {
             const context = createLoaderContext();
             mockI18nContext(context, { locale: 'en', instance: testInstance });
 
-            const result = loader({
+            const result = (await loader({
                 context,
                 request: new Request('http://localhost'),
                 url: new URL('http://localhost'),
                 params: {},
                 pattern: '/',
-            }) as any;
+            })) as any;
 
             expect(result.pageDesignerMode).toBeUndefined();
         });

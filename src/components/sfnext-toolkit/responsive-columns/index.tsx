@@ -55,9 +55,15 @@ const COLUMN_COMPONENT_EXCLUSIONS = [
     'SFNextToolkit.section',
     'SFNextToolkit.accordionItem',
     'SFNextToolkit.categoryCard',
+    'SFNextToolkit.megaMenu',
+    'SFNextToolkit.megaMenuFeature',
+    'SFNextToolkit.megaMenuLink',
+    'SFNextToolkit.megaMenuPanel',
     'SFNextToolkit.promoCard',
+    'SFNextToolkit.siteTheme',
+    'SFNextToolkit.sizeGuide',
     'SFNextToolkit.trustItem',
-] as const;
+];
 
 type MobileOrder = 'normal' | 'reverse';
 

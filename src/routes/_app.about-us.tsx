@@ -38,6 +38,21 @@ import visionImage from '/images/hero-02.webp';
 import { Region } from '@/components/region';
 import { fetchPageWithComponentData, type PageWithComponentData } from '@/lib/page-designer/page-loader.server';
 
+// Kept as a same-file literal because the cartridge generator statically reads
+// decorator values without resolving imports.
+const TOOLKIT_PAGE_REGION_EXCLUSIONS = [
+    'SFNextToolkit.accordionItem',
+    'SFNextToolkit.categoryCard',
+    'SFNextToolkit.megaMenu',
+    'SFNextToolkit.megaMenuFeature',
+    'SFNextToolkit.megaMenuLink',
+    'SFNextToolkit.megaMenuPanel',
+    'SFNextToolkit.promoCard',
+    'SFNextToolkit.siteTheme',
+    'SFNextToolkit.sizeGuide',
+    'SFNextToolkit.trustItem',
+];
+
 @PageType({
     name: 'About Us Page',
     description: 'About Us page containing company information and a contact form.',
@@ -49,12 +64,14 @@ import { fetchPageWithComponentData, type PageWithComponentData } from '@/lib/pa
         name: 'Headline Region',
         description: 'Main content area displayed above the contact form',
         maxComponents: 10,
+        componentTypeExclusions: TOOLKIT_PAGE_REGION_EXCLUSIONS,
     },
     {
         id: 'additionalinformation',
         name: 'Additional Information Region',
         description: 'Secondary content area displayed below the contact form',
         maxComponents: 10,
+        componentTypeExclusions: TOOLKIT_PAGE_REGION_EXCLUSIONS,
     },
 ])
 export class AboutUsPageMetadata {}

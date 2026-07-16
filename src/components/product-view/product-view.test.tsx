@@ -123,6 +123,21 @@ describe('ProductView', () => {
     });
 
     describe('basic rendering', () => {
+        test('renders Page Designer product tools before the cart actions', () => {
+            renderProductView({
+                product: mockProduct,
+                productToolsSlot: <div data-testid="product-tools-slot">Size guide</div>,
+            });
+
+            expect(screen.getByTestId('product-tools-slot')).toBeInTheDocument();
+            expect(
+                screen
+                    .getByTestId('product-tools-slot')
+                    .compareDocumentPosition(screen.getByRole('button', { name: /add to cart/i })) &
+                    Node.DOCUMENT_POSITION_FOLLOWING
+            ).toBeTruthy();
+        });
+
         test('should render product properly', () => {
             renderProductView({ product: mockProduct });
 

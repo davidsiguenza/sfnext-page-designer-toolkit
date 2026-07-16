@@ -1,0 +1,37 @@
+{
+    "name": "Site Theme",
+    "description": "A visual, token-safe Storefront Next theme. Publish it through an embedded site-wide region to apply it.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "siteTheme",
+            "name": "Site Theme",
+            "description": "A visual, token-safe Storefront Next theme. Publish it through an embedded site-wide region to apply it.",
+            "attribute_definitions": [
+                {
+                    "id": "enabled",
+                    "name": "Enabled",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Disable the theme without losing the configured palette.",
+                    "default_value": true
+                },
+                {
+                    "id": "theme",
+                    "name": "Theme palette",
+                    "type": "custom",
+                    "required": false,
+                    "description": "Open the visual theme editor to configure semantic Storefront Next color tokens.",
+                    "editor_definition": {
+                        "type": "SFNextToolkit.themeEditor",
+                        "configuration": {
+                            "schemaVersion": 1
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "name": "SFNext Theme Studio",
+    "description": "Visual editor for allowlisted semantic, commerce, agentic, and brand Storefront Next color tokens.",
+    "resources": {
+        "styles": ["experience/editors/SFNextToolkit/themeEditor.css"],
+        "scripts": ["experience/editors/SFNextToolkit/themeEditor.js"]
+    }
+}

@@ -1,0 +1,97 @@
+{
+    "name": "Mayoral Size Guide",
+    "description": "Modern PDP fit finder using reviewed Mayoral measurements and explicit child-size comparisons with other brands.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "sizeGuide",
+            "name": "Mayoral Size Guide",
+            "description": "Modern PDP fit finder using reviewed Mayoral measurements and explicit child-size comparisons with other brands.",
+            "attribute_definitions": [
+                {
+                    "id": "title",
+                    "name": "Title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: title",
+                    "default_value": "Encuentra su talla ideal"
+                },
+                {
+                    "id": "description",
+                    "name": "Description",
+                    "type": "text",
+                    "required": false,
+                    "description": "Field: description",
+                    "default_value": "Compara otra marca o usa sus medidas. Tardarás menos de un minuto."
+                },
+                {
+                    "id": "buttonLabel",
+                    "name": "Button label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: buttonLabel",
+                    "default_value": "Recomendar talla"
+                },
+                {
+                    "id": "productKind",
+                    "name": "Product kind",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Auto detects common footwear and bottoms terms. Select an explicit kind when catalog naming differs.",
+                    "values": ["auto", "clothing", "tops", "bottoms", "footwear"],
+                    "default_value": "auto"
+                },
+                {
+                    "id": "audience",
+                    "name": "Audience",
+                    "type": "enum",
+                    "required": false,
+                    "description": "The reviewed dataset covers Mayoral children and teen references only.",
+                    "values": ["kids", "teen"],
+                    "default_value": "kids"
+                },
+                {
+                    "id": "collection",
+                    "name": "Collection",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional collection identifier. Boston x Mayoral has a reviewed size-8 override."
+                },
+                {
+                    "id": "sizeAttributeId",
+                    "name": "Size variation attribute ID",
+                    "type": "string",
+                    "required": false,
+                    "description": "Catalog variation attribute used to read availability and select the recommended size.",
+                    "default_value": "size"
+                },
+                {
+                    "id": "enableBrandComparison",
+                    "name": "Enable other-brand comparison",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: enableBrandComparison",
+                    "default_value": true
+                },
+                {
+                    "id": "enableMeasurements",
+                    "name": "Enable physical measurements",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: enableMeasurements",
+                    "default_value": true
+                },
+                {
+                    "id": "enableAge",
+                    "name": "Enable age estimate",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Age-only results are always marked as low confidence.",
+                    "default_value": true
+                }
+            ]
+        }
+    ]
+}

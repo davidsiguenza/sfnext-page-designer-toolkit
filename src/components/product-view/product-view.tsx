@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type ReactElement } from 'react';
+import { type ReactElement, type ReactNode } from 'react';
 import type { ShopperProducts } from '@/scapi';
 import ImageGallery from '@/components/image-gallery';
 import ProductInfo from './product-info';
@@ -29,6 +29,8 @@ import { UITarget } from '@/targets/ui-target';
 interface ProductViewProps {
     product: ShopperProducts.schemas['Product'];
     mode?: 'add' | 'edit';
+    /** Page Designer tools rendered beside the product selectors, before the cart actions. */
+    productToolsSlot?: ReactNode;
 }
 
 /**
@@ -45,7 +47,7 @@ interface ProductViewProps {
  * <ProductView product={productData} />
  * ```
  */
-export default function ProductView({ product }: ProductViewProps): ReactElement {
+export default function ProductView({ product, productToolsSlot }: ProductViewProps): ReactElement {
     // Calculate directly without useMemo since these are simple operations
     const isProductASet = isProductSet(product);
     const isProductABundle = isProductBundle(product);
@@ -87,6 +89,7 @@ export default function ProductView({ product }: ProductViewProps): ReactElement
                 {/* Right Column - Product Info */}
                 <div className="order-2">
                     <ProductInfo product={product} />
+                    {productToolsSlot}
                     <ProductCartActions product={product} />
                     <UITarget targetId="sfcc.pdp.returnsWarranty" />
                     {/* @sfdc-extension-block-start SFDC_EXT_SHIPPING_DELIVERY */}

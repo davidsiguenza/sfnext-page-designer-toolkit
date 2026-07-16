@@ -4,8 +4,8 @@
  * its component types to leak into app_storefrontnext_base.
  */
 import { createRequire } from 'node:module';
-import { copyFile, mkdir, readFile, readdir, rm } from 'node:fs/promises';
-import { dirname, join, relative, resolve } from 'node:path';
+import { access, copyFile, mkdir, readFile, readdir, rm } from 'node:fs/promises';
+import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { generateMetadata } from '@salesforce/storefront-next-dev/cartridge-services';
 
@@ -40,8 +40,22 @@ const requiredToolkitComponentTypes = [
     'responsiveColumns',
     'richText',
     'section',
+    'siteTheme',
+    'sizeGuide',
     'trustBar',
     'trustItem',
+];
+const contextualToolkitTypeIds = [
+    'SFNextToolkit.accordionItem',
+    'SFNextToolkit.categoryCard',
+    'SFNextToolkit.megaMenu',
+    'SFNextToolkit.megaMenuFeature',
+    'SFNextToolkit.megaMenuLink',
+    'SFNextToolkit.megaMenuPanel',
+    'SFNextToolkit.promoCard',
+    'SFNextToolkit.siteTheme',
+    'SFNextToolkit.sizeGuide',
+    'SFNextToolkit.trustItem',
 ];
 const experienceDirectory = join(projectDirectory, 'cartridges', cartridgeName, 'cartridge', 'experience');
 const baseExperienceDirectory = join(
@@ -52,7 +66,16 @@ const baseExperienceDirectory = join(
     'experience'
 );
 const pageSourceDirectory = join(projectDirectory, 'src', 'extensions', 'page-designer-toolkit', 'metadata', 'pages');
+const editorSourceDirectory = join(
+    projectDirectory,
+    'src',
+    'extensions',
+    'page-designer-toolkit',
+    'metadata',
+    'editors'
+);
 const componentSourceDirectory = join(projectDirectory, 'src', 'components', 'sfnext-toolkit');
+const staticDefaultDirectory = join(projectDirectory, 'cartridges', cartridgeName, 'cartridge', 'static', 'default');
 
 function toPortablePath(path) {
     return path.replaceAll('\\', '/');
@@ -95,9 +118,44 @@ async function discoverToolkitPages() {
         }));
 }
 
+async function discoverToolkitEditors(directory = editorSourceDirectory, prefix = '') {
+    const entries = await readdir(directory, { withFileTypes: true });
+    const editors = [];
+
+    for (const entry of entries) {
+        const absolutePath = join(directory, entry.name);
+        const relativePath = prefix ? `${prefix}/${entry.name}` : entry.name;
+
+        if (entry.isDirectory()) {
+            editors.push(...(await discoverToolkitEditors(absolutePath, relativePath)));
+            continue;
+        }
+
+        if (!entry.isFile() || !entry.name.endsWith('.json')) continue;
+
+        const scriptName = `${entry.name.slice(0, -'.json'.length)}.js`;
+        editors.push({
+            source: absolutePath,
+            scriptSource: join(directory, scriptName),
+            metadata: `editors/${relativePath}`,
+            scriptMetadata: `editors/${prefix ? `${prefix}/` : ''}${scriptName}`,
+        });
+    }
+
+    return editors.sort((left, right) => left.metadata.localeCompare(right.metadata));
+}
+
 async function expectedMetadataFiles() {
-    const [components, pages] = await Promise.all([discoverToolkitComponents(), discoverToolkitPages()]);
-    return [...components.map(({ metadata }) => metadata), ...pages.map(({ metadata }) => metadata)].sort();
+    const [components, pages, editors] = await Promise.all([
+        discoverToolkitComponents(),
+        discoverToolkitPages(),
+        discoverToolkitEditors(),
+    ]);
+    return [
+        ...components.map(({ metadata }) => metadata),
+        ...pages.map(({ metadata }) => metadata),
+        ...editors.map(({ metadata }) => metadata),
+    ].sort();
 }
 
 async function listJsonFiles(directory, prefix = '') {
@@ -164,6 +222,112 @@ function validateEnumContracts(file, metadata) {
     return failures;
 }
 
+async function validateContextualRegionContracts() {
+    const contracts = [
+        [baseExperienceDirectory, 'pages/homePage.json', ['headerbanner', 'main']],
+        [baseExperienceDirectory, 'pages/aboutUsPage.json', ['headline', 'additionalinformation']],
+        [baseExperienceDirectory, 'pages/productListingPage.json', ['plpTopFullWidth', 'plpTopContent', 'plpBottom']],
+        [
+            baseExperienceDirectory,
+            'pages/searchResultsPage.json',
+            ['searchTopFullWidth', 'searchTopContent', 'searchBottom'],
+        ],
+        [baseExperienceDirectory, 'pages/productDetailPage.json', ['promoContent', 'engagementContent']],
+        [baseExperienceDirectory, 'components/Layout/header.json', ['announcement']],
+        [
+            baseExperienceDirectory,
+            'components/Layout/grid.json',
+            ['column_1', 'column_2', 'column_3', 'column_4', 'column_5', 'column_6'],
+        ],
+        [experienceDirectory, 'components/SFNextToolkit/section.json', ['content']],
+        [experienceDirectory, 'components/SFNextToolkit/responsiveColumns.json', ['column1', 'column2', 'column3']],
+    ];
+    const failures = [];
+
+    for (const [directory, file, regionIds] of contracts) {
+        const metadata = JSON.parse(await readFile(join(directory, file), 'utf8'));
+        for (const regionId of regionIds) {
+            const region = metadata.region_definitions?.find((candidate) => candidate.id === regionId);
+            if (!region) {
+                failures.push(`${file}#${regionId}: required contextual restriction region is missing`);
+                continue;
+            }
+            const exclusions = new Set((region.component_type_exclusions ?? []).map((candidate) => candidate.type_id));
+            const missing = contextualToolkitTypeIds.filter((typeId) => !exclusions.has(typeId));
+            if (missing.length) {
+                failures.push(`${file}#${regionId}: missing contextual exclusions ${missing.join(', ')}`);
+            }
+        }
+    }
+
+    return failures;
+}
+
+async function pathExists(path) {
+    try {
+        await access(path);
+        return true;
+    } catch (error) {
+        if (error?.code === 'ENOENT') return false;
+        throw error;
+    }
+}
+
+function isExternalResource(resource) {
+    return resource.startsWith('//') || /^[a-z][a-z\d+.-]*:/i.test(resource);
+}
+
+function resolveLocalResource(resource) {
+    const resourcePath = resource.split(/[?#]/, 1)[0].replace(/^\/+/, '');
+    if (!resourcePath) return undefined;
+
+    const absolutePath = resolve(staticDefaultDirectory, resourcePath);
+    const relativePath = relative(staticDefaultDirectory, absolutePath);
+    if (relativePath.startsWith('..') || isAbsolute(relativePath)) return undefined;
+
+    return absolutePath;
+}
+
+async function validateEditorContracts(file, metadata) {
+    const failures = [];
+    const serverScript = join(experienceDirectory, file.replace(/\.json$/, '.js'));
+    if (!(await pathExists(serverScript))) {
+        failures.push(
+            `${file}: missing same-name server script ${toPortablePath(relative(projectDirectory, serverScript))}`
+        );
+    }
+
+    for (const [resourceType, resources] of Object.entries(metadata.resources ?? {})) {
+        if (!Array.isArray(resources)) continue;
+
+        for (const resource of resources) {
+            if (typeof resource !== 'string' || !resource.trim()) {
+                failures.push(`${file}#resources.${resourceType}: resource paths must be non-empty strings`);
+                continue;
+            }
+
+            const normalizedResource = resource.trim();
+            if (isExternalResource(normalizedResource)) continue;
+
+            const localResource = resolveLocalResource(normalizedResource);
+            if (!localResource) {
+                failures.push(
+                    `${file}#resources.${resourceType}: local resource ${JSON.stringify(resource)} must stay within ${toPortablePath(relative(projectDirectory, staticDefaultDirectory))}`
+                );
+                continue;
+            }
+
+            if (!(await pathExists(localResource))) {
+                failures.push(
+                    `${file}#resources.${resourceType}: local resource ${JSON.stringify(resource)} was not found at ${toPortablePath(relative(projectDirectory, localResource))}`
+                );
+            }
+        }
+    }
+
+    return failures;
+}
+
 async function validateToolkitCartridge() {
     const expectedFiles = await expectedMetadataFiles();
     const actualFiles = await listJsonFiles(experienceDirectory);
@@ -193,6 +357,7 @@ async function validateToolkitCartridge() {
 
     const { validateMetaDefinitionFile } = await loadMetadataValidator();
     const failures = [];
+    failures.push(...(await validateContextualRegionContracts()));
 
     for (const file of actualFiles) {
         const absolutePath = join(experienceDirectory, file);
@@ -205,6 +370,9 @@ async function validateToolkitCartridge() {
 
         const metadata = JSON.parse(await readFile(absolutePath, 'utf8'));
         failures.push(...validateEnumContracts(file, metadata));
+        if (file.startsWith('editors/')) {
+            failures.push(...(await validateEditorContracts(file, metadata)));
+        }
     }
 
     if (failures.length) {
@@ -215,10 +383,24 @@ async function validateToolkitCartridge() {
 }
 
 async function syncToolkitCartridge() {
+    const [components, pages, editors] = await Promise.all([
+        discoverToolkitComponents(),
+        discoverToolkitPages(),
+        discoverToolkitEditors(),
+    ]);
+    const missingEditorScripts = [];
+    for (const editor of editors) {
+        if (!(await pathExists(editor.scriptSource))) {
+            missingEditorScripts.push(toPortablePath(relative(projectDirectory, editor.scriptSource)));
+        }
+    }
+    if (missingEditorScripts.length) {
+        throw new Error(`Editor definitions are missing same-name server scripts: ${missingEditorScripts.join(', ')}`);
+    }
+
     await rm(experienceDirectory, { recursive: true, force: true });
     await mkdir(experienceDirectory, { recursive: true });
 
-    const components = await discoverToolkitComponents();
     if (!components.length) {
         throw new Error(`No @Component decorators in group ${componentGroup} were found.`);
     }
@@ -230,8 +412,16 @@ async function syncToolkitCartridge() {
 
     const pagesOutputDirectory = join(experienceDirectory, 'pages');
     await mkdir(pagesOutputDirectory, { recursive: true });
-    for (const page of await discoverToolkitPages()) {
+    for (const page of pages) {
         await copyFile(page.source, join(experienceDirectory, page.metadata));
+    }
+
+    for (const editor of editors) {
+        const metadataOutput = join(experienceDirectory, editor.metadata);
+        const scriptOutput = join(experienceDirectory, editor.scriptMetadata);
+        await mkdir(dirname(metadataOutput), { recursive: true });
+        await copyFile(editor.source, metadataOutput);
+        await copyFile(editor.scriptSource, scriptOutput);
     }
 
     // The stock generator scans every decorated component into the base

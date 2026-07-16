@@ -6,27 +6,219 @@
     "region_definitions": [
         {
             "id": "column_1",
-            "name": "Column 1"
+            "name": "Column 1",
+            "component_type_exclusions": [
+                {
+                    "type_id": "SFNextToolkit.accordionItem"
+                },
+                {
+                    "type_id": "SFNextToolkit.categoryCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenu"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuFeature"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuLink"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuPanel"
+                },
+                {
+                    "type_id": "SFNextToolkit.promoCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.siteTheme"
+                },
+                {
+                    "type_id": "SFNextToolkit.sizeGuide"
+                },
+                {
+                    "type_id": "SFNextToolkit.trustItem"
+                }
+            ]
         },
         {
             "id": "column_2",
-            "name": "Column 2"
+            "name": "Column 2",
+            "component_type_exclusions": [
+                {
+                    "type_id": "SFNextToolkit.accordionItem"
+                },
+                {
+                    "type_id": "SFNextToolkit.categoryCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenu"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuFeature"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuLink"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuPanel"
+                },
+                {
+                    "type_id": "SFNextToolkit.promoCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.siteTheme"
+                },
+                {
+                    "type_id": "SFNextToolkit.sizeGuide"
+                },
+                {
+                    "type_id": "SFNextToolkit.trustItem"
+                }
+            ]
         },
         {
             "id": "column_3",
-            "name": "Column 3"
+            "name": "Column 3",
+            "component_type_exclusions": [
+                {
+                    "type_id": "SFNextToolkit.accordionItem"
+                },
+                {
+                    "type_id": "SFNextToolkit.categoryCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenu"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuFeature"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuLink"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuPanel"
+                },
+                {
+                    "type_id": "SFNextToolkit.promoCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.siteTheme"
+                },
+                {
+                    "type_id": "SFNextToolkit.sizeGuide"
+                },
+                {
+                    "type_id": "SFNextToolkit.trustItem"
+                }
+            ]
         },
         {
             "id": "column_4",
-            "name": "Column 4"
+            "name": "Column 4",
+            "component_type_exclusions": [
+                {
+                    "type_id": "SFNextToolkit.accordionItem"
+                },
+                {
+                    "type_id": "SFNextToolkit.categoryCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenu"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuFeature"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuLink"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuPanel"
+                },
+                {
+                    "type_id": "SFNextToolkit.promoCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.siteTheme"
+                },
+                {
+                    "type_id": "SFNextToolkit.sizeGuide"
+                },
+                {
+                    "type_id": "SFNextToolkit.trustItem"
+                }
+            ]
         },
         {
             "id": "column_5",
-            "name": "Column 5"
+            "name": "Column 5",
+            "component_type_exclusions": [
+                {
+                    "type_id": "SFNextToolkit.accordionItem"
+                },
+                {
+                    "type_id": "SFNextToolkit.categoryCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenu"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuFeature"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuLink"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuPanel"
+                },
+                {
+                    "type_id": "SFNextToolkit.promoCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.siteTheme"
+                },
+                {
+                    "type_id": "SFNextToolkit.sizeGuide"
+                },
+                {
+                    "type_id": "SFNextToolkit.trustItem"
+                }
+            ]
         },
         {
             "id": "column_6",
-            "name": "Column 6"
+            "name": "Column 6",
+            "component_type_exclusions": [
+                {
+                    "type_id": "SFNextToolkit.accordionItem"
+                },
+                {
+                    "type_id": "SFNextToolkit.categoryCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenu"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuFeature"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuLink"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuPanel"
+                },
+                {
+                    "type_id": "SFNextToolkit.promoCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.siteTheme"
+                },
+                {
+                    "type_id": "SFNextToolkit.sizeGuide"
+                },
+                {
+                    "type_id": "SFNextToolkit.trustItem"
+                }
+            ]
         }
     ],
     "attribute_definition_groups": [

@@ -30,6 +30,19 @@ import { UITarget } from '@/targets/ui-target';
 import { Component } from '@/lib/decorators/component';
 import { RegionDefinition } from '@/lib/decorators';
 
+const HEADER_ANNOUNCEMENT_COMPONENT_EXCLUSIONS = [
+    'SFNextToolkit.accordionItem',
+    'SFNextToolkit.categoryCard',
+    'SFNextToolkit.megaMenu',
+    'SFNextToolkit.megaMenuFeature',
+    'SFNextToolkit.megaMenuLink',
+    'SFNextToolkit.megaMenuPanel',
+    'SFNextToolkit.promoCard',
+    'SFNextToolkit.siteTheme',
+    'SFNextToolkit.sizeGuide',
+    'SFNextToolkit.trustItem',
+];
+
 @Component('header', {
     name: 'Header',
     group: 'Layout',
@@ -38,7 +51,19 @@ import { RegionDefinition } from '@/lib/decorators';
     component_id: 'header',
 })
 @RegionDefinition([
-    { id: 'announcement', name: 'Announcement', description: 'Displayed above the header' },
+    {
+        id: 'siteTheme',
+        name: 'Site Theme',
+        description: 'Published visual theme overrides for the Storefront Next site',
+        maxComponents: 1,
+        componentTypeInclusions: ['SFNextToolkit.siteTheme'],
+    },
+    {
+        id: 'announcement',
+        name: 'Announcement',
+        description: 'Displayed above the header',
+        componentTypeExclusions: HEADER_ANNOUNCEMENT_COMPONENT_EXCLUSIONS,
+    },
     {
         id: 'megaMenuEnhancements',
         name: 'Mega Menu Enhancements',

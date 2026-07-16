@@ -23,7 +23,7 @@ import { registry } from '@/lib/page-designer/registry';
  *
  * DO NOT EDIT THIS FUNCTION MANUALLY - it will be overwritten on next build.
  *
- * Components registered: Content.announcementBanner, Content.contentCard, Content.hero, Content.pdImage, Content.popularCategory, Content.productRecommendations, Content.productTile, Layout.grid, Layout.header, Layout.heroCarousel, Layout.popularCategories, Layout.productCarousel, Layout.productList, SFNextToolkit.accordion, SFNextToolkit.accordionItem, SFNextToolkit.blogPostGrid, SFNextToolkit.categoryCard, SFNextToolkit.categoryCarousel, SFNextToolkit.categoryHero, SFNextToolkit.contentCollection, SFNextToolkit.embeddedVideo, SFNextToolkit.heroBanner, SFNextToolkit.mediaContent, SFNextToolkit.megaMenu, SFNextToolkit.megaMenuFeature, SFNextToolkit.megaMenuLink, SFNextToolkit.megaMenuPanel, SFNextToolkit.productCard, SFNextToolkit.productCarousel, SFNextToolkit.productList, SFNextToolkit.productRecommendations, SFNextToolkit.promoCard, SFNextToolkit.promoGrid, SFNextToolkit.promoStrip, SFNextToolkit.responsiveColumns, SFNextToolkit.richText, SFNextToolkit.section, SFNextToolkit.trustBar, SFNextToolkit.trustItem
+ * Components registered: Content.announcementBanner, Content.contentCard, Content.hero, Content.pdImage, Content.popularCategory, Content.productRecommendations, Content.productTile, Layout.grid, Layout.header, Layout.heroCarousel, Layout.popularCategories, Layout.productCarousel, Layout.productList, SFNextToolkit.accordion, SFNextToolkit.accordionItem, SFNextToolkit.blogPostGrid, SFNextToolkit.categoryCard, SFNextToolkit.categoryCarousel, SFNextToolkit.categoryHero, SFNextToolkit.contentCollection, SFNextToolkit.embeddedVideo, SFNextToolkit.heroBanner, SFNextToolkit.mediaContent, SFNextToolkit.megaMenu, SFNextToolkit.megaMenuFeature, SFNextToolkit.megaMenuLink, SFNextToolkit.megaMenuPanel, SFNextToolkit.productCard, SFNextToolkit.productCarousel, SFNextToolkit.productList, SFNextToolkit.productRecommendations, SFNextToolkit.promoCard, SFNextToolkit.promoGrid, SFNextToolkit.promoStrip, SFNextToolkit.responsiveColumns, SFNextToolkit.richText, SFNextToolkit.section, SFNextToolkit.siteTheme, SFNextToolkit.sizeGuide, SFNextToolkit.trustBar, SFNextToolkit.trustItem
  */
 export function initializeRegistry(targetRegistry = registry): void {
     targetRegistry.registerImporter(
@@ -178,6 +178,16 @@ export function initializeRegistry(targetRegistry = registry): void {
     targetRegistry.registerImporter(
         'SFNextToolkit.section',
         () => import('../../components/sfnext-toolkit/section/index'),
+        { fallback: 'fallback' }
+    );
+    targetRegistry.registerImporter(
+        'SFNextToolkit.siteTheme',
+        () => import('../../components/sfnext-toolkit/site-theme/index'),
+        { fallback: 'fallback' }
+    );
+    targetRegistry.registerImporter(
+        'SFNextToolkit.sizeGuide',
+        () => import('../../components/sfnext-toolkit/size-guide/index'),
         { fallback: 'fallback' }
     );
     targetRegistry.registerImporter(

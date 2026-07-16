@@ -14,6 +14,8 @@
                 { "type_id": "SFNextToolkit.megaMenuLink" },
                 { "type_id": "SFNextToolkit.megaMenuPanel" },
                 { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.siteTheme" },
+                { "type_id": "SFNextToolkit.sizeGuide" },
                 { "type_id": "SFNextToolkit.trustItem" }
             ],
             "max_components": 5
@@ -29,6 +31,8 @@
                 { "type_id": "SFNextToolkit.megaMenuLink" },
                 { "type_id": "SFNextToolkit.megaMenuPanel" },
                 { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.siteTheme" },
+                { "type_id": "SFNextToolkit.sizeGuide" },
                 { "type_id": "SFNextToolkit.trustItem" }
             ],
             "max_components": 5
@@ -54,6 +58,8 @@
                 { "type_id": "SFNextToolkit.megaMenuLink" },
                 { "type_id": "SFNextToolkit.megaMenuPanel" },
                 { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.siteTheme" },
+                { "type_id": "SFNextToolkit.sizeGuide" },
                 { "type_id": "SFNextToolkit.trustItem" }
             ],
             "max_components": 5

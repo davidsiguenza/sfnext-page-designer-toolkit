@@ -62,6 +62,21 @@ import {
 import { getLogger } from '@/lib/logger.server';
 import { uiConfig } from '@/lib/config.ui';
 
+// Kept as a same-file literal because the cartridge generator statically reads
+// decorator values without resolving imports.
+const TOOLKIT_PAGE_REGION_EXCLUSIONS = [
+    'SFNextToolkit.accordionItem',
+    'SFNextToolkit.categoryCard',
+    'SFNextToolkit.megaMenu',
+    'SFNextToolkit.megaMenuFeature',
+    'SFNextToolkit.megaMenuLink',
+    'SFNextToolkit.megaMenuPanel',
+    'SFNextToolkit.promoCard',
+    'SFNextToolkit.siteTheme',
+    'SFNextToolkit.sizeGuide',
+    'SFNextToolkit.trustItem',
+];
+
 @PageType({
     name: 'Product Listing Page',
     description: 'Product listing page with product listings and personalized content',
@@ -73,12 +88,14 @@ import { uiConfig } from '@/lib/config.ui';
         name: 'Top Full Width Region',
         description: 'Full screen width region at the top of the results',
         maxComponents: 5,
+        componentTypeExclusions: TOOLKIT_PAGE_REGION_EXCLUSIONS,
     },
     {
         id: 'plpTopContent',
         name: 'Top Content Region',
         description: 'Content width region below sort/filter, above product grid',
         maxComponents: 5,
+        componentTypeExclusions: TOOLKIT_PAGE_REGION_EXCLUSIONS,
     },
     {
         id: 'plpProductList',
@@ -92,6 +109,7 @@ import { uiConfig } from '@/lib/config.ui';
         name: 'Bottom Region',
         description: 'Region at the bottom of search results after product grid',
         maxComponents: 5,
+        componentTypeExclusions: TOOLKIT_PAGE_REGION_EXCLUSIONS,
     },
 ])
 export class ProductListingPageMetadata {}

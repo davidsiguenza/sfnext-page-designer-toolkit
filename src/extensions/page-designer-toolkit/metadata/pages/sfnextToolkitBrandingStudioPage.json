@@ -1,0 +1,15 @@
+{
+    "name": "SFNext Toolkit - Branding Studio",
+    "description": "Safe visual workspace for authoring a global Storefront Next theme before publishing it as a Header content block.",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "main",
+            "name": "Theme Preview",
+            "component_type_inclusions": [{ "type_id": "SFNextToolkit.siteTheme" }],
+            "max_components": 1
+        }
+    ],
+    "supported_aspect_types": [],
+    "route": "/:siteId/:localeId/page/:pageId"
+}

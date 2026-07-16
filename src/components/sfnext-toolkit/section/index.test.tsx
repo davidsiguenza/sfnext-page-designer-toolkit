@@ -17,6 +17,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 import { getAttributeDefinitions, getRegionDefinitions } from '@/lib/decorators';
 import { TYPE_ID_KEY } from '@/lib/decorators/component';
+import { TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS } from '@/components/sfnext-toolkit/authoring-constraints';
 import { Section, SFNextToolkitSectionMetadata } from './index';
 
 vi.mock('@/components/region', () => ({
@@ -81,13 +82,7 @@ describe('SFNext Toolkit section', () => {
             expect.objectContaining({
                 id: 'content',
                 name: 'Content',
-                componentTypeExclusions: [
-                    'SFNextToolkit.section',
-                    'SFNextToolkit.accordionItem',
-                    'SFNextToolkit.categoryCard',
-                    'SFNextToolkit.promoCard',
-                    'SFNextToolkit.trustItem',
-                ],
+                componentTypeExclusions: [...TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS, 'SFNextToolkit.section'],
             }),
         ]);
     });

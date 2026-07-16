@@ -90,6 +90,21 @@ import {
 import { ShippingDeliveryProvider } from '@/extensions/shipping-delivery/context/shipping-delivery-context';
 // @sfdc-extension-block-end SFDC_EXT_SHIPPING_DELIVERY
 
+// Kept as a same-file literal because the cartridge generator statically reads
+// decorator values without resolving imports.
+const TOOLKIT_PAGE_REGION_EXCLUSIONS = [
+    'SFNextToolkit.accordionItem',
+    'SFNextToolkit.categoryCard',
+    'SFNextToolkit.megaMenu',
+    'SFNextToolkit.megaMenuFeature',
+    'SFNextToolkit.megaMenuLink',
+    'SFNextToolkit.megaMenuPanel',
+    'SFNextToolkit.promoCard',
+    'SFNextToolkit.siteTheme',
+    'SFNextToolkit.sizeGuide',
+    'SFNextToolkit.trustItem',
+];
+
 @PageType({
     name: 'Product Detail Page',
     description: 'Product detail page with product information, images, and recommendations',
@@ -101,12 +116,21 @@ import { ShippingDeliveryProvider } from '@/extensions/shipping-delivery/context
         name: 'Promo Content Region',
         description: 'Promotional content region above main product content',
         maxComponents: 1,
+        componentTypeExclusions: TOOLKIT_PAGE_REGION_EXCLUSIONS,
+    },
+    {
+        id: 'productTools',
+        name: 'Product Tools',
+        description: 'Interactive Page Designer tools shown beside the product options',
+        maxComponents: 1,
+        componentTypeInclusions: ['SFNextToolkit.sizeGuide'],
     },
     {
         id: 'engagementContent',
         name: 'Engagement Content Region',
         description: 'Engagement content region for recommendations and related products below main content',
         maxComponents: 1,
+        componentTypeExclusions: TOOLKIT_PAGE_REGION_EXCLUSIONS,
     },
 ])
 export class ProductPageMetadata {}
@@ -321,6 +345,7 @@ export const shouldRevalidate = shouldRevalidateProduct;
 
 function ProductContent({
     product,
+    page,
     url,
     // @sfdc-extension-block-start SFDC_EXT_RATINGS_REVIEWS
     reviewsSummary,
@@ -333,6 +358,7 @@ function ProductContent({
     // @sfdc-extension-block-end SFDC_EXT_PRODUCT_CONTENT
 }: {
     product: ShopperProducts.schemas['Product'];
+    page: ProductPageData['page'];
     url: string;
     // @sfdc-extension-block-start SFDC_EXT_RATINGS_REVIEWS
     reviewsSummary: ReviewsSummaryData;
@@ -364,6 +390,7 @@ function ProductContent({
 
     const isProductASet = isProductSet(product);
     const isProductABundle = isProductBundle(product);
+    const productToolsSlot = <Region className="mt-4" page={page} regionId="productTools" />;
 
     return (
         <ProductProvider product={product}>
@@ -391,11 +418,11 @@ function ProductContent({
                         <div className="space-y-8">
                             {isProductASet || isProductABundle ? (
                                 <>
-                                    <ProductView product={product} />
+                                    <ProductView product={product} productToolsSlot={productToolsSlot} />
                                     <ChildProducts parentProduct={product} />
                                 </>
                             ) : (
-                                <ProductView product={product} />
+                                <ProductView product={product} productToolsSlot={productToolsSlot} />
                             )}
 
                             {/* @sfdc-extension-block-start SFDC_EXT_RATINGS_REVIEWS */}
@@ -439,6 +466,7 @@ function ProductDetailView({ loaderData }: { loaderData: ProductPageData }) {
                 {/* Main Product Content — product is resolved synchronously by the loader */}
                 <ProductContent
                     product={loaderData.product}
+                    page={loaderData.page}
                     url={loaderData.pageUrl}
                     // @sfdc-extension-block-start SFDC_EXT_RATINGS_REVIEWS
                     reviewsSummary={loaderData.reviewsSummary}

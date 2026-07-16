@@ -6,11 +6,85 @@
         {
             "id": "promoContent",
             "name": "Promo Content Region",
+            "component_type_exclusions": [
+                {
+                    "type_id": "SFNextToolkit.accordionItem"
+                },
+                {
+                    "type_id": "SFNextToolkit.categoryCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenu"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuFeature"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuLink"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuPanel"
+                },
+                {
+                    "type_id": "SFNextToolkit.promoCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.siteTheme"
+                },
+                {
+                    "type_id": "SFNextToolkit.sizeGuide"
+                },
+                {
+                    "type_id": "SFNextToolkit.trustItem"
+                }
+            ],
+            "max_components": 1
+        },
+        {
+            "id": "productTools",
+            "name": "Product Tools",
+            "component_type_inclusions": [
+                {
+                    "type_id": "SFNextToolkit.sizeGuide"
+                }
+            ],
             "max_components": 1
         },
         {
             "id": "engagementContent",
             "name": "Engagement Content Region",
+            "component_type_exclusions": [
+                {
+                    "type_id": "SFNextToolkit.accordionItem"
+                },
+                {
+                    "type_id": "SFNextToolkit.categoryCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenu"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuFeature"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuLink"
+                },
+                {
+                    "type_id": "SFNextToolkit.megaMenuPanel"
+                },
+                {
+                    "type_id": "SFNextToolkit.promoCard"
+                },
+                {
+                    "type_id": "SFNextToolkit.siteTheme"
+                },
+                {
+                    "type_id": "SFNextToolkit.sizeGuide"
+                },
+                {
+                    "type_id": "SFNextToolkit.trustItem"
+                }
+            ],
             "max_components": 1
         }
     ],

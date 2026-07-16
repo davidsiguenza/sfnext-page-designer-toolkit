@@ -23,9 +23,13 @@ import { fetchPageWithComponentDataOrThrow } from '@/lib/page-designer/page-load
 import { buildCanonicalUrl } from '@/utils/canonical-url';
 
 export const BLANK_PAGE_TYPE_ID = 'sfnextToolkitBlankPage';
+export const BRANDING_STUDIO_PAGE_TYPE_ID = 'sfnextToolkitBrandingStudioPage';
 
-function isBlankPageType(typeId: string): boolean {
-    return typeId === BLANK_PAGE_TYPE_ID || typeId === `page.${BLANK_PAGE_TYPE_ID}`;
+const GENERIC_PAGE_TYPE_IDS = new Set([BLANK_PAGE_TYPE_ID, BRANDING_STUDIO_PAGE_TYPE_ID]);
+
+function isToolkitGenericPageType(typeId: string): boolean {
+    const normalizedTypeId = typeId.startsWith('page.') ? typeId.slice('page.'.length) : typeId;
+    return GENERIC_PAGE_TYPE_IDS.has(normalizedTypeId);
 }
 
 export async function loader(args: Route.LoaderArgs) {
@@ -39,7 +43,7 @@ export async function loader(args: Route.LoaderArgs) {
     try {
         const page = await fetchPageWithComponentDataOrThrow(args, { pageId });
 
-        if (!isBlankPageType(page.typeId) || (!isAuthoring && page.visible === false)) {
+        if (!isToolkitGenericPageType(page.typeId) || (!isAuthoring && page.visible === false)) {
             throw new Response('Page not found', { status: 404 });
         }
 
@@ -57,7 +61,7 @@ export async function loader(args: Route.LoaderArgs) {
     }
 }
 
-export default function BlankPage({ loaderData }: Route.ComponentProps) {
+export default function ToolkitGenericPage({ loaderData }: Route.ComponentProps) {
     const { page, pageUrl, isAuthoring } = loaderData;
 
     return (

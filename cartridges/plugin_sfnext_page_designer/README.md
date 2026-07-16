@@ -1,6 +1,6 @@
 # Storefront Next Page Designer Toolkit
 
-`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides 5 merchant-facing page types and 26 component types without brand assets, catalog IDs, credentials, or site-specific configuration.
+`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides 6 merchant-facing page types, 28 component types, and 1 custom editor without brand assets, catalog IDs, credentials, or fixed site configuration. The optional Size Guide intentionally includes a versioned Mayoral sizing dataset; no Mayoral imagery or product data is bundled.
 
 The toolkit has two required parts:
 
@@ -13,13 +13,14 @@ A B2C cartridge cannot execute React by itself. Install and deploy both parts to
 
 ### Page types
 
-| Type ID                                | Use case                                                                                    | Route or assignment                                   |
-| -------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `page.sfnextToolkitBlankPage`          | Build campaign and editorial landing pages from a flexible blank canvas.                    | `/:siteId/:localeId/page/:pageId`                     |
-| `page.sfnextToolkitProductListingPage` | Add managed content around the standard category experience and configure the product grid. | PLP aspect, `/:siteId/:localeId/category/:categoryId` |
-| `page.sfnextToolkitProductDetailPage`  | Add promotional and engagement content before and after the standard product experience.    | PDP aspect, `/:siteId/:localeId/product/:productId`   |
-| `page.sfnextToolkitBlogHomePage`       | Compose an editorial blog landing page around an automatically populated post grid.         | `/:siteId/:localeId/blog`                             |
-| `page.sfnextToolkitBlogPostPage`       | Define the reusable before/after-article layout shared by every blog post.                  | `/:siteId/:localeId/blog/preview`                     |
+| Type ID                                | Use case                                                                                      | Route or assignment                                   |
+| -------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `page.sfnextToolkitBlankPage`          | Build campaign and editorial landing pages from a flexible blank canvas.                      | `/:siteId/:localeId/page/:pageId`                     |
+| `page.sfnextToolkitProductListingPage` | Add managed content around the standard category experience and configure the product grid.   | PLP aspect, `/:siteId/:localeId/category/:categoryId` |
+| `page.sfnextToolkitProductDetailPage`  | Add content around the standard PDP and one contextual fit tool beside its product options.   | PDP aspect, `/:siteId/:localeId/product/:productId`   |
+| `page.sfnextToolkitBlogHomePage`       | Compose an editorial blog landing page around an automatically populated post grid.           | `/:siteId/:localeId/blog`                             |
+| `page.sfnextToolkitBlogPostPage`       | Define the reusable before/after-article layout shared by every blog post.                    | `/:siteId/:localeId/blog/preview`                     |
+| `page.sfnextToolkitBrandingStudioPage` | Stage and preview one visual Site Theme before saving it as a site-wide Header content block. | `/:siteId/:localeId/page/:pageId`                     |
 
 The PLP and PDP page types use the standard `plp` and `pdp` aspect definitions from `app_storefrontnext_base` instead of duplicating them.
 
@@ -53,8 +54,12 @@ The PLP and PDP page types use the standard `plp` and `pdp` aspect definitions f
 | `component.SFNextToolkit.productList`            | PLP image view type, product fields, swatches, actions, and custom catalog attributes.                 | PLP search runtime       |
 | `component.SFNextToolkit.blogPostGrid`           | Search, filter, sort, and paginate localized blog Content Assets in editorial cards.                   | Shopper Experience API   |
 | `component.SFNextToolkit.contentCollection`      | Manually selected or latest folder content, including blog and generic assets, in a grid or carousel.  | Shopper Experience API   |
+| `component.SFNextToolkit.sizeGuide`              | PDP fit assistant using bounded Mayoral brand, measurement, and age rules plus product availability.   | Current PDP product      |
+| `component.SFNextToolkit.siteTheme`              | Visual, allowlisted source-token palette published through the Header's site-wide theme region.        | None                     |
 
-Eighteen component types are general-purpose root-page blocks. Seven are contextual building blocks rather than loose page blocks: `accordionItem`, `categoryCard`, `megaMenuPanel`, `megaMenuLink`, `megaMenuFeature`, `promoCard`, and `trustItem`. `megaMenu`, displayed as **Mega Menu Enhancements**, is the remaining root-capable type and is intended only for the Site-Wide Regions Beta workflow: drag it onto a temporary unpublished Blank Page, configure it, and save it as a content block for the header. It is not embedded, has no fixed component ID, and must not be published as ordinary page content. These restrictions keep the Page Designer palette useful and prevent invalid compositions.
+Eighteen component types are general-purpose root-page blocks. Seven are nested contextual building blocks rather than loose page blocks: `accordionItem`, `categoryCard`, `megaMenuPanel`, `megaMenuLink`, `megaMenuFeature`, `promoCard`, and `trustItem`. The three remaining components are deliberately constrained: `sizeGuide` appears only in a PDP's max-one `productTools` region; `megaMenu` is staged as a content block for **Header > Mega Menu Enhancements**; and `siteTheme` is staged in Branding Studio for **Header > Site Theme**. The last two are ordinary content blocks with no fixed component ID and must not be published as ordinary page content. These restrictions keep the Page Designer palette useful and prevent invalid or unexpectedly global compositions.
+
+The included standard Home, About, PLP, Search, and PDP host metadata explicitly excludes those ten contextual/constrained types from every ordinary region; PLP keeps its dedicated Product List inclusion and PDP keeps its dedicated Size Guide inclusion. The same boundary is enforced in generic Grid columns, Header Announcement, Section content, and Responsive Columns, so nesting cannot reintroduce an invalid drop target. `componentPreview` remains open for development previews. Site Theme also has a runtime guard that emits live CSS only when its immediate region is the embedded Header's exact `siteTheme` region. When porting the toolkit to a Storefront Next project with additional page types or container components, apply the same exclusions to every non-contextual region: a plugin component type cannot restrict a third-party host region by itself.
 
 ## Component guide
 
@@ -224,6 +229,67 @@ Place exactly one Product List in the PLP template's `plpProductList` region. Me
 
 `additionalAttributes` accepts up to five custom product attributes separated by commas or lines. Labels can be supplied with `material|Material` or `season=Season`; the `c_` prefix is optional.
 
+### Size Guide
+
+Place at most one `SFNextToolkit.sizeGuide` in the Product Detail template's `productTools` region. The host route renders that region beside the standard product information and inside the existing Product provider, so the guide can compare its result with the current product's size variation values. It does not replace variation selection, price, inventory, or Add to Cart.
+
+The shopper can start with one of three evidence sources:
+
+- **Known brand and size** uses only an exact comparison row included in the versioned dataset. The known item must fit well; an ill-fitting label is not conversion evidence.
+- **Measurements** is the preferred path. Child clothing uses height as the primary reference and chest for tops/dresses/outerwear or inseam for bottoms. Child footwear uses the longer of the two feet when both are supplied.
+- **Age** offers orientation only. It is deliberately low confidence and asks for height before presenting the result as a strong fit recommendation.
+
+Current dataset coverage (`2026-07-16`) is intentionally finite:
+
+| Target                     | Supported reference coverage                                                                                                                                          |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mayoral child clothing     | Sizes `2`, `3`, `4`, `6`, `8`, `10`, `12`, `14`, and `16`; height 92–162 cm, chest 52–81 cm, and inseam 37.5–78 cm.                                                   |
+| Mayoral child footwear     | Sizes `18`–`36`; published foot lengths 11.2–22.2 cm. Size `30` retains the source discrepancy between 18.5 and 18.8 cm instead of hiding it.                         |
+| Other-brand child clothing | Exact researched rows only: Adidas `7–8/128`, Nike `S/8–10`, Vans Boys `S/US 8`, and Vans Girls `S/US 7–8`.                                                           |
+| Other-brand child footwear | Exact Vans, Adidas, or New Balance `EU 25` rows associated with 14.5 cm. The engine compares the published length; it does not assume all EU 25 shoes are equivalent. |
+
+Published Mayoral rows are reference points, not invented continuous intervals. When height, chest, inseam, or foot length falls strictly between two adjacent references, the result shows both sizes, presents the upper size only as a conservative orientation, lowers confidence, and requires confirmation instead of offering an immediate **Use size** action. Exact reference matches can remain actionable. The documented size-30 footwear discrepancy keeps its dedicated conflict result rather than being rounded away.
+| Age-only orientation | Child clothing ages 2–16, with low confidence and a request for height. Footwear always requires foot length. |
+
+The guide does **not** extrapolate unknown brand labels, convert other-brand adult/baby/teen labels, assume that the same nominal EU number has the same internal length, or silently choose an in-stock substitute. Unsupported evidence produces `needs_measurement`, conflicting evidence produces `needs_confirmation`, and values outside the table produce `out_of_coverage`. When the calculated ideal is absent from the current product, the result is `ideal_unavailable`; an adjacent size can be shown as context but is not promoted to the ideal.
+
+This is practical fit guidance, not a guarantee or medical advice. Merchants should review the dataset whenever a brand changes its official charts and version the component contract if they introduce incompatible rules. The toolkit keeps height, body, foot, age, and known-size inputs only in transient React state for the open interaction. It does not persist them in cookies or browser storage, submit them to Commerce APIs, or add them to analytics. A host project that adds persistence or tracking must provide its own consent, retention, and privacy controls.
+
+Authoring sequence:
+
+1. Open or assign **SFNext Toolkit - Product Detail** for the target PDP aspect.
+2. Drag **Size Guide** into `Product Tools`; the region accepts one and no other component type.
+3. Configure its labels, target product category/collection, size variation attribute, and the permitted evidence paths.
+4. Preview with representative products whose size values are online, then test a supported result, an unavailable ideal, an unknown label, and an out-of-range measurement before publishing the PDP assignment.
+
+### Site Theme and Branding Studio
+
+`SFNextToolkit.siteTheme` turns the Storefront Next color token layer into a controlled visual Page Designer experience. Its `theme` attribute uses the included `SFNextToolkit.themeEditor` custom editor rather than a long list of free-text attributes. The editor groups color controls into core surfaces/content, actions, header/footer chrome, status/feedback, commerce aliases, agentic colors, and legacy brand primitives; supports versioned presets and automatic or manual foreground contrast; and emits one versioned JSON value through the standard Page Designer custom-editor events.
+
+Only allowlisted Storefront Next **source variables** are written. In addition to core surfaces/actions, chrome, and status/rating pairs, the editor covers the source colors exposed by Tailwind for account sidebars, swatches, filters, verified reviews, promotional product badges, destructive account actions, positive status, the agentic experience, and the black/white/gray brand ramps. The directly consumed `bg-input-30`, `bg-input-50`, and `bg-input-80` helpers are included too. PayPal gold and Venmo blue remain provider-owned and cannot be changed here. Tailwind 4's generated `--color-*` bridge variables also remain untouched, as do fonts, radii, shadows, opacity percentages, layout tokens, and complex CSS values such as filters or multi-part shadows. Runtime validation accepts only complete six-digit hex colors for known token names; arbitrary selectors, declarations, classes, URLs, and scriptable values are discarded. The code defaults for `focus` and `destructive-focus` use RGBA translucency; explicitly configuring either replaces that default with the selected solid six-digit hex color.
+
+Semantic aliases are one-way defaults, not duplicated authoring work. When their source is present, selected swatches and legacy brand actions derive from `primary`, matching text derives from `primary-foreground`, account-sidebar accents derive from the accent pair, and filter/review/product/status/agentic aliases derive from their corresponding semantic source. An explicit alias color in the editor always wins; resetting it restores derivation (or the storefront's code-defined default when its source is not overridden). Independent brand ramp colors are never synthesized.
+
+The publication boundary is deliberately strict:
+
+- In Page Designer **Edit** or **Preview**, the already-published global projection is suppressed. The staged or focused Site Theme rendered through the normal registry shows one scoped sample card and never writes to `:root`.
+- On an ordinary page—including a mistakenly published Branding Studio page—the component is outside the embedded Header subtree and renders no global style.
+- A saved but unpublished content block is not a live theme.
+- On the live application, root overrides are emitted only for an enabled, visible Site Theme delivered inside the fixed embedded `Layout.header` component's `siteTheme` region. The common shell projects that child before the visible route, so standard storefront, checkout, login, signup, and password-recovery layouts share the published palette. The emitted selector also matches `:root[data-brand]`, so a published Page Designer theme can override a host branding extension with equal specificity while leaving the host `data-brand` and its non-token behavior intact.
+- The live projection is cached per MRT instance, site, and locale for a 30-second freshness window. A cold or expired request waits no more than one second for Shopper Experience and otherwise fails closed to the code-defined palette; expired branding is never served as a fallback. A valid response that finishes after that caller budget can still warm the cache in the background. Requests share that generation for up to five seconds before a genuinely stuck generation may be superseded; an older late response can never replace a newer cache value. Publication, unpublication, scheduled status changes, and rollback become eligible on the first request after the current freshness window, and a successful refresh applies the change to that request or a following request when it completes after the one-second budget.
+- Site Theme intentionally represents one non-personal global palette. Do not attach customer-group, campaign, personalization, or any other visitor-segment visibility rule to the block or its Header assignment: the safe cache key contains only site and locale, so segmented branding is outside this component's contract.
+
+Safe authoring sequence (Site-Wide Regions for Content Blocks is currently **Beta** and subject to Salesforce Beta Services terms):
+
+1. In **Administration > Feature Switches**, enable **Enable Embedded Content Blocks** under Enable Content Blocks.
+2. In Page Designer, create **SFNext Toolkit - Branding Studio**. Keep this staging page unpublished.
+3. Drag one **Site Theme** into its `Theme Preview` region, open the visual editor, choose or customise the palette, and verify the scoped component preview.
+4. Save the configured component and choose **Save as Content Block**.
+5. From the content block settings, choose **Set Site-Wide Region > Header > Site Theme**.
+6. Publish the content block/assignment and verify a normal storefront route after the current 30-second freshness window. To roll back without deleting the palette, unpublish or unassign the block, or disable the component and publish that change; the first request after each warm instance's freshness window performs the bounded refresh.
+
+The custom editor consists of one editor metadata definition plus its same-named server module and local JavaScript/CSS resources in the cartridge. Keep all of them together and keep `plugin_sfnext_page_designer` ahead of `app_storefrontnext_base` in the site's cartridge path; otherwise the attribute can exist while its visual controls fail to load.
+
 ### Blog Post Grid
 
 Blog Post Grid turns the online Content Assets assigned to a configured content folder into responsive article cards. Merchants can select the folder, page size, sort order, category or featured-only filter, column count, image ratio, visible metadata, CTA copy, and pagination. The component reads content through Shopper Experience on the server; it does not expose credentials or call SCAPI from the browser.
@@ -273,7 +339,7 @@ pnpm cartridge:validate
 pnpm build
 ```
 
-`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest. Validation also enforces the complete 26-type public component contract and rejects unresolved TypeScript expressions or enum defaults that are not present in their value lists. A complete generated toolkit contains 31 metadata files: 26 component definitions and 5 page definitions.
+`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types and custom-editor definition/resources, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest. Validation also enforces the complete 28-type public component contract and rejects unresolved TypeScript expressions or enum defaults that are not present in their value lists. A complete generated toolkit contains 35 JSON metadata files: 28 component definitions, 6 page definitions, and 1 custom-editor definition. The custom editor's server module and static JavaScript/CSS are additional cartridge resources, not JSON metadata definitions.
 
 `cartridge:validate` validates both the standard Storefront Next metadata and every file in this cartridge with the B2C tooling schema validator.
 
@@ -289,8 +355,10 @@ pnpm push
 
 The install command deploys both `app_storefrontnext_base` and
 `plugin_sfnext_page_designer`. The base cartridge carries the required
-`Layout.header` region, while the plugin carries the toolkit components. A
-plugin-only deployment cannot make **Header > Mega Menu Enhancements** appear.
+`Layout.header` regions, while the plugin carries the toolkit components and
+custom editor. A plugin-only deployment cannot make **Header > Mega Menu
+Enhancements** or **Header > Site Theme** appear on an installation whose base
+Header contract predates those regions.
 Use `pnpm cartridge:deploy:page-designer` only for subsequent metadata-only
 updates that do not change the Header contract.
 
@@ -306,7 +374,7 @@ The MRT environment must be linked to the same B2C Commerce instance and site so
 
 1. Open **Merchant Tools > Content > Page Designer** for the target site.
 2. Create a page and choose one of the `SFNext Toolkit` page types, or open a PLP/PDP assignment using the matching aspect.
-3. Drag components from the `SFNextToolkit` group into compatible regions. General toolkit page regions expose the appropriate subset of 18 root-page blocks; the Blank Page additionally exposes `Mega Menu Enhancements` solely for staging the Header content block. The 7 contextual child types appear only inside their matching parents. Never publish Mega Menu Enhancements as ordinary page content.
+3. Drag components from the `SFNextToolkit` group into compatible regions. General toolkit page regions expose the appropriate subset of 18 root-page blocks; Blank Page exposes `Mega Menu Enhancements` only for staging its Header content block; Branding Studio exposes only `Site Theme`; and PDP `productTools` exposes only `Size Guide`. The 7 nested child types appear only inside their matching parents. Never publish Mega Menu Enhancements or Site Theme as ordinary page content.
 4. Configure the component attributes and save.
 5. Use Preview to verify desktop and mobile behavior.
 6. Publish the page or assignment when it is ready.
@@ -314,6 +382,13 @@ The MRT environment must be linked to the same B2C Commerce instance and site so
 Page Designer changes must be saved before the Storefront Next preview iframe refreshes. Unsaved property changes are not reflected live.
 
 ## Recommended page recipes
+
+### Global site branding
+
+1. Enable Embedded Content Blocks and create one unpublished **SFNext Toolkit - Branding Studio** page.
+2. Configure one Site Theme in `Theme Preview`; use the visual editor's grouped source-token controls and check foreground/background contrast in the scoped sample.
+3. Save it as a content block, assign it through **Header > Site Theme**, and publish the block/assignment—not the Branding Studio page.
+4. Verify header, menu, product cards, forms, feedback states, and footer on both light and content-heavy routes. Unassign the block for an immediate return to the code-defined Storefront Next theme.
 
 ### Global catalog navigation
 
@@ -344,7 +419,8 @@ Page Designer changes must be saved before the Storefront Next preview iframe re
 ### Product detail page
 
 1. Promo Strip, Trust Bar, or Media + Content in `promoContent`
-2. Embedded Video, Product Carousel, Einstein Product Recommendations, Media + Content, Content Collection, or Accordion in `engagementContent`
+2. One Size Guide in `productTools`, when the target products use the configured Mayoral child sizing coverage
+3. Embedded Video, Product Carousel, Einstein Product Recommendations, Media + Content, Content Collection, or Accordion in `engagementContent`
 
 ### Blog home
 
@@ -380,13 +456,16 @@ src/components/header/index.tsx
 src/components/product-carousel
 src/components/product-list
 src/components/product-tile
+src/components/product-view
 src/components/navigation-menu-mega
 src/components/navigation-menu/impl.tsx
 src/lib/product/product-conversion.ts
 src/lib/page-designer/collect-component-data.server.ts
 src/lib/page-designer/component-loader.server.ts
 src/lib/page-designer/page-loader.server.ts
+src/root.tsx
 src/routes/_app.tsx
+src/routes/_app.product.$productId.tsx
 src/routes/_empty.preview.component.tsx
 site-imports/sfnext-toolkit-blog
 ```
@@ -395,16 +474,17 @@ Then:
 
 1. Register `SFDC_EXT_PAGE_DESIGNER_TOOLKIT` in `src/extensions/config.json`.
 2. Add the `cartridge:generate`, `cartridge:validate`, `cartridge:deploy:page-designer`, and `cartridge:deploy:page-designer:install` scripts from this project to `package.json`. The `:install` command must include both `app_storefrontnext_base` and `plugin_sfnext_page_designer`; the shorter command remains plugin-only for later metadata updates.
-3. Merge the shared Product Carousel, Product List, Product Tile, and product-conversion adapters rather than replacing newer host implementations blindly. Product Card and category-loaded Product Carousel rely on those shared contracts for requested image types, fields, prices, promotions, and custom attributes. Run their tests after resolving any Storefront Next release differences.
-4. Merge the Mega Menu host integration into the target release's standard application shell and `navigation-menu-mega` implementation. `Layout.header` must remain the only embedded component, with fixed `component_id: header` and a max-one `megaMenuEnhancements` region. Fetch that header once on the server, preserve its requested ID with Page Designer `mode`/`pdToken`, extract the optional `SFNextToolkit.megaMenu` child, batch its feature data, and pass it into the existing catalog navigation. Do not fetch the enhancement separately or give it a fixed ID. Keep the enhancement's authoring canvas and verify that its focused draft renders the complete nested panel region while live `editorial-slot.tsx` renders only the matching category panel. Preserve the host category tree, focus/keyboard behavior, single menu state, mobile menu, category banners, and standard no-enhancement fallback instead of replacing the navigation wholesale.
-5. Extend the host CSP `frame-src` and `media-src` directives with the approved video origins described under Embedded Video.
-6. Run `pnpm cartridge:generate` and `pnpm cartridge:validate`. Do not copy a stale generated registry or edit it manually. Validation should report 31 toolkit metadata files.
-7. Deploy both the updated `app_storefrontnext_base` and generated `plugin_sfnext_page_designer` cartridges with `pnpm cartridge:deploy:page-designer:install --reload`, activate the code version, and place `plugin_sfnext_page_designer` before `app_storefrontnext_base` in the target site's cartridge path. Repeat the dual-cartridge deployment whenever the Header host metadata changes; plugin-only deployment is sufficient only for later metadata-only updates that preserve that contract.
-8. If Blog Post Grid, Content Collection, blog routes, or Content-backed Mega Menu Features are required, import `site-imports/sfnext-toolkit-blog` when its fields are used, create the desired library folder (the default is `sfnext-blog`), and create online assets in the locales the storefront serves. Generic Content use does not require the SFNext Blog custom fields, but mapped attributes must exist on `Content`.
-9. Preserve the SLAS client's existing scopes and add `sfcc.shopper-experience.contents`. Also confirm that the instance API configuration allows the Shopper Experience component, content, and content-search resources used by the runtime. Product/category Mega Menu sources use the target storefront's existing Shopper Products access; Salesforce CMS mode and a Custom feature seeded from `cms_record` use the host Salesforce CMS/Page Designer configuration instead of the B2C Content Asset API.
-10. Rebuild the target site's content search index after importing metadata/assets or assigning folders. Latest mode and Blog Post Grid cannot discover an asset until the index exposes its online, localized folder membership; manually selected Content Assets and menu features still require the requested IDs to be readable through Shopper Experience.
-11. Build and deploy the MRT application from the same commit as the cartridge. Configure the MRT environment for the target organization, short code, site, locale, currency, and SLAS client.
-12. Give authoring users Page Designer permission plus access to the target content library, CMS workspace when applicable, and catalog. For the Mega Menu, enable **Administration > Feature Switches > Enable Embedded Content Blocks**, stage `Mega Menu Enhancements` on an unpublished temporary Blank Page, save it as a content block, and assign it through **Set Site-Wide Region > Header > Mega Menu Enhancements**. This site-wide capability is Beta. Then create or assign the remaining toolkit page types in Business Manager.
+3. Merge the shared Product Carousel, Product List, Product Tile, Product View, and product-conversion adapters rather than replacing newer host implementations blindly. Product Card and category-loaded Product Carousel rely on the tile/data contracts; Size Guide relies on the PDP route's max-one `productTools` region being rendered inside the current Product provider and passed into Product View beside the standard options. Run their tests after resolving any Storefront Next release differences.
+4. Merge the Header integrations into the target release's root application shell and `navigation-menu-mega` implementation. `Layout.header` must remain the only embedded component, with fixed `component_id: header`, max-one `siteTheme` and `megaMenuEnhancements` regions, and the corresponding type inclusions. Preserve the requested Header ID with Page Designer `mode`/`pdToken`. Project only its Site Theme child into the root `PageDesignerProvider` before the route outlet so checkout and authentication layouts inherit it too; cache only that sanitized published projection per site/locale for 30 seconds, skip the cache entirely in Edit/Preview, and bound both cold and expired refreshes to one second with a fail-closed code-palette fallback. Let `_app` stream the request-scoped raw owner and attach the optional Mega Menu feature batches for the inherited navigation; when root has a cold miss in that same request, the raw owner promise is reused rather than fetched twice. Do not cache the full Header tree, fetch either feature as a second fixed component, or give its ordinary content block a fixed ID. Preserve the host category tree, focus/keyboard behavior, single menu state, mobile menu, category banners, and standard no-enhancement fallback instead of replacing the navigation wholesale.
+5. Keep the Site Theme publication guard intact when adapting the application shell: suppress the published global projection in Edit/Preview so the staged/focused registry component owns the scoped sample; live ordinary page content produces no style; and only a child projected from the embedded Header owner may emit allowlisted source variables at `:root`.
+6. Extend the host CSP `frame-src` and `media-src` directives with the approved video origins described under Embedded Video.
+7. Run `pnpm cartridge:generate` and `pnpm cartridge:validate`. Do not copy a stale generated registry or edit it manually. Validation should report 35 JSON toolkit metadata files (28 components, 6 pages, and 1 custom editor), plus the editor's server/static resources.
+8. Deploy both the updated `app_storefrontnext_base` and generated `plugin_sfnext_page_designer` cartridges with `pnpm cartridge:deploy:page-designer:install --reload`, activate the code version, and place `plugin_sfnext_page_designer` before `app_storefrontnext_base` in the target site's cartridge path. Repeat the dual-cartridge deployment whenever the Header host metadata changes; plugin-only deployment is sufficient only for later metadata-only updates that preserve that contract.
+9. If Blog Post Grid, Content Collection, blog routes, or Content-backed Mega Menu Features are required, import `site-imports/sfnext-toolkit-blog` when its fields are used, create the desired library folder (the default is `sfnext-blog`), and create online assets in the locales the storefront serves. Generic Content use does not require the SFNext Blog custom fields, but mapped attributes must exist on `Content`.
+10. Preserve the SLAS client's existing scopes and add `sfcc.shopper-experience.contents`. Also confirm that the instance API configuration allows the Shopper Experience component, content, and content-search resources used by the runtime. Product/category Mega Menu sources use the target storefront's existing Shopper Products access; Salesforce CMS mode and a Custom feature seeded from `cms_record` use the host Salesforce CMS/Page Designer configuration instead of the B2C Content Asset API. Size Guide performs no extra shopper API call; it consumes the already loaded PDP product.
+11. Rebuild the target site's content search index after importing metadata/assets or assigning folders. Latest mode and Blog Post Grid cannot discover an asset until the index exposes its online, localized folder membership; manually selected Content Assets and menu features still require the requested IDs to be readable through Shopper Experience.
+12. Build and deploy the MRT application from the same commit as the cartridge. Configure the MRT environment for the target organization, short code, site, locale, currency, and SLAS client.
+13. Give authoring users Page Designer permission plus access to the target content library, CMS workspace when applicable, and catalog. Enable **Administration > Feature Switches > Enable Embedded Content Blocks** for both site-wide workflows. Stage Mega Menu Enhancements on an unpublished Blank Page and Site Theme on an unpublished Branding Studio page; save each as its own content block and assign it through the matching **Header** region. This site-wide capability is Beta. Then create or assign the remaining toolkit page types in Business Manager.
 
 The easiest reusable path is to fork this repository at a tagged toolkit release and apply project branding on top. When integrating into a different Storefront Next template release, treat the cartridge metadata and React implementation as one versioned unit, port the small shared-adapter changes, regenerate the registry, and validate the full build before deployment. The toolkit uses standard Storefront Next primitives and semantic theme tokens and contains no brand-specific assets or IDs.
 
@@ -412,6 +492,7 @@ The easiest reusable path is to fork this repository at a tagged toolkit release
 
 - Component and attribute IDs are public contracts. Do not rename them after pages have been authored; add a versioned type for incompatible changes.
 - Use enum presets backed by semantic tokens instead of arbitrary colors, CSS classes, or inline scripts.
+- Site Theme is the controlled exception for merchant-selected colors: keep its strict source-token and six-digit-hex allowlists, check contrast in the visual editor, and never expose arbitrary CSS.
 - Use the content library image picker, meaningful alternative text, and decorative-image mode only when the image conveys no information.
 - Keep one page-level `h1`. Use Rich Text's `h1` only on a blank page that does not already render one; start managed PLP and PDP content at `h2`.
 - Parent component regions restrict their allowed child types.
@@ -421,12 +502,13 @@ The easiest reusable path is to fork this repository at a tagged toolkit release
 - Embedded videos require a descriptive title; direct videos should provide WebVTT captions and all videos should offer a transcript for meaningful spoken content.
 - Loading fallbacks preserve approximate component dimensions to reduce layout shift.
 - Commerce APIs run in MRT loaders, never directly in the browser.
+- Treat Size Guide results as bounded guidance, expose uncertainty and unavailable ideals, and never persist or track shopper measurements without an explicit host privacy design.
 
 ## Troubleshooting
 
 ### Components do not appear
 
-- Confirm that both `app_storefrontnext_base` and `plugin_sfnext_page_designer` were deployed to the active code version. Initial Mega Menu installation requires the dual-cartridge `pnpm cartridge:deploy:page-designer:install` command; the plugin-only command does not add the Header region.
+- Confirm that both `app_storefrontnext_base` and `plugin_sfnext_page_designer` were deployed to the active code version. Initial Mega Menu/Site Theme installation requires the dual-cartridge `pnpm cartridge:deploy:page-designer:install` command; the plugin-only command does not add the Header regions.
 - Confirm that `plugin_sfnext_page_designer` is in the site's cartridge path before `app_storefrontnext_base`.
 - Run `pnpm cartridge:validate` and fix every schema error.
 - Rebuild the MRT application so the static component registry contains the same type IDs as Business Manager.
@@ -446,6 +528,29 @@ The easiest reusable path is to fork this repository at a tagged toolkit release
 - For Product Carousel Manual mode, add Product Cards or `Content.productTile` children to the `products` region. In Category mode, select a category assigned to the site and containing searchable online products.
 - For Category Hero, verify that the page is previewed with a category aspect or configure editorial overrides.
 - Check MRT logs for component loader errors.
+
+### Size Guide cannot recommend a size
+
+- Confirm that Size Guide is in the PDP template's `productTools` region and that the host Product View actually renders that slot inside the current Product provider.
+- Confirm that the configured size variation attribute matches the product data and that the product exposes its online size values. An otherwise valid result is deliberately reported as unavailable when its ideal value is absent.
+- Use only covered child evidence. Unknown brands/labels, other-brand adult/baby/teen labels, or an ill-fitting known size intentionally request measurements instead of guessing.
+- For clothing, supply height and use chest for upper-body categories or inseam for bottoms when the first result needs confirmation. For footwear, measure both feet and use the longer value.
+- Keep values within the documented Mayoral tables. Do not reinterpret an `out_of_coverage` result as the nearest size.
+
+### The Site Theme visual editor does not load
+
+- Confirm that the generated cartridge contains the editor definition for `SFNextToolkit.themeEditor`, its same-named server module, and every JavaScript/CSS resource referenced by the editor metadata.
+- Confirm that `plugin_sfnext_page_designer` is ahead of `app_storefrontnext_base` in the site's cartridge path, the new code version is active, and Page Designer was refreshed after deployment.
+- Regenerate rather than hand-copying the editor. A custom-attribute definition without its cartridge resources can display an empty or fallback property editor even when the React storefront component exists.
+
+### Site Theme previews but does not change the live storefront
+
+- This is expected on the Branding Studio page and in Page Designer Edit/Preview: those contexts use a scoped sample and never modify `:root`.
+- Confirm that Site Theme was saved as a **content block**, assigned through **Set Site-Wide Region > Header > Site Theme**, enabled, visible, and published. Publishing the Branding Studio page is neither required nor sufficient.
+- Confirm that the active base Header metadata is embedded with fixed `component_id: header` and a max-one `siteTheme` region including `SFNextToolkit.siteTheme`.
+- Confirm that the application shell renders the Header's embedded `siteTheme` region. The component intentionally emits no live style outside that embedded subtree or when its content block is offline.
+- After publishing, unpublishing, disabling, or changing the assignment, the first request after each instance's current 30-second freshness window performs a bounded refresh. If Shopper Experience does not answer within one second, that request uses the code palette rather than stale branding. Do not use visitor-segment visibility rules for Site Theme.
+- Inspect the rendered document for `data-slot="sfnext-toolkit-site-theme"`. If it exists, verify that the configured values survived the strict source-token and `#RRGGBB` allowlists; unsupported token names and color syntax are discarded.
 
 ### The standard menu works but Mega Menu enhancements do not appear
 
@@ -482,7 +587,7 @@ The easiest reusable path is to fork this repository at a tagged toolkit release
 
 ## Removal
 
-Take pages and aspect assignments that use `SFNextToolkit` types offline, and unassign or migrate the `Mega Menu Enhancements` content block from **Header > Mega Menu Enhancements**, before removing the cartridge. The integration is deliberately fail-open: when that optional header region has no enhancement child, the inherited catalog navigation continues to render. Removing the cartridge metadata does not remove the React code from an already-deployed MRT bundle, and deploying another MRT bundle still replaces the entire application bundle.
+Take pages and aspect assignments that use `SFNextToolkit` types offline, and unassign or migrate both `Mega Menu Enhancements` from **Header > Mega Menu Enhancements** and `Site Theme` from **Header > Site Theme**, before removing the cartridge. The integrations are deliberately fail-open: without the optional menu block the inherited catalog navigation continues, and without the optional theme block the code-defined Storefront Next tokens continue. Removing the cartridge metadata does not remove the React code from an already-deployed MRT bundle, and deploying another MRT bundle still replaces the entire application bundle.
 
 ## License
 

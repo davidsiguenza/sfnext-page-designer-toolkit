@@ -20,18 +20,18 @@ import { createRoutesStub } from 'react-router';
 import type { ShopperProducts } from '@/scapi';
 import DefaultLayout, { loader, shouldRevalidate } from './_app';
 import { AllProvidersWrapper } from '@/test-utils/context-provider';
-import { fetchComponentWithMegaMenuFeatureData } from '@/components/sfnext-toolkit/mega-menu-feature/loaders';
+import { fetchHeaderOwnerWithMegaMenuDataOnce } from '@/components/sfnext-toolkit/header-owner.server';
 
 vi.mock('@/lib/api/categories.server', () => ({
     fetchCategory: vi.fn(),
     fetchCategoriesByIds: vi.fn(),
 }));
 
-vi.mock('@/components/sfnext-toolkit/mega-menu-feature/loaders', () => ({
-    fetchComponentWithMegaMenuFeatureData: vi.fn(),
+vi.mock('@/components/sfnext-toolkit/header-owner.server', () => ({
+    fetchHeaderOwnerWithMegaMenuDataOnce: vi.fn(),
 }));
 
-const mockedFetchHeader = vi.mocked(fetchComponentWithMegaMenuFeatureData);
+const mockedFetchHeader = vi.mocked(fetchHeaderOwnerWithMegaMenuDataOnce);
 
 vi.mock('@/components/region/embedded-component-region', () => ({
     EmbeddedComponentRegion: ({ component, regionId }: { component: unknown; regionId: string }) => (
@@ -303,6 +303,10 @@ describe('_app.tsx - Default Layout Route', () => {
                 expect(nav).toHaveAttribute('data-has-defer', 'true');
                 expect(nav).toHaveAttribute('data-has-mega-menu', 'true');
             });
+
+            expect(screen.getAllByTestId('embedded-component-region').map((region) => region.dataset.regionId)).toEqual(
+                ['announcement']
+            );
         });
 
         it('should handle missing root loader data gracefully', async () => {
@@ -446,12 +450,10 @@ describe('_app.tsx - Default Layout Route', () => {
 
             expect(mockedFetchHeader).toHaveBeenCalledTimes(1);
             expect(mockedFetchHeader).toHaveBeenCalledWith(
-                expect.objectContaining({ context: mockContext, request, params: {} }),
-                'header'
+                expect.objectContaining({ context: mockContext, request, params: {} })
             );
 
-            const headerComponent = await result.headerComponent;
-            expect(headerComponent).toBe(header);
+            await expect(result.headerComponent).resolves.toBe(header);
             await expect(result.megaMenuComponent).resolves.toEqual({ ...megaMenu, embedded: true, componentData });
             expect((await result.megaMenuComponent)?.componentData).toBe(componentData);
         });
@@ -468,6 +470,35 @@ describe('_app.tsx - Default Layout Route', () => {
 
             await expect(result.headerComponent).resolves.toBeNull();
             await expect(result.megaMenuComponent).resolves.toBeNull();
+        });
+
+        it('should fail open when the optional Header owner cannot be loaded', async () => {
+            const { fetchCategory } = await import('@/lib/api/categories.server');
+            vi.mocked(fetchCategory).mockResolvedValue({ id: 'root', name: 'Root', categories: [] });
+            mockedFetchHeader.mockRejectedValue(new Error('Shopper Experience unavailable'));
+
+            const result = loader({
+                context: {} as any,
+                request: new Request('https://example.test/'),
+            } as any);
+
+            await expect(result.headerComponent).resolves.toBeNull();
+            await expect(result.megaMenuComponent).resolves.toBeNull();
+        });
+
+        it('returns immediately while the optional Header owner is still pending', async () => {
+            const { fetchCategory } = await import('@/lib/api/categories.server');
+            vi.mocked(fetchCategory).mockResolvedValue({ id: 'root', name: 'Root', categories: [] });
+            mockedFetchHeader.mockReturnValue(new Promise(() => undefined));
+
+            const result = loader({
+                context: {} as any,
+                request: new Request('https://example.test/'),
+            } as any);
+
+            expect(result).not.toBeInstanceOf(Promise);
+            expect(result.headerComponent).toBeInstanceOf(Promise);
+            expect(result.megaMenuComponent).toBeInstanceOf(Promise);
         });
 
         it('should fetch subcategories for categories with onlineSubCategoriesCount > 0 in a single batch call', async () => {

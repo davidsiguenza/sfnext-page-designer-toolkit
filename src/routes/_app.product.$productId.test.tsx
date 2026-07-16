@@ -37,10 +37,11 @@ vi.mock('@/components/product-skeleton', () => ({
 }));
 
 vi.mock('@/components/product-view', () => ({
-    default: ({ product, category }: any) => (
+    default: ({ product, category, productToolsSlot }: any) => (
         <div data-testid="product-view">
             <div data-testid="product-name">{product?.name}</div>
             <div data-testid="category-name">{category?.name}</div>
+            {productToolsSlot}
         </div>
     ),
 }));
@@ -126,7 +127,11 @@ vi.mock('@/providers/product-context', () => ({
 }));
 
 vi.mock('@/components/region', () => ({
-    Region: ({ fallback }: any) => <div data-testid="region">{fallback}</div>,
+    Region: ({ fallback, regionId }: any) => (
+        <div data-testid="region" data-region-id={regionId}>
+            {fallback}
+        </div>
+    ),
 }));
 
 vi.mock('@/components/category-breadcrumbs', () => ({

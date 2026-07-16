@@ -21,6 +21,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { MemoryRouter } from 'react-router';
 import type { ShopperExperience, ShopperSearch } from '@/scapi';
 import SearchPage, { loader, shouldRevalidate, type SearchPageData, SearchPageMetadata } from './_app.search';
+import { TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS } from '@/components/sfnext-toolkit/authoring-constraints';
 import { shouldRevalidate as sharedShouldRevalidate } from '@/lib/revalidation/routes/category';
 import { EMPTY_WISHLIST_STATE } from '@/lib/wishlist/state';
 import { createLoaderArgs, createTestContext } from '@/lib/test-utils';
@@ -293,16 +294,19 @@ describe('SearchPage', () => {
             expect(topFullWidthRegion?.id).toBe('searchTopFullWidth');
             expect(topFullWidthRegion?.name).toBe('Top Full Width Region');
             expect(topFullWidthRegion?.maxComponents).toBe(5);
+            expect(topFullWidthRegion?.componentTypeExclusions).toEqual(TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS);
 
             const topContentRegion = getRegionDefinition(SearchPageMetadata, 'searchTopContent');
             expect(topContentRegion).toBeDefined();
             expect(topContentRegion?.id).toBe('searchTopContent');
             expect(topContentRegion?.name).toBe('Top Content Region');
+            expect(topContentRegion?.componentTypeExclusions).toEqual(TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS);
 
             const bottomRegion = getRegionDefinition(SearchPageMetadata, 'searchBottom');
             expect(bottomRegion).toBeDefined();
             expect(bottomRegion?.id).toBe('searchBottom');
             expect(bottomRegion?.name).toBe('Bottom Region');
+            expect(bottomRegion?.componentTypeExclusions).toEqual(TOOLKIT_CONTEXTUAL_COMPONENT_TYPE_EXCLUSIONS);
         });
     });
 

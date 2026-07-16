@@ -45,6 +45,21 @@ import { buildCanonicalUrl } from '@/utils/canonical-url';
 import { useTranslation } from 'react-i18next';
 import { NormalizedApiError } from '@/lib/api/normalized-api-error';
 
+// Kept as a same-file literal because the cartridge generator statically reads
+// decorator values without resolving imports.
+const TOOLKIT_PAGE_REGION_EXCLUSIONS = [
+    'SFNextToolkit.accordionItem',
+    'SFNextToolkit.categoryCard',
+    'SFNextToolkit.megaMenu',
+    'SFNextToolkit.megaMenuFeature',
+    'SFNextToolkit.megaMenuLink',
+    'SFNextToolkit.megaMenuPanel',
+    'SFNextToolkit.promoCard',
+    'SFNextToolkit.siteTheme',
+    'SFNextToolkit.sizeGuide',
+    'SFNextToolkit.trustItem',
+];
+
 export { shouldRevalidate } from '@/lib/revalidation/routes/home';
 
 @PageType({
@@ -58,12 +73,14 @@ export { shouldRevalidate } from '@/lib/revalidation/routes/home';
         name: 'Header Banner Region',
         description: 'Region for promotional banners and hero content',
         maxComponents: 3,
+        componentTypeExclusions: TOOLKIT_PAGE_REGION_EXCLUSIONS,
     },
     {
         id: 'main',
         name: 'Main Content Region',
         description: 'Region for main content',
         maxComponents: 10,
+        componentTypeExclusions: TOOLKIT_PAGE_REGION_EXCLUSIONS,
     },
 ])
 export class HomePageMetadata {}

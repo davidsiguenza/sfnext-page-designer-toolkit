@@ -2,15 +2,15 @@
 
 A reusable Page Designer component and template library for Salesforce B2C Commerce Storefront Next, distributed as a clean fork of the official Storefront Next template.
 
-The toolkit adds merchant-configurable PLP, PDP, blank, blog-home, and blog-post page types together with reusable editorial, promotional, trust, FAQ, navigation, category, product, video, and Content Asset components. It contains no brand assets, catalog IDs, credentials, or site-specific configuration.
+The toolkit adds merchant-configurable PLP, PDP, blank, blog-home, blog-post, and Branding Studio page types together with reusable editorial, promotional, trust, FAQ, navigation, category, product, video, sizing, theme, and Content Asset components. It contains no brand assets, catalog IDs, credentials, or fixed site configuration. The optional Size Guide is the deliberate exception to brand-neutral content: it ships a versioned Mayoral reference dataset and clearly bounded comparison rules.
 
 Start with the [complete cartridge and authoring guide](./cartridges/plugin_sfnext_page_designer/README.md), which documents every component, its use case, installation, Business Manager setup, deployment, accessibility guidance, and troubleshooting.
 
 ## Toolkit at a glance
 
-- Page types: blank landing page, product listing page, product detail page, blog home, and shared blog-post layout.
-- Components: 26 reusable types, including Campaign Hero, Embedded Video, editorial layouts, a responsive single Product Card, curated or category-driven Product Carousel, configurable PLP grid, Blog Post Grid, Content Collection, and the four-part Mega Menu enhancement.
-- Delivery: 31 Page Designer metadata definitions in `plugin_sfnext_page_designer`—26 components plus 5 pages—and the matching React implementation for Managed Runtime.
+- Page types: blank landing page, product listing page, product detail page, blog home, shared blog-post layout, and a safe Branding Studio workspace.
+- Components: 28 reusable types, including Campaign Hero, Embedded Video, editorial layouts, a responsive single Product Card, curated or category-driven Product Carousel, configurable PLP grid, Blog Post Grid, Content Collection, PDP Size Guide, visual Site Theme, and the four-part Mega Menu enhancement.
+- Delivery: 35 Page Designer metadata definitions in `plugin_sfnext_page_designer`—28 components, 6 pages, and 1 custom visual editor—and the matching React implementation for Managed Runtime.
 - Safety: namespaced type IDs, restricted nested regions, safe merchant links, semantic design tokens, and accessible defaults.
 
 ## Prerequisites
@@ -107,8 +107,23 @@ Content Asset-backed components also require the Storefront Next SLAS client to 
 - **Product Card** lets a merchant search for one catalog product, choose `hi-res`, `large`, `medium`, `small`, or `swatch` imagery, control the visible commerce fields and custom attributes, and use an automatic container-responsive layout.
 - **Product Carousel** accepts manually ordered Product Cards/Product Tiles or loads up to 12 products from a category. Category mode supports catalog order, a stable daily random selection, or a new random selection on each server loader execution.
 - **Content Collection** displays manually ordered Content Asset IDs or the latest _N_ online assets from a folder, filtered as blog, generic, or all content. Cards can render as a responsive grid or carousel and can map custom Content attribute IDs to title, summary, image, date, author, category, and destination.
+- **Size Guide** sits in the PDP template's single `productTools` region and recommends a Mayoral child size from a supported known-brand size, physical measurements, or age. It checks the current product's available variation values and reports uncertainty instead of inventing a conversion.
 
 Page Designer does not provide a native B2C Content Asset search attribute. Manual Content Collection authoring therefore uses Content Asset IDs, one per line or comma-separated; folder-backed mode avoids maintaining that list.
+
+## PDP Size Guide
+
+`SFNextToolkit.sizeGuide` is an opt-in PDP fit assistant, not a universal size converter. Its versioned Mayoral rules cover child clothing from the available height/chest/inseam references and child footwear from foot length. Cross-brand recommendations are made only for the exact Adidas, Nike, Vans, and New Balance rows present in the reviewed dataset; unknown labels ask for measurements. Age-only results are intentionally low confidence.
+
+Measurements remain in transient component state and are not persisted, sent to a shopper API, or added to analytics by the toolkit. A physical value that falls strictly between two published Mayoral references displays both sizes, marks the upper one only as a conservative orientation, and disables the one-click size CTA until the shopper confirms the fit. The result also distinguishes an unavailable ideal size and data outside the covered range. See the [complete cartridge guide](./cartridges/plugin_sfnext_page_designer/README.md#size-guide) for the coverage table and authoring workflow.
+
+## Visual site branding
+
+`SFNextToolkit.siteTheme` uses a Page Designer custom editor with visual color controls to configure Storefront Next **source CSS tokens** such as surfaces, actions, header/footer chrome, statuses, commerce aliases, the agentic palette, and legacy brand primitives. It covers the source variables exposed through Tailwind's color bridge while deliberately excluding PayPal/Venmo provider colors, generated `--color-*` variables, and non-color or complex CSS values. Semantic aliases such as selected swatches, account sidebars, product badges, and agentic actions follow their primary/accent/status source color unless a merchant overrides the alias explicitly.
+
+The three `bg-input-*` color helpers are also editable because storefront components consume them directly. `focus` and `destructive-focus` have translucent code defaults; configuring either in Theme Studio intentionally replaces that RGBA default with the selected solid six-digit hex color.
+
+Global application is deliberately fail-closed. Create an unpublished **SFNext Toolkit - Branding Studio** page, configure and preview one Site Theme, choose **Save as Content Block**, assign that block through **Set Site-Wide Region > Header > Site Theme**, and publish the content block. The application shell then applies the projected theme before the visible route across standard storefront, checkout, and authentication layouts. Edit/Preview suppresses that already-published global projection and shows only the staged/focused component's scoped sample; a draft block, an ordinary page, or even a mistakenly published Branding Studio page does not write global `:root` overrides. The published projection is cached per site and locale for a 30-second freshness window. A cold or expired request waits no more than one second for a fresh value and otherwise falls back to the code-defined palette instead of serving stale branding. A valid response that arrives slightly later may still warm the cache in the background; only a generation still pending after five seconds can be superseded by a later request. `_app` retains a streamed, request-scoped raw Header owner for announcement and Mega Menu data. Publication, unpublication, and rollback become eligible on the first request after the current freshness window; successful refresh then applies the change to that request or a following request when it completes after the one-second caller budget. Site Theme is one global palette and must not use customer-group, personalization, campaign, or other visitor-segment visibility rules. See the [complete cartridge guide](./cartridges/plugin_sfnext_page_designer/README.md#site-theme-and-branding-studio) for installation and publishing details.
 
 ## Mega Menu enhancement
 

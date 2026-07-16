@@ -26,9 +26,10 @@ export type PageDesignerComponentParams = {
 /**
  * Fetches a Page Designer component from SCAPI's Shopper Experience API.
  *
- * When the MRT-based resolution middleware is active, `getComponent` calls are
- * transparently intercepted and resolved from the Data Store. If resolution
- * fails or the middleware is not active, the request falls through to SCAPI.
+ * Unlike `getPage`/`getPages`, `getComponent` is not currently intercepted by
+ * the MRT Page Designer Data Store resolver, so this call always reaches the
+ * Shopper Experience API. Callers on critical paths should apply an explicit
+ * timeout/cache strategy appropriate to the data they consume.
  *
  * @param context - The loader function context from React Router.
  * @param parameters - Page Designer component parameters including the component ID,

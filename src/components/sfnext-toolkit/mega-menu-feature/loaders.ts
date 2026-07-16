@@ -289,6 +289,22 @@ export function attachMegaMenuFeatureData(
     return true;
 }
 
+/** Adds the shared Mega Menu batch to an already fetched component owner. */
+export function withMegaMenuFeatureData(
+    context: LoaderFunctionArgs['context'],
+    component: ComponentWithComponentData | null
+): ComponentWithComponentData | null {
+    if (!component) return null;
+
+    const componentData = { ...(component.componentData ?? {}) };
+    if (!attachMegaMenuFeatureData(context, component.regions, componentData)) return component;
+
+    return {
+        ...component,
+        componentData,
+    };
+}
+
 /**
  * Fetches any component subtree and attaches one shared batch promise to every
  * Mega Menu Feature descendant. In the app shell the subtree is the standard
@@ -306,15 +322,7 @@ export async function fetchComponentWithMegaMenuFeatureData(
             excludeDescendantLoaderTypeIds: [MEGA_MENU_FEATURE_TYPE_ID],
         }
     );
-    if (!component) return null;
-
-    const componentData = { ...(component.componentData ?? {}) };
-    if (!attachMegaMenuFeatureData(args.context, component.regions, componentData)) return component;
-
-    return {
-        ...component,
-        componentData,
-    };
+    return withMegaMenuFeatureData(args.context, component);
 }
 
 /** Individual loader used only when a feature itself is the focused preview root. */

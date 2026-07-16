@@ -19,8 +19,9 @@ import { CHECKOUT_ACTION_INTENTS } from '@/components/checkout/utils/checkout-co
 import { getActionPath } from './shared';
 
 /**
- * Mutations that change none of the fields the root loader returns. The root loader is synchronous (no SCAPI I/O), but
- * its return — `appConfig`, `seoMeta`, `errorTranslations`, etc. — is re-serialized into the response on every
+ * Mutations that change none of the fields the root loader returns. Its optional published Site Theme lookup uses a
+ * bounded 30-second cache (with a one-second cold/expired refresh ceiling), while the rest of the loader is local;
+ * its return — `appConfig`, `seoMeta`, `errorTranslations`, etc. — is still re-serialized into the response on every
  * revalidation. Skipping that for these submissions avoids re-sending the full root payload after the interaction.
  *
  * Every entry is proven on two axes: (1) the action mutates no root field — it never calls `updateAuth` (so
