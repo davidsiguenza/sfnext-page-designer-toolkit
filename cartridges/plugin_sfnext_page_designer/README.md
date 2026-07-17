@@ -532,6 +532,7 @@ The easiest reusable path is to fork this repository at a tagged toolkit release
 ### Size Guide cannot recommend a size
 
 - Confirm that Size Guide is in the PDP template's `productTools` region and that the host Product View actually renders that slot inside the current Product provider.
+- If the component is visible in Page Designer but the entire `Product Tools` region is absent from the live PDP, confirm that the host page resolver preserves product-specific precedence and retries Shopper Experience with the PDP category when the product lookup returns no page. Shopper Experience does not apply a category assignment to a `getPages` request that includes only `productId`; the toolkit host integration in this repository implements that product-to-category fallback.
 - Confirm that the configured size variation attribute matches the product data and that the product exposes its online size values. An otherwise valid result is deliberately reported as unavailable when its ideal value is absent.
 - Use only covered child evidence. Unknown brands/labels, other-brand adult/baby/teen labels, or an ill-fitting known size intentionally request measurements instead of guessing.
 - For clothing, supply height and use chest for upper-body categories or inseam for bottoms when the first result needs confirmation. For footwear, measure both feet and use the longer value.

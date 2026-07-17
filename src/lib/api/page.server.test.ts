@@ -154,6 +154,60 @@ describe('fetchPage', () => {
             expect(result).toEqual(firstPage);
         });
 
+        it('falls back from a product assignment to its category assignment', async () => {
+            const categoryPage = { id: 'pdp', name: 'Category PDP', pageType: 'productDetailPage' };
+            const aspectAttributes = JSON.stringify({
+                aspectType: 'pdpAspect',
+                categoryId: 'mens-shirts',
+                productId: 'shirt-001',
+            });
+            mockGetPages
+                .mockResolvedValueOnce({ data: { data: [] } })
+                .mockResolvedValueOnce({ data: { data: [categoryPage] } });
+
+            const result = await fetchPage(mockContext, {
+                aspectType: 'pdpAspect',
+                categoryId: 'mens-shirts',
+                productId: 'shirt-001',
+            });
+
+            expect(mockGetPages).toHaveBeenNthCalledWith(1, {
+                params: {
+                    query: {
+                        aspectTypeId: 'pdpAspect',
+                        productId: 'shirt-001',
+                        aspectAttributes,
+                    },
+                },
+            });
+            expect(mockGetPages).toHaveBeenNthCalledWith(2, {
+                params: {
+                    query: {
+                        aspectTypeId: 'pdpAspect',
+                        categoryId: 'mens-shirts',
+                        aspectAttributes,
+                    },
+                },
+            });
+            expect(result).toEqual(categoryPage);
+        });
+
+        it('throws a 404 ApiError when neither product nor category has an assignment', async () => {
+            mockGetPages.mockResolvedValue({ data: { data: [] } });
+
+            await expect(
+                fetchPage(mockContext, {
+                    aspectType: 'pdpAspect',
+                    categoryId: 'mens-shirts',
+                    productId: 'shirt-001',
+                })
+            ).rejects.toMatchObject({
+                name: 'ApiError',
+                status: 404,
+            });
+            expect(mockGetPages).toHaveBeenCalledTimes(2);
+        });
+
         it('throws a 404 ApiError when getPages returns no results', async () => {
             mockGetPages.mockResolvedValue({ data: { data: [] } });
 

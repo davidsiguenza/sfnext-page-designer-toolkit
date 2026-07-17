@@ -88,7 +88,26 @@ export const fetchPage = async (
             },
         });
 
-        const page = result.data?.data?.[0];
+        let page = result.data?.data?.[0];
+
+        // Product-specific assignments take precedence, but Shopper Experience
+        // does not apply category assignments when getPages is queried with a
+        // productId. PDPs commonly use an implicit root/category assignment, so
+        // retry with categoryId only when the product lookup has no result.
+        // Keep the full aspectAttributes payload on both calls for Page Designer
+        // rendering and MRT manifest resolution parity.
+        if (!page && productId && categoryId) {
+            const categoryResult = await clients.shopperExperience.getPages({
+                params: {
+                    query: {
+                        aspectTypeId: aspectType as string,
+                        categoryId,
+                        ...aspectAttributesQuery,
+                    },
+                },
+            });
+            page = categoryResult.data?.data?.[0];
+        }
 
         if (!page) {
             // Mirror the SCAPI `getPage` 404 contract so callers can handle a
