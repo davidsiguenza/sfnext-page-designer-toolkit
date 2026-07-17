@@ -235,7 +235,7 @@ Place at most one `SFNextToolkit.sizeGuide` in the Product Detail template's `pr
 
 The shopper can start with one of three evidence sources:
 
-- **Known brand and size** uses only an exact comparison row included in the versioned dataset. The known item must fit well; an ill-fitting label is not conversion evidence.
+- **Known brand and size** uses only an exact comparison row included in the versioned dataset. Brand selection exposes a second selector containing only the verified child-size labels for that brand and product category, so shoppers never have to guess an accepted free-text format. The known item must fit well; an ill-fitting label is not conversion evidence.
 - **Measurements** is the preferred path. Child clothing uses height as the primary reference and chest for tops/dresses/outerwear or inseam for bottoms. Child footwear uses the longer of the two feet when both are supplied.
 - **Age** offers orientation only. It is deliberately low confidence and asks for height before presenting the result as a strong fit recommendation.
 
@@ -247,6 +247,8 @@ Current dataset coverage (`2026-07-16`) is intentionally finite:
 | Mayoral child footwear     | Sizes `18`–`36`; published foot lengths 11.2–22.2 cm. Size `30` retains the source discrepancy between 18.5 and 18.8 cm instead of hiding it.                         |
 | Other-brand child clothing | Exact researched rows only: Adidas `7–8/128`, Nike `S/8–10`, Vans Boys `S/US 8`, and Vans Girls `S/US 7–8`.                                                           |
 | Other-brand child footwear | Exact Vans, Adidas, or New Balance `EU 25` rows associated with 14.5 cm. The engine compares the published length; it does not assume all EU 25 shoes are equivalent. |
+
+The known-brand selector deliberately mirrors that finite coverage: Adidas clothing offers `7–8 years / 128 cm`, Nike offers `S child / 8–10 years`, Vans offers its reviewed boys and girls `S` rows, and verified footwear brands offer `EU 25 child`. Changing the brand clears the previous size. When the shopper's label is not present, the UI directs them to physical measurements instead of accepting an unsupported string and presenting a misleading conversion.
 
 Published Mayoral rows are reference points, not invented continuous intervals. When height, chest, inseam, or foot length falls strictly between two adjacent references, the result shows both sizes, presents the upper size only as a conservative orientation, lowers confidence, and requires confirmation instead of offering an immediate **Use size** action. Exact reference matches can remain actionable. The documented size-30 footwear discrepancy keeps its dedicated conflict result rather than being rounded away.
 | Age-only orientation | Child clothing ages 2–16, with low confidence and a request for height. Footwear always requires foot length. |

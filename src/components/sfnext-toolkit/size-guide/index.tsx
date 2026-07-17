@@ -54,7 +54,13 @@ import { AttributeDefinition, Component, RegionDefinition } from '@/lib/decorato
 import { useVariationAttributes, type VariationAttribute } from '@/hooks/product/use-variation-attributes';
 import { useProduct } from '@/providers/product-context';
 import { cn } from '@/lib/utils';
-import { MAYORAL_APPAREL_SIZES, MAYORAL_FOOTWEAR_SIZES } from './data';
+import {
+    MAYORAL_APPAREL_SIZES,
+    MAYORAL_FOOTWEAR_SIZES,
+    SOURCE_APPAREL_SIZES,
+    SOURCE_FOOTWEAR_SIZES,
+    type SourceBrand,
+} from './data';
 import {
     recommendMayoralSize,
     type RecommendationConfidence,
@@ -65,6 +71,13 @@ import {
 
 const PRODUCT_KINDS = ['auto', 'clothing', 'tops', 'bottoms', 'footwear'] as const;
 const AUDIENCES = ['kids', 'teen'] as const;
+const SOURCE_BRAND_ORDER = ['adidas', 'nike', 'vans', 'new-balance'] as const satisfies readonly SourceBrand[];
+const SOURCE_BRAND_LABELS: Record<SourceBrand, string> = {
+    adidas: 'Adidas',
+    nike: 'Nike',
+    vans: 'Vans',
+    'new-balance': 'New Balance',
+};
 type ProductKind = (typeof PRODUCT_KINDS)[number];
 type Method = 'brand' | 'measurements' | 'age';
 type Step = 'method' | 'form' | 'result';
@@ -325,6 +338,38 @@ function getSelectableSize(attribute: VariationAttribute | undefined, size: stri
     );
 }
 
+interface VerifiedSourceSizeOption {
+    value: string;
+    label: string;
+}
+
+function getVerifiedSourceBrands(category: SizeGuideProductCategory): SourceBrand[] {
+    const rows: readonly { brand: SourceBrand }[] =
+        category === 'footwear' ? SOURCE_FOOTWEAR_SIZES : SOURCE_APPAREL_SIZES;
+    const availableBrands = new Set(rows.map((row) => row.brand));
+    return SOURCE_BRAND_ORDER.filter((brand) => availableBrands.has(brand));
+}
+
+function getVerifiedSourceSizeLabel(brand: SourceBrand, size: string, category: SizeGuideProductCategory): string {
+    if (category === 'footwear') return `EU ${size} infantil`;
+    if (brand === 'adidas' && size === '7-8/128') return '7–8 años / 128 cm';
+    if (brand === 'nike' && size === 'S/8-10') return 'S infantil / 8–10 años';
+    if (brand === 'vans' && size === 'Boys S/US 8') return 'Niño: S / US 8';
+    if (brand === 'vans' && size === 'Girls S/US 7-8') return 'Niña: S / US 7–8';
+    return size;
+}
+
+function getVerifiedSourceSizes(category: SizeGuideProductCategory, selectedBrand: string): VerifiedSourceSizeOption[] {
+    const rows: readonly { brand: SourceBrand; size: string }[] =
+        category === 'footwear' ? SOURCE_FOOTWEAR_SIZES : SOURCE_APPAREL_SIZES;
+    return rows
+        .filter((row) => row.brand === selectedBrand)
+        .map((row) => ({
+            value: row.size,
+            label: getVerifiedSourceSizeLabel(row.brand, row.size, category),
+        }));
+}
+
 function Field({
     id,
     label,
@@ -405,13 +450,8 @@ function SizeGuideDialog({
     const availableSizes = useMemo(() => getAvailableSizeLabels(sizeAttribute, category), [category, sizeAttribute]);
     const selectableSize = getSelectableSize(sizeAttribute, result?.recommendedSize);
     const isFootwear = category === 'footwear';
-    const knownSizeHint = isFootwear
-        ? 'EU 25'
-        : form.brand === 'adidas'
-          ? '7–8/128'
-          : form.brand === 'nike'
-            ? 'S / 8–10'
-            : 'Chicos S / US 8 o Chicas S / US 7–8';
+    const verifiedBrands = useMemo(() => getVerifiedSourceBrands(category), [category]);
+    const verifiedSourceSizes = useMemo(() => getVerifiedSourceSizes(category, form.brand), [category, form.brand]);
 
     const methods = useMemo<MethodOption[]>(() => {
         const options: MethodOption[] = [];
@@ -605,33 +645,46 @@ function SizeGuideDialog({
                                             <NativeSelect
                                                 id={`${formId}-brand`}
                                                 value={form.brand}
-                                                onChange={(event) => update('brand', event.target.value)}
+                                                onChange={(event) =>
+                                                    setForm((current) => ({
+                                                        ...current,
+                                                        brand: event.target.value,
+                                                        knownSize: '',
+                                                    }))
+                                                }
                                                 className="w-full">
-                                                <NativeSelectOption value="adidas">adidas</NativeSelectOption>
-                                                {!isFootwear && (
-                                                    <NativeSelectOption value="nike">Nike</NativeSelectOption>
-                                                )}
-                                                <NativeSelectOption value="vans">Vans</NativeSelectOption>
-                                                {isFootwear && (
-                                                    <NativeSelectOption value="new-balance">
-                                                        New Balance
+                                                {verifiedBrands.map((brand) => (
+                                                    <NativeSelectOption key={brand} value={brand}>
+                                                        {SOURCE_BRAND_LABELS[brand]}
                                                     </NativeSelectOption>
-                                                )}
+                                                ))}
                                             </NativeSelect>
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor={`${formId}-known-size`}>
-                                                {isFootwear ? 'Talla EU que le queda bien' : 'Talla que le queda bien'}
+                                                Talla infantil que le queda bien
                                             </Label>
-                                            <Input
+                                            <NativeSelect
                                                 id={`${formId}-known-size`}
                                                 value={form.knownSize}
                                                 onChange={(event) => update('knownSize', event.target.value)}
-                                                placeholder={`Ej. ${knownSizeHint}`}
-                                                required
-                                            />
-                                            <p className="text-xs leading-4 text-muted-foreground">
-                                                Referencia disponible: {knownSizeHint}.
+                                                aria-describedby={`${formId}-known-size-help`}
+                                                className="w-full"
+                                                required>
+                                                <NativeSelectOption value="" disabled>
+                                                    Selecciona una talla
+                                                </NativeSelectOption>
+                                                {verifiedSourceSizes.map((option) => (
+                                                    <NativeSelectOption key={option.value} value={option.value}>
+                                                        {option.label}
+                                                    </NativeSelectOption>
+                                                ))}
+                                            </NativeSelect>
+                                            <p
+                                                id={`${formId}-known-size-help`}
+                                                className="text-xs leading-4 text-muted-foreground">
+                                                Solo aparecen equivalencias infantiles verificadas. Si su talla no está
+                                                en la lista, usa el método de medidas.
                                             </p>
                                         </div>
                                     </div>
@@ -949,9 +1002,23 @@ export default function SizeGuide({
         );
     }
 
+    const normalizedProductKind = normalizeOption(productKind, PRODUCT_KINDS, 'auto');
+    const dialogStateKey = JSON.stringify({
+        productId: product.id,
+        category: resolveProductCategory(normalizedProductKind, product),
+        productKind: normalizedProductKind,
+        audience: normalizeOption(audience, AUDIENCES, 'kids'),
+        collection: collection?.trim() || null,
+        sizeAttributeId: (sizeAttributeId || 'size').trim().toLowerCase(),
+        enableBrandComparison,
+        enableMeasurements,
+        enableAge,
+    });
+
     return (
         <section {...props} className={className} data-slot="sfnext-toolkit-size-guide">
             <SizeGuideDialog
+                key={dialogStateKey}
                 product={product}
                 title={title}
                 description={description}

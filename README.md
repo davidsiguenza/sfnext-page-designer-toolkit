@@ -113,7 +113,7 @@ Page Designer does not provide a native B2C Content Asset search attribute. Manu
 
 ## PDP Size Guide
 
-`SFNextToolkit.sizeGuide` is an opt-in PDP fit assistant, not a universal size converter. Its versioned Mayoral rules cover child clothing from the available height/chest/inseam references and child footwear from foot length. Cross-brand recommendations are made only for the exact Adidas, Nike, Vans, and New Balance rows present in the reviewed dataset; unknown labels ask for measurements. Age-only results are intentionally low confidence.
+`SFNextToolkit.sizeGuide` is an opt-in PDP fit assistant, not a universal size converter. Its versioned Mayoral rules cover child clothing from the available height/chest/inseam references and child footwear from foot length. Cross-brand recommendations are made only for the exact Adidas, Nike, Vans, and New Balance rows present in the reviewed dataset. The brand flow exposes those verified source sizes as a selector instead of accepting arbitrary labels; when a label is not covered, the shopper is directed to measurements. Age-only results are intentionally low confidence.
 
 Measurements remain in transient component state and are not persisted, sent to a shopper API, or added to analytics by the toolkit. A physical value that falls strictly between two published Mayoral references displays both sizes, marks the upper one only as a conservative orientation, and disables the one-click size CTA until the shopper confirms the fit. The result also distinguishes an unavailable ideal size and data outside the covered range. See the [complete cartridge guide](./cartridges/plugin_sfnext_page_designer/README.md#size-guide) for the coverage table and authoring workflow.
 
