@@ -99,15 +99,11 @@
             return true;
         }
 
-        if (root && root.CSS && typeof root.CSS.supports === 'function') {
-            return root.CSS.supports('color', trimmed);
-        }
-
         return /^#[0-9a-f]{3,8}$/i.test(trimmed)
             || /^(transparent|currentcolor|inherit)$/i.test(trimmed)
             || /^[a-z]+$/i.test(trimmed)
             || /^(rgb|rgba|hsl|hsla)\(\s*[-+0-9.,%/\s]+\)$/i.test(trimmed)
-            || /^var\(\s*--[a-z0-9_-]+(?:\s*,[^)]+)?\s*\)$/i.test(trimmed);
+            || /^var\(\s*--[a-z0-9_-]+\s*(,\s*(#[0-9a-f]{3,8}|[a-z]+))?\s*\)$/i.test(trimmed);
     }
 
     function getSubscriptionFunction() {
