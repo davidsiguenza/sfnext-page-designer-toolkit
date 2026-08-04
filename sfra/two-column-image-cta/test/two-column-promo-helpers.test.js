@@ -31,6 +31,7 @@ assert.strictEqual(helpers.toPercent(75), 75);
 assert.strictEqual(helpers.toPercent(150), 100);
 assert.strictEqual(helpers.toPercent(-1), 0);
 assert.strictEqual(helpers.toPercent(null), 50);
+assert.strictEqual(helpers.toPercent('not-a-number'), 50);
 
 assert.deepStrictEqual(helpers.getFocalPoint({ focalPoint: { x: 0.25, y: 0.8 } }), { x: 25, y: 80 });
 assert.deepStrictEqual(helpers.getFocalPoint(null), { x: 50, y: 50 });

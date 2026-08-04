@@ -116,7 +116,7 @@ function toPercent(value) {
     }
 
     var numberValue = Number(value);
-    if (Number.isNaN(numberValue)) {
+    if (numberValue !== numberValue) {
         return 50;
     }
 
