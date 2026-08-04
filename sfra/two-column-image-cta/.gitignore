@@ -1,0 +1,8 @@
+.DS_Store
+.env
+.env.*
+dw.json
+node_modules/
+npm-debug.log*
+.playwright-cli/
+output/

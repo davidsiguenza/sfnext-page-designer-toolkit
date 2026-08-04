@@ -1,0 +1,14 @@
+{
+  "name": "sfra-two-column-image-cta",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Two-column image, text, and CTA Page Designer component for SFRA",
+  "license": "Apache-2.0",
+  "scripts": {
+    "test": "node test/validate-component.js && node test/color-picker-editor.test.js && node test/two-column-promo-helpers.test.js && node test/two-column-promo-render.test.js && node test/test-page-render.test.js"
+  },
+  "cartridges": [
+    "app_custom_pd_components",
+    "bm_custom_pd_components"
+  ]
+}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Preview · Visual color picker</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="../../cartridges/bm_custom_pd_components/cartridge/static/default/experience/editors/custom_pd/colorpicker.css">
+</head>
+<body>
+    <script>
+        window.__pdListeners = {};
+        window.__pdEvents = [];
+        window.subscribe = function (type, callback) {
+            window.__pdListeners[type] = callback;
+        };
+        window.emit = function (event) {
+            window.__pdEvents.push(event);
+        };
+    </script>
+    <script src="../../cartridges/bm_custom_pd_components/cartridge/static/default/experience/editors/custom_pd/colorpicker.js"></script>
+    <script>
+        window.__pdListeners['sfcc:ready']({
+            value: { value: '#00A1E0' },
+            config: {},
+            isDisabled: false,
+            isRequired: false,
+            dataLocale: 'es-ES',
+            displayLocale: 'es-ES'
+        });
+    </script>
+</body>
+</html>

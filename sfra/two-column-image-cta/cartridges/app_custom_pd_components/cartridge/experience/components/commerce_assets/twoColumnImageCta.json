@@ -1,0 +1,349 @@
+{
+  "name": "Two columns · Image, text and CTA",
+  "description": "Two promotions with equally cropped images, optional title bands, text and aligned buttons.",
+  "group": "commerce_assets",
+  "region_definitions": [],
+  "attribute_definition_groups": [
+    {
+      "id": "layout",
+      "name": "Layout and behavior",
+      "attribute_definitions": [
+        {
+          "id": "sectionTitle",
+          "name": "Accessible section title",
+          "description": "Not displayed visually; helps identify the block for assistive technologies.",
+          "type": "string",
+          "required": false
+        },
+        {
+          "id": "aspectRatio",
+          "name": "Aspect ratio for both images",
+          "type": "enum",
+          "values": ["landscape_3_2", "landscape_4_3", "square_1_1", "portrait_4_5"],
+          "default_value": "landscape_3_2",
+          "required": false
+        },
+        {
+          "id": "gap",
+          "name": "Column gap",
+          "type": "enum",
+          "values": ["small", "medium", "large"],
+          "default_value": "medium",
+          "required": false
+        },
+        {
+          "id": "contentAlignment",
+          "name": "Content alignment",
+          "type": "enum",
+          "values": ["left", "center", "right"],
+          "default_value": "center",
+          "required": false
+        },
+        {
+          "id": "verticalSpacing",
+          "name": "Vertical spacing",
+          "type": "enum",
+          "values": ["none", "small", "medium", "large"],
+          "default_value": "medium",
+          "required": false
+        },
+        {
+          "id": "alignButtons",
+          "name": "Align buttons",
+          "description": "Keeps both CTAs at the same height when one description is longer.",
+          "type": "boolean",
+          "default_value": true,
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "columnOne",
+      "name": "Column 1",
+      "attribute_definitions": [
+        {
+          "id": "imageOne",
+          "name": "Image",
+          "description": "Select the image and set its focal point in the native editor.",
+          "type": "image",
+          "required": true
+        },
+        {
+          "id": "imageAltOne",
+          "name": "Alternative text",
+          "description": "Describe the image content. Leave it blank only if the image is decorative.",
+          "type": "string",
+          "required": false
+        },
+        {
+          "id": "decorativeImageOne",
+          "name": "Decorative image",
+          "description": "Keeps the alt text empty even when a title is provided.",
+          "type": "boolean",
+          "default_value": false,
+          "required": false
+        },
+        {
+          "id": "titleOne",
+          "name": "Title",
+          "description": "If the title band is hidden, the title remains visually hidden for accessibility.",
+          "type": "string",
+          "required": false
+        },
+        {
+          "id": "showTitleBandOne",
+          "name": "Show title band",
+          "description": "Turn it off when the title is already part of the image.",
+          "type": "boolean",
+          "default_value": true,
+          "required": false
+        },
+        {
+          "id": "descriptionOne",
+          "name": "Body text",
+          "type": "markup",
+          "required": false
+        },
+        {
+          "id": "ctaLabelOne",
+          "name": "Button label",
+          "type": "string",
+          "required": false
+        },
+        {
+          "id": "ctaUrlOne",
+          "name": "Button link",
+          "type": "url",
+          "required": false
+        },
+        {
+          "id": "openInNewTabOne",
+          "name": "Open link in a new tab",
+          "type": "boolean",
+          "default_value": false,
+          "required": false
+        },
+        {
+          "id": "titleBackgroundPresetOne",
+          "name": "Title band background",
+          "description": "Use a semantic theme color or select custom.",
+          "type": "enum",
+          "values": ["theme_primary", "theme_heading", "theme_banner", "theme_background", "theme_link", "transparent", "custom"],
+          "default_value": "theme_primary",
+          "required": false
+        },
+        {
+          "id": "titleBackgroundColorOne",
+          "name": "Custom title band background",
+          "description": "Used only when Title band background is custom. Choose a color visually or enter a CSS color.",
+          "type": "custom",
+          "editor_definition": {
+            "type": "custom_pd.colorpicker"
+          },
+          "required": false
+        },
+        {
+          "id": "titleTextPresetOne",
+          "name": "Title color",
+          "type": "enum",
+          "values": ["theme_primary_inverse", "theme_heading_inverse", "theme_banner_text", "theme_text", "theme_primary", "custom"],
+          "default_value": "theme_primary_inverse",
+          "required": false
+        },
+        {
+          "id": "titleTextColorOne",
+          "name": "Custom title color",
+          "description": "Used only when Title color is custom. Choose a color visually or enter a CSS color.",
+          "type": "custom",
+          "editor_definition": {
+            "type": "custom_pd.colorpicker"
+          },
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "columnTwo",
+      "name": "Column 2",
+      "attribute_definitions": [
+        {
+          "id": "imageTwo",
+          "name": "Image",
+          "description": "Select the image and set its focal point in the native editor.",
+          "type": "image",
+          "required": true
+        },
+        {
+          "id": "imageAltTwo",
+          "name": "Alternative text",
+          "description": "Describe the image content. Leave it blank only if the image is decorative.",
+          "type": "string",
+          "required": false
+        },
+        {
+          "id": "decorativeImageTwo",
+          "name": "Decorative image",
+          "description": "Keeps the alt text empty even when a title is provided.",
+          "type": "boolean",
+          "default_value": false,
+          "required": false
+        },
+        {
+          "id": "titleTwo",
+          "name": "Title",
+          "description": "If the title band is hidden, the title remains visually hidden for accessibility.",
+          "type": "string",
+          "required": false
+        },
+        {
+          "id": "showTitleBandTwo",
+          "name": "Show title band",
+          "description": "Turn it off when the title is already part of the image.",
+          "type": "boolean",
+          "default_value": true,
+          "required": false
+        },
+        {
+          "id": "descriptionTwo",
+          "name": "Body text",
+          "type": "markup",
+          "required": false
+        },
+        {
+          "id": "ctaLabelTwo",
+          "name": "Button label",
+          "type": "string",
+          "required": false
+        },
+        {
+          "id": "ctaUrlTwo",
+          "name": "Button link",
+          "type": "url",
+          "required": false
+        },
+        {
+          "id": "openInNewTabTwo",
+          "name": "Open link in a new tab",
+          "type": "boolean",
+          "default_value": false,
+          "required": false
+        },
+        {
+          "id": "titleBackgroundPresetTwo",
+          "name": "Title band background",
+          "description": "Use a semantic theme color or select custom.",
+          "type": "enum",
+          "values": ["theme_primary", "theme_heading", "theme_banner", "theme_background", "theme_link", "transparent", "custom"],
+          "default_value": "theme_heading",
+          "required": false
+        },
+        {
+          "id": "titleBackgroundColorTwo",
+          "name": "Custom title band background",
+          "description": "Used only when Title band background is custom. Choose a color visually or enter a CSS color.",
+          "type": "custom",
+          "editor_definition": {
+            "type": "custom_pd.colorpicker"
+          },
+          "required": false
+        },
+        {
+          "id": "titleTextPresetTwo",
+          "name": "Title color",
+          "type": "enum",
+          "values": ["theme_primary_inverse", "theme_heading_inverse", "theme_banner_text", "theme_text", "theme_primary", "custom"],
+          "default_value": "theme_heading_inverse",
+          "required": false
+        },
+        {
+          "id": "titleTextColorTwo",
+          "name": "Custom title color",
+          "description": "Used only when Title color is custom. Choose a color visually or enter a CSS color.",
+          "type": "custom",
+          "editor_definition": {
+            "type": "custom_pd.colorpicker"
+          },
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "sharedColors",
+      "name": "Shared colors",
+      "attribute_definitions": [
+        {
+          "id": "sectionBackgroundPreset",
+          "name": "Section background",
+          "type": "enum",
+          "values": ["theme_background", "theme_primary", "theme_heading", "theme_banner", "transparent", "custom"],
+          "default_value": "theme_background",
+          "required": false
+        },
+        {
+          "id": "sectionBackgroundColor",
+          "name": "Custom section background",
+          "description": "Used only when Section background is custom. Choose a color visually or enter a CSS color.",
+          "type": "custom",
+          "editor_definition": {
+            "type": "custom_pd.colorpicker"
+          },
+          "required": false
+        },
+        {
+          "id": "bodyTextPreset",
+          "name": "Text color",
+          "type": "enum",
+          "values": ["theme_text", "theme_primary", "theme_heading", "theme_banner_text", "theme_primary_inverse", "custom"],
+          "default_value": "theme_text",
+          "required": false
+        },
+        {
+          "id": "bodyTextColor",
+          "name": "Custom text color",
+          "description": "Used only when Text color is custom. Choose a color visually or enter a CSS color.",
+          "type": "custom",
+          "editor_definition": {
+            "type": "custom_pd.colorpicker"
+          },
+          "required": false
+        },
+        {
+          "id": "buttonBackgroundPreset",
+          "name": "Button background",
+          "type": "enum",
+          "values": ["theme_primary", "theme_heading", "theme_banner", "theme_background", "theme_link", "transparent", "custom"],
+          "default_value": "theme_primary",
+          "required": false
+        },
+        {
+          "id": "buttonBackgroundColor",
+          "name": "Custom button background",
+          "description": "Used only when Button background is custom. Choose a color visually or enter a CSS color.",
+          "type": "custom",
+          "editor_definition": {
+            "type": "custom_pd.colorpicker"
+          },
+          "required": false
+        },
+        {
+          "id": "buttonTextPreset",
+          "name": "Button text color",
+          "type": "enum",
+          "values": ["theme_primary_inverse", "theme_heading_inverse", "theme_banner_text", "theme_text", "theme_primary", "custom"],
+          "default_value": "theme_primary_inverse",
+          "required": false
+        },
+        {
+          "id": "buttonTextColor",
+          "name": "Custom button text color",
+          "description": "Used only when Button text color is custom. Choose a color visually or enter a CSS color.",
+          "type": "custom",
+          "editor_definition": {
+            "type": "custom_pd.colorpicker"
+          },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

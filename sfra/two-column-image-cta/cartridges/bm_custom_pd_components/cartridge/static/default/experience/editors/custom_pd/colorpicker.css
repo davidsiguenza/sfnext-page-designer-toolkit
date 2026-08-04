@@ -1,0 +1,136 @@
+:root {
+    color-scheme: light;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    color: #181818;
+    background: transparent;
+    font-size: 13px;
+}
+
+.pd-color-picker {
+    padding: 2px 1px 4px;
+}
+
+.pd-color-picker__controls {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+}
+
+.pd-color-picker__native {
+    width: 44px;
+    height: 38px;
+    padding: 3px;
+    border: 1px solid #747474;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.pd-color-picker__value {
+    width: 100%;
+    height: 38px;
+    padding: 0 11px;
+    border: 1px solid #747474;
+    border-radius: 4px;
+    color: #181818;
+    background: #fff;
+    font: inherit;
+}
+
+.pd-color-picker__native:focus-visible,
+.pd-color-picker__value:focus-visible,
+.pd-color-picker__clear:focus-visible,
+.pd-color-picker__swatch:focus-visible {
+    outline: 2px solid #0176d3;
+    outline-offset: 2px;
+}
+
+.pd-color-picker__value[aria-invalid="true"] {
+    border-color: #ba0517;
+    box-shadow: 0 0 0 1px #ba0517;
+}
+
+.pd-color-picker__clear {
+    min-height: 36px;
+    padding: 0 10px;
+    border: 1px solid #747474;
+    border-radius: 4px;
+    color: #0176d3;
+    background: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.pd-color-picker__clear:hover {
+    background: #f3f3f3;
+}
+
+.pd-color-picker__palette-label {
+    display: block;
+    margin: 9px 0 6px;
+    color: #444;
+    font-size: 12px;
+}
+
+.pd-color-picker__palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.pd-color-picker__swatch {
+    position: relative;
+    width: 27px;
+    height: 27px;
+    padding: 0;
+    border: 1px solid #8e8e8e;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.pd-color-picker__swatch[aria-pressed="true"]::after {
+    position: absolute;
+    inset: 3px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px #181818;
+    content: "";
+}
+
+.pd-color-picker__message {
+    min-height: 16px;
+    margin: 6px 0 0;
+    color: #ba0517;
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+.pd-color-picker--disabled {
+    opacity: 0.55;
+}
+
+.pd-color-picker :disabled {
+    cursor: not-allowed;
+}
+
+.pd-color-picker__assistive {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

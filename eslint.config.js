@@ -457,13 +457,11 @@ const baseConfig = defineConfig([
 const { storybookOverrides } = await import('./eslint.storybook-overrides.js');
 
 /**
- * Ignore the e2e sub-package — it has its own eslint.config.mjs with
- * CodeceptJS-specific rules. ESLint v9 flat config does not auto-discover
- * nested config files, so without this ignore the root config would apply
- * TypeScript-aware rules to e2e files (e.g. .prettierrc.mjs) that are not
- * covered by the e2e tsconfig, causing parser errors.
+ * Ignore standalone packages that do not use the Storefront Next lint config.
+ * The e2e package has its own CodeceptJS-specific config, while sfra contains
+ * B2C server-side JavaScript and ISML validated by its package-level tests.
  *
  * Linting is still enforced: `pnpm lint` delegates to `pnpm --filter ./e2e lint`
  * which runs the e2e package's own config.
  */
-export default [{ ignores: ['e2e/**'] }, ...baseConfig, ...storybookOverrides];
+export default [{ ignores: ['e2e/**', 'sfra/**'] }, ...baseConfig, ...storybookOverrides];

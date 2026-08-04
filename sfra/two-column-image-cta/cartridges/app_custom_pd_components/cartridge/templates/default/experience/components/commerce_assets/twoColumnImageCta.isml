@@ -1,0 +1,108 @@
+<link rel="stylesheet" href="${pdict.stylesheetUrl}"/>
+
+<section
+    id="${pdict.componentId}"
+    class="pd-two-column-promo pd-two-column-promo--ratio-${pdict.aspectRatio} pd-two-column-promo--gap-${pdict.gap} pd-two-column-promo--align-${pdict.contentAlignment} pd-two-column-promo--space-${pdict.verticalSpacing} ${pdict.alignButtons ? 'pd-two-column-promo--align-buttons' : ''}"
+    style="--pd-two-column-section-bg: ${pdict.sectionBackground}; --pd-two-column-text: ${pdict.bodyTextColor}; --pd-two-column-button-bg: ${pdict.buttonBackground}; --pd-two-column-button-text: ${pdict.buttonTextColor};"
+    <isif condition="${pdict.sectionTitle}">aria-labelledby="${pdict.componentId}-title"</isif>
+>
+    <isif condition="${pdict.sectionTitle}">
+        <h2 id="${pdict.componentId}-title" class="pd-two-column-promo__visually-hidden">
+            <isprint value="${pdict.sectionTitle}" encoding="htmlcontent"/>
+        </h2>
+    </isif>
+
+    <div class="pd-two-column-promo__grid">
+        <article
+            class="pd-two-column-promo__card"
+            style="--pd-two-column-title-bg: ${pdict.columnOne.titleBackground}; --pd-two-column-title-text: ${pdict.columnOne.titleTextColor};"
+        >
+            <isif condition="${pdict.columnOne.image.url}">
+                <div class="pd-two-column-promo__media">
+                    <img
+                        class="pd-two-column-promo__image"
+                        src="${pdict.columnOne.image.url}"
+                        alt="${pdict.columnOne.alt}"
+                        <isif condition="${pdict.columnOne.image.width}">width="${pdict.columnOne.image.width}"</isif>
+                        <isif condition="${pdict.columnOne.image.height}">height="${pdict.columnOne.image.height}"</isif>
+                        style="--pd-two-column-focus-x: ${pdict.columnOne.image.focalPointX}%; --pd-two-column-focus-y: ${pdict.columnOne.image.focalPointY}%;"
+                        loading="lazy"
+                        decoding="async"
+                    />
+                </div>
+            </isif>
+
+            <isif condition="${pdict.columnOne.title}">
+                <h3 class="pd-two-column-promo__title ${pdict.columnOne.showTitleBand ? '' : 'pd-two-column-promo__visually-hidden'}">
+                    <isprint value="${pdict.columnOne.title}" encoding="htmlcontent"/>
+                </h3>
+            </isif>
+
+            <div class="pd-two-column-promo__content">
+                <isif condition="${pdict.columnOne.description}">
+                    <div class="pd-two-column-promo__description">
+                        <isprint value="${pdict.columnOne.description}" encoding="off"/>
+                    </div>
+                </isif>
+
+                <isif condition="${pdict.columnOne.ctaLabel && pdict.columnOne.ctaUrl}">
+                    <div class="pd-two-column-promo__actions">
+                        <a
+                            class="pd-two-column-promo__cta"
+                            href="${pdict.columnOne.ctaUrl}"
+                            <isif condition="${pdict.columnOne.openInNewTab}">target="_blank" rel="noopener noreferrer"</isif>
+                        >
+                            <isprint value="${pdict.columnOne.ctaLabel}" encoding="htmlcontent"/>
+                        </a>
+                    </div>
+                </isif>
+            </div>
+        </article>
+
+        <article
+            class="pd-two-column-promo__card"
+            style="--pd-two-column-title-bg: ${pdict.columnTwo.titleBackground}; --pd-two-column-title-text: ${pdict.columnTwo.titleTextColor};"
+        >
+            <isif condition="${pdict.columnTwo.image.url}">
+                <div class="pd-two-column-promo__media">
+                    <img
+                        class="pd-two-column-promo__image"
+                        src="${pdict.columnTwo.image.url}"
+                        alt="${pdict.columnTwo.alt}"
+                        <isif condition="${pdict.columnTwo.image.width}">width="${pdict.columnTwo.image.width}"</isif>
+                        <isif condition="${pdict.columnTwo.image.height}">height="${pdict.columnTwo.image.height}"</isif>
+                        style="--pd-two-column-focus-x: ${pdict.columnTwo.image.focalPointX}%; --pd-two-column-focus-y: ${pdict.columnTwo.image.focalPointY}%;"
+                        loading="lazy"
+                        decoding="async"
+                    />
+                </div>
+            </isif>
+
+            <isif condition="${pdict.columnTwo.title}">
+                <h3 class="pd-two-column-promo__title ${pdict.columnTwo.showTitleBand ? '' : 'pd-two-column-promo__visually-hidden'}">
+                    <isprint value="${pdict.columnTwo.title}" encoding="htmlcontent"/>
+                </h3>
+            </isif>
+
+            <div class="pd-two-column-promo__content">
+                <isif condition="${pdict.columnTwo.description}">
+                    <div class="pd-two-column-promo__description">
+                        <isprint value="${pdict.columnTwo.description}" encoding="off"/>
+                    </div>
+                </isif>
+
+                <isif condition="${pdict.columnTwo.ctaLabel && pdict.columnTwo.ctaUrl}">
+                    <div class="pd-two-column-promo__actions">
+                        <a
+                            class="pd-two-column-promo__cta"
+                            href="${pdict.columnTwo.ctaUrl}"
+                            <isif condition="${pdict.columnTwo.openInNewTab}">target="_blank" rel="noopener noreferrer"</isif>
+                        >
+                            <isprint value="${pdict.columnTwo.ctaLabel}" encoding="htmlcontent"/>
+                        </a>
+                    </div>
+                </isif>
+            </div>
+        </article>
+    </div>
+</section>

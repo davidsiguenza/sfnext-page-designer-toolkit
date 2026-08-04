@@ -6,6 +6,12 @@ The toolkit adds merchant-configurable PLP, PDP, blank, blog-home, blog-post, an
 
 Start with the [complete cartridge and authoring guide](./cartridges/plugin_sfnext_page_designer/README.md), which documents every component, its use case, installation, Business Manager setup, deployment, accessibility guidance, and troubleshooting.
 
+## SFRA components
+
+The repository also hosts a deliberately isolated [SFRA component collection](./sfra/README.md). These packages use B2C server-side JavaScript and ISML and are not included by the Storefront Next cartridge generator or deployment commands.
+
+The first package is [Two-column image, text, and CTA](./sfra/two-column-image-cta/README.md), with equal-size cropped images, focal-point control, optional title bands, theme/custom colors, and bottom-aligned CTA buttons.
+
 ## Toolkit at a glance
 
 - Page types: blank landing page, product listing page, product detail page, blog home, shared blog-post layout, and a safe Branding Studio workspace.
