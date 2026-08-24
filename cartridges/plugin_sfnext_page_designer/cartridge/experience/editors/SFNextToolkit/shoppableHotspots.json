@@ -1,0 +1,8 @@
+{
+    "name": "Shoppable Image Hotspot Studio",
+    "description": "Visual desktop/mobile hotspot editor with optional catalog search by name or ID and the native B2C product picker as fallback.",
+    "resources": {
+        "styles": ["experience/editors/SFNextToolkit/shoppableHotspots.css"],
+        "scripts": ["experience/editors/SFNextToolkit/shoppableHotspots.js"]
+    }
+}

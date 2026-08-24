@@ -1,0 +1,675 @@
+/**
+ * Copyright 2026 Salesforce, Inc.
+ * Licensed under the Apache License, Version 2.0.
+ */
+
+:root {
+    color-scheme: light;
+    --editor-bg: #f7f8fa;
+    --editor-surface: #ffffff;
+    --editor-subtle: #f1f4f8;
+    --editor-text: #181818;
+    --editor-muted: #5c5c63;
+    --editor-border: #c9c9c9;
+    --editor-border-subtle: #e5e7eb;
+    --editor-brand: #0176d3;
+    --editor-brand-soft: #eaf5fe;
+    --editor-success: #2e844a;
+    --editor-success-soft: #eaf8ef;
+    --editor-warning: #a86403;
+    --editor-warning-soft: #fff5df;
+    --editor-danger: #ba0517;
+    --editor-danger-soft: #fef1ee;
+    --editor-radius: 0.75rem;
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        sans-serif;
+    font-size: 16px;
+    line-height: 1.45;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-width: 17rem;
+    min-height: 100%;
+    margin: 0;
+    background: var(--editor-bg);
+    color: var(--editor-text);
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button:not(:disabled),
+input:not(:disabled) {
+    cursor: pointer;
+}
+
+input[type='text'],
+input[type='url'],
+input[type='search'],
+input[type='number'] {
+    cursor: text;
+}
+
+button:disabled,
+input:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+:focus-visible {
+    outline: 0.18rem solid var(--editor-brand);
+    outline-offset: 0.14rem;
+}
+
+.hotspot-editor {
+    display: grid;
+    gap: 0.85rem;
+    width: 100%;
+    max-width: 52rem;
+    margin-inline: auto;
+    padding: 0.8rem;
+}
+
+.hotspot-editor__intro h1,
+.hotspot-editor__section h2,
+.hotspot-editor__intro p,
+.hotspot-editor__section p {
+    margin: 0;
+}
+
+.hotspot-editor__intro h1 {
+    font-size: clamp(1.35rem, 5vw, 1.9rem);
+    letter-spacing: -0.035em;
+}
+
+.hotspot-editor__intro > p:last-child {
+    margin-top: 0.25rem;
+    color: var(--editor-muted);
+    font-size: 0.84rem;
+}
+
+.hotspot-editor__kicker {
+    color: var(--editor-brand);
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.hotspot-editor__disabled {
+    margin: 0;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--editor-warning);
+    border-radius: 0.5rem;
+    background: var(--editor-warning-soft);
+    font-size: 0.8rem;
+}
+
+.hotspot-editor__section {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.8rem;
+    border: 1px solid var(--editor-border-subtle);
+    border-radius: var(--editor-radius);
+    background: var(--editor-surface);
+    box-shadow: 0 0.35rem 1.25rem rgba(24, 24, 24, 0.05);
+}
+
+.hotspot-editor__section-heading {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: start;
+    justify-content: space-between;
+}
+
+.hotspot-editor__section-heading h2 {
+    font-size: 1rem;
+}
+
+.hotspot-editor__section-heading p,
+.hotspot-editor__hint {
+    color: var(--editor-muted);
+    font-size: 0.75rem;
+}
+
+.hotspot-editor__section-heading > strong {
+    padding: 0.2rem 0.45rem;
+    border-radius: 999px;
+    background: var(--editor-subtle);
+    font-size: 0.72rem;
+}
+
+.hotspot-editor__segmented {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.3rem;
+    padding: 0.25rem;
+    border-radius: 0.55rem;
+    background: var(--editor-subtle);
+}
+
+.hotspot-editor__segmented label {
+    position: relative;
+}
+
+.hotspot-editor__segmented label input {
+    position: absolute;
+    opacity: 0;
+}
+
+.hotspot-editor__segmented label span,
+.hotspot-editor__segmented > button {
+    display: flex;
+    min-height: 2.3rem;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 0.4rem;
+    background: transparent;
+    color: var(--editor-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.hotspot-editor__segmented label input:checked + span,
+.hotspot-editor__segmented > button[aria-pressed='true'] {
+    background: var(--editor-surface);
+    color: var(--editor-brand);
+    box-shadow: 0 0.1rem 0.35rem rgba(24, 24, 24, 0.13);
+}
+
+.hotspot-editor__segmented label input:focus-visible + span {
+    outline: 0.18rem solid var(--editor-brand);
+    outline-offset: 0.08rem;
+}
+
+.hotspot-editor__product-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.4rem;
+}
+
+.hotspot-editor__product-row input,
+.hotspot-editor__field input,
+.hotspot-editor__coordinates input {
+    width: 100%;
+    min-height: 2.3rem;
+    padding: 0.45rem 0.55rem;
+    border: 1px solid var(--editor-border);
+    border-radius: 0.4rem;
+    background: var(--editor-surface);
+    color: var(--editor-text);
+}
+
+.hotspot-editor__search-panel {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.8rem;
+    border: 2px solid var(--editor-brand);
+    border-radius: var(--editor-radius);
+    background: var(--editor-brand-soft);
+    box-shadow: 0 0.5rem 1.5rem rgba(1, 118, 211, 0.14);
+}
+
+.hotspot-editor__search-panel h2,
+.hotspot-editor__search-panel p {
+    margin: 0;
+}
+
+.hotspot-editor__search-panel h2 {
+    font-size: 1rem;
+}
+
+.hotspot-editor__search-panel .hotspot-editor__section-heading p {
+    color: var(--editor-muted);
+    font-size: 0.75rem;
+}
+
+.hotspot-editor__search-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.45rem;
+    align-items: end;
+}
+
+.hotspot-editor__search-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.hotspot-editor__search-actions button {
+    min-height: 2.1rem;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--editor-border);
+    border-radius: 0.4rem;
+    background: var(--editor-surface);
+    color: var(--editor-text);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.hotspot-editor__search-feedback {
+    padding: 0.55rem 0.65rem;
+    border-radius: 0.4rem;
+    background: var(--editor-surface);
+    color: var(--editor-muted);
+    font-size: 0.75rem;
+}
+
+.hotspot-editor__search-feedback--error {
+    background: var(--editor-danger-soft);
+    color: var(--editor-danger);
+}
+
+.hotspot-editor__search-results {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.hotspot-editor__search-result {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) auto;
+    gap: 0.6rem;
+    align-items: center;
+    width: 100%;
+    min-height: 3.6rem;
+    padding: 0.4rem;
+    border: 1px solid var(--editor-border-subtle);
+    border-radius: 0.45rem;
+    background: var(--editor-surface);
+    color: var(--editor-text);
+    text-align: left;
+}
+
+.hotspot-editor__search-result:hover {
+    border-color: var(--editor-brand);
+}
+
+.hotspot-editor__search-result img,
+.hotspot-editor__search-placeholder {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.35rem;
+    background: var(--editor-subtle);
+    object-fit: cover;
+}
+
+.hotspot-editor__search-result > span:nth-child(2) {
+    display: grid;
+    min-width: 0;
+}
+
+.hotspot-editor__search-result strong,
+.hotspot-editor__search-result small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hotspot-editor__search-result strong {
+    font-size: 0.77rem;
+}
+
+.hotspot-editor__search-result small {
+    color: var(--editor-muted);
+    font-size: 0.67rem;
+}
+
+.hotspot-editor__search-select {
+    color: var(--editor-brand);
+    font-size: 0.68rem;
+    font-weight: 750;
+}
+
+.hotspot-editor__product-row input:disabled {
+    background: var(--editor-subtle);
+    opacity: 1;
+}
+
+.hotspot-editor__product-row button,
+.hotspot-editor__primary,
+.hotspot-editor__danger,
+.hotspot-editor__text-button {
+    min-height: 2.3rem;
+    padding: 0.42rem 0.65rem;
+    border: 1px solid var(--editor-border);
+    border-radius: 0.4rem;
+    background: var(--editor-surface);
+    color: var(--editor-text);
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.hotspot-editor__field {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.hotspot-editor__field > span,
+.hotspot-editor__coordinates label > span {
+    color: var(--editor-text);
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.hotspot-editor__preview-tools {
+    display: grid;
+    gap: 0.6rem;
+}
+
+.hotspot-editor__preview-note {
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.65rem 0.7rem;
+    border: 1px solid var(--editor-brand);
+    border-radius: 0.45rem;
+    background: var(--editor-brand-soft);
+    font-size: 0.75rem;
+}
+
+.hotspot-editor__preview-note span {
+    color: var(--editor-muted);
+}
+
+.hotspot-editor__file {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.55rem;
+    border: 1px dashed var(--editor-border);
+    border-radius: 0.45rem;
+    background: var(--editor-subtle);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.hotspot-editor__file input {
+    max-width: 100%;
+    font-size: 0.7rem;
+}
+
+.hotspot-editor__file--primary {
+    border-color: var(--editor-brand);
+    background: var(--editor-surface);
+}
+
+.hotspot-editor__advanced {
+    border-top: 1px solid var(--editor-border-subtle);
+    padding-top: 0.55rem;
+}
+
+.hotspot-editor__advanced summary {
+    color: var(--editor-brand);
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.hotspot-editor__advanced .hotspot-editor__field {
+    margin-top: 0.55rem;
+}
+
+.hotspot-editor__canvas {
+    position: relative;
+    overflow: hidden;
+    min-height: 13rem;
+    border: 1px solid var(--editor-border);
+    border-radius: 0.5rem;
+    background-color: #eef1f5;
+    background-image:
+        linear-gradient(rgba(1, 118, 211, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(1, 118, 211, 0.12) 1px, transparent 1px);
+    background-size: 10% 10%;
+    touch-action: none;
+}
+
+.hotspot-editor__canvas--mobile {
+    max-width: 20rem;
+    min-height: 22rem;
+    margin-inline: auto;
+}
+
+/* With a real preview, the canvas must have exactly the rendered image height.
+   Any minimum height would add letterboxing and make percentage coordinates drift. */
+.hotspot-editor__canvas.hotspot-editor__canvas--has-preview {
+    min-height: 0;
+}
+
+.hotspot-editor__canvas--placing {
+    border-color: var(--editor-brand);
+    box-shadow: 0 0 0 0.18rem var(--editor-brand-soft);
+    cursor: crosshair;
+}
+
+.hotspot-editor__preview-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: var(--editor-subtle);
+}
+
+.hotspot-editor__empty-preview {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 1rem;
+    color: var(--editor-muted);
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+.hotspot-editor__point {
+    position: absolute;
+    z-index: 2;
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    transform: translate(-50%, -50%);
+    place-items: center;
+    border: 0.15rem solid rgba(0, 0, 0, 0.28);
+    border-radius: 50%;
+    background: #ffffff;
+    color: #111111;
+    box-shadow: 0 0.25rem 0.7rem rgba(0, 0, 0, 0.28);
+    touch-action: none;
+}
+
+.hotspot-editor__point span {
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.hotspot-editor__canvas-actions {
+    display: grid;
+    gap: 0.3rem;
+}
+
+.hotspot-editor__canvas-actions > span {
+    min-height: 1.1rem;
+    color: var(--editor-brand);
+    font-size: 0.7rem;
+}
+
+.hotspot-editor__primary {
+    border-color: var(--editor-brand);
+    background: var(--editor-brand);
+    color: #ffffff;
+}
+
+.hotspot-editor__card {
+    display: grid;
+    gap: 0.6rem;
+    padding: 0.7rem;
+    border: 1px solid var(--editor-border-subtle);
+    border-radius: 0.55rem;
+    background: var(--editor-bg);
+}
+
+.hotspot-editor__card + .hotspot-editor__card {
+    margin-top: 0.15rem;
+}
+
+.hotspot-editor__card-heading {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.hotspot-editor__card-heading > div {
+    display: grid;
+    min-width: 0;
+}
+
+.hotspot-editor__card-heading strong,
+.hotspot-editor__card-heading small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hotspot-editor__card-heading strong {
+    font-size: 0.8rem;
+}
+
+.hotspot-editor__card-heading small {
+    color: var(--editor-muted);
+    font-size: 0.66rem;
+}
+
+.hotspot-editor__number {
+    display: grid;
+    width: 1.8rem;
+    height: 1.8rem;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--editor-brand);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.hotspot-editor__danger {
+    min-height: auto;
+    padding: 0.3rem 0.4rem;
+    border-color: transparent;
+    background: transparent;
+    color: var(--editor-danger);
+    font-size: 0.68rem;
+}
+
+.hotspot-editor__coordinates {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+.hotspot-editor__coordinates label {
+    display: grid;
+    gap: 0.2rem;
+}
+
+.hotspot-editor__text-button {
+    justify-self: start;
+    min-height: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--editor-brand);
+    font-size: 0.7rem;
+}
+
+.hotspot-editor__empty-list {
+    padding: 1rem;
+    border: 1px dashed var(--editor-border);
+    border-radius: 0.45rem;
+    color: var(--editor-muted);
+    font-size: 0.78rem;
+    text-align: center;
+}
+
+.hotspot-editor__validation {
+    display: grid;
+    gap: 0.12rem;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid;
+    border-radius: 0.55rem;
+    font-size: 0.75rem;
+}
+
+.hotspot-editor__validation--valid {
+    border-color: var(--editor-success);
+    background: var(--editor-success-soft);
+    color: var(--editor-success);
+}
+
+.hotspot-editor__validation--invalid {
+    border-color: var(--editor-warning);
+    background: var(--editor-warning-soft);
+    color: var(--editor-warning);
+}
+
+.hotspot-editor__validation span {
+    color: var(--editor-text);
+}
+
+@media (min-width: 34rem) {
+    .hotspot-editor {
+        padding: 1rem;
+    }
+
+    .hotspot-editor__section {
+        padding: 1rem;
+    }
+
+    .hotspot-editor__preview-tools {
+        grid-template-columns: minmax(0, 1.35fr) minmax(12rem, 0.65fr);
+        align-items: end;
+    }
+}
+
+@media (max-width: 27rem) {
+    .hotspot-editor__search-form {
+        grid-template-columns: 1fr;
+    }
+
+    .hotspot-editor__search-result {
+        grid-template-columns: 2.6rem minmax(0, 1fr);
+    }
+
+    .hotspot-editor__search-result img,
+    .hotspot-editor__search-placeholder {
+        width: 2.6rem;
+        height: 2.6rem;
+    }
+
+    .hotspot-editor__search-select {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+    }
+}

@@ -40,6 +40,7 @@ const requiredToolkitComponentTypes = [
     'responsiveColumns',
     'richText',
     'section',
+    'shoppableImage',
     'siteTheme',
     'sizeGuide',
     'trustBar',
@@ -217,6 +218,28 @@ function validateEnumContracts(file, metadata) {
                 );
             }
         }
+    }
+
+    return failures;
+}
+
+function validateShoppableImageContract(file, metadata) {
+    if (file !== 'components/SFNextToolkit/shoppableImage.json') return [];
+
+    const attributes = (metadata.attribute_definition_groups ?? []).flatMap(
+        (group) => group.attribute_definitions ?? []
+    );
+    const hotspotConfig = attributes.find((attribute) => attribute.id === 'hotspotConfig');
+    const editor = hotspotConfig?.editor_definition;
+    const failures = [];
+
+    if (hotspotConfig?.type !== 'custom' || editor?.type !== 'SFNextToolkit.shoppableHotspots') {
+        failures.push(`${file}#hotspotConfig: must use the SFNextToolkit.shoppableHotspots custom editor`);
+    }
+    if (editor?.configuration?.schemaVersion !== 1 || editor?.configuration?.maxHotspots !== 12) {
+        failures.push(
+            `${file}#hotspotConfig: editor configuration must contain numeric schemaVersion=1 and maxHotspots=12`
+        );
     }
 
     return failures;
@@ -404,6 +427,7 @@ async function validateToolkitCartridge() {
 
         const metadata = JSON.parse(await readFile(absolutePath, 'utf8'));
         failures.push(...validateEnumContracts(file, metadata));
+        failures.push(...validateShoppableImageContract(file, metadata));
         if (file.startsWith('editors/')) {
             failures.push(...(await validateEditorContracts(file, metadata)));
         }

@@ -9,8 +9,8 @@ Start with the [complete cartridge and authoring guide](./cartridges/plugin_sfne
 ## Toolkit at a glance
 
 - Page types: blank landing page, product listing page, product detail page, blog home, shared blog-post layout, and a safe Branding Studio workspace.
-- Components: 28 reusable types, including Campaign Hero, Embedded Video, editorial layouts, a responsive single Product Card, curated or category-driven Product Carousel, configurable PLP grid, Blog Post Grid, Content Collection, PDP Size Guide, visual Site Theme, and the four-part Mega Menu enhancement.
-- Delivery: 35 Page Designer metadata definitions in `plugin_sfnext_page_designer`—28 components, 6 pages, and 1 custom visual editor—and the matching React implementation for Managed Runtime.
+- Components: 29 reusable types, including Campaign Hero, Shoppable Image, Embedded Video, editorial layouts, a responsive single Product Card, curated or category-driven Product Carousel, configurable PLP grid, Blog Post Grid, Content Collection, PDP Size Guide, visual Site Theme, and the four-part Mega Menu enhancement.
+- Delivery: 37 Page Designer metadata definitions in `plugin_sfnext_page_designer`—29 components, 6 pages, and 2 custom visual editors—and the matching React implementation for Managed Runtime.
 - Safety: namespaced type IDs, restricted nested regions, safe merchant links, semantic design tokens, and accessible defaults.
 
 ## Prerequisites
@@ -106,10 +106,17 @@ Content Asset-backed components also require the Storefront Next SLAS client to 
 
 - **Product Card** lets a merchant search for one catalog product, choose `hi-res`, `large`, `medium`, `small`, or `swatch` imagery, control the visible commerce fields and custom attributes, and use an automatic container-responsive layout.
 - **Product Carousel** accepts manually ordered Product Cards/Product Tiles or loads up to 12 products from a category. Category mode supports catalog order, a stable daily random selection, or a new random selection on each server loader execution.
+- **Shoppable Image** places up to 12 catalog-backed hotspots over a responsive campaign image. Each hotspot opens standard Quick Add, while an optional integrated panel can list every live product or expose Product Set actions.
 - **Content Collection** displays manually ordered Content Asset IDs or the latest _N_ online assets from a folder, filtered as blog, generic, or all content. Cards can render as a responsive grid or carousel and can map custom Content attribute IDs to title, summary, image, date, author, category, and destination.
 - **Size Guide** sits in the PDP template's single `productTools` region and recommends a Mayoral child size from a supported known-brand size, physical measurements, or age. It checks the current product's available variation values and reports uncertainty instead of inventing a conversion.
 
 Page Designer does not provide a native B2C Content Asset search attribute. Manual Content Collection authoring therefore uses Content Asset IDs, one per line or comma-separated; folder-backed mode avoids maintaining that list.
+
+## Shoppable Image
+
+`SFNextToolkit.shoppableImage` supports free product selection or Product Set validation, independent desktop/mobile percentage coordinates, keyboard-accessible 44 px hotspots, current market price and availability, and the storefront's standard Quick Add. Its heading, description, and actions live in a responsive panel attached to the image; merchants can hide the view-all action or the complete panel.
+
+The custom editor always retains the native Product Picker. Optional name/ID search requires the included Managed Runtime resource route and an absolute `productSearchEndpoint`, because Business Manager hosts the editor on a separate origin. See the [component guide](./src/components/sfnext-toolkit/shoppable-image/README.md) for authoring, endpoint configuration, mobile cropping, markets, and accessibility.
 
 ## PDP Size Guide
 

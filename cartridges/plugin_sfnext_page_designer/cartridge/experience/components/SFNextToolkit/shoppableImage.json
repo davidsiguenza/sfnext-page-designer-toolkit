@@ -1,0 +1,132 @@
+{
+    "name": "Shoppable Image · Shop the Look",
+    "description": "Campaign image with interactive product hotspots, Quick Add, free product selection, or Product Set validation.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "shoppableImage",
+            "name": "Shoppable Image · Shop the Look",
+            "description": "Campaign image with interactive product hotspots, Quick Add, free product selection, or Product Set validation.",
+            "attribute_definitions": [
+                {
+                    "id": "desktopImage",
+                    "name": "Desktop image",
+                    "type": "image",
+                    "required": true,
+                    "description": "Select or upload the primary campaign image. It is displayed without automatic cropping."
+                },
+                {
+                    "id": "mobileImage",
+                    "name": "Mobile image (optional)",
+                    "type": "image",
+                    "required": false,
+                    "description": "Optional mobile crop. When supplied, configure the mobile position of each hotspot as well."
+                },
+                {
+                    "id": "altText",
+                    "name": "Alternative text (required)",
+                    "type": "string",
+                    "required": true,
+                    "description": "Required before Apply is enabled. Describe the campaign scene without repeating the product list."
+                },
+                {
+                    "id": "hotspotConfig",
+                    "name": "Products and interactive hotspots",
+                    "type": "custom",
+                    "required": true,
+                    "description": "Open the visual editor to choose free selection or Product Set mode, select products, and place desktop and mobile hotspots.",
+                    "editor_definition": {
+                        "type": "SFNextToolkit.shoppableHotspots",
+                        "configuration": {
+                            "schemaVersion": 1,
+                            "maxHotspots": 12,
+                            "productSearchEndpoint": ""
+                        }
+                    }
+                },
+                {
+                    "id": "showContentPanel",
+                    "name": "Show editorial panel",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Displays an integrated title, description, and action panel below the image.",
+                    "default_value": true
+                },
+                {
+                    "id": "heading",
+                    "name": "Heading",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: heading",
+                    "default_value": "Shop the look"
+                },
+                {
+                    "id": "description",
+                    "name": "Description",
+                    "type": "text",
+                    "required": false,
+                    "description": "Field: description"
+                },
+                {
+                    "id": "showViewAllButton",
+                    "name": "Show view-all button",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Displays the action that opens the product list. Requires the editorial panel.",
+                    "default_value": true
+                },
+                {
+                    "id": "hotspotTheme",
+                    "name": "Hotspot style",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: hotspotTheme",
+                    "values": ["light", "dark", "brand"],
+                    "default_value": "light"
+                },
+                {
+                    "id": "showProductPreview",
+                    "name": "Show product preview on focus",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "On desktop, shows current name, price, and availability on hover or keyboard focus.",
+                    "default_value": true
+                },
+                {
+                    "id": "showHotspotNumbers",
+                    "name": "Number hotspots",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showHotspotNumbers",
+                    "default_value": false
+                },
+                {
+                    "id": "viewAllLabel",
+                    "name": "View-all label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: viewAllLabel",
+                    "default_value": "View all products"
+                },
+                {
+                    "id": "shopSetLabel",
+                    "name": "Shop-set label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Opens the standard Quick Add for the Product Set.",
+                    "default_value": "Shop the set"
+                },
+                {
+                    "id": "viewSetLabel",
+                    "name": "View Product Set label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: viewSetLabel",
+                    "default_value": "View set"
+                }
+            ]
+        }
+    ]
+}
