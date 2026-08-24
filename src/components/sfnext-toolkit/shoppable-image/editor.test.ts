@@ -25,7 +25,6 @@ type EditorEvent = { type: string; payload?: unknown };
 type EditorWindow = Window & {
     subscribe: (eventName: string, callback: EditorCallback) => void;
     emit: (event: EditorEvent, callback?: BreakoutCallback) => void;
-    fetch: typeof fetch;
 };
 
 const editorSource = readFileSync(
@@ -39,7 +38,6 @@ const editorSource = readFileSync(
 describe('SFNext Toolkit shoppable hotspots custom editor', () => {
     const callbacks = new Map<string, EditorCallback>();
     const emit = vi.fn<(event: EditorEvent, callback?: BreakoutCallback) => void>();
-    const fetchMock = vi.fn<typeof fetch>();
     const editorWindow = window as unknown as EditorWindow;
 
     function send(eventName: string, payload?: unknown) {
@@ -72,17 +70,14 @@ describe('SFNext Toolkit shoppable hotspots custom editor', () => {
         document.body.replaceChildren();
         callbacks.clear();
         emit.mockReset();
-        fetchMock.mockReset();
         editorWindow.subscribe = (eventName, callback) => callbacks.set(eventName, callback);
         editorWindow.emit = emit;
-        editorWindow.fetch = fetchMock;
         runInNewContext(editorSource, { window: editorWindow });
     });
 
     afterEach(() => {
         delete (editorWindow as Partial<EditorWindow>).subscribe;
         delete (editorWindow as Partial<EditorWindow>).emit;
-        delete (editorWindow as Partial<EditorWindow>).fetch;
     });
 
     test('subscribes to the complete lifecycle and validates required authoring data', () => {
@@ -103,7 +98,7 @@ describe('SFNext Toolkit shoppable hotspots custom editor', () => {
         });
     });
 
-    test('places a point visually and keeps the native picker as a fallback', () => {
+    test('places a point visually using the native product picker', () => {
         send('sfcc:ready', { value: null, config: { maxHotspots: 12 }, isRequired: true });
         fireEvent.click(screen.getByRole('button', { name: '+ Add hotspot on image' }));
 
@@ -120,8 +115,6 @@ describe('SFNext Toolkit shoppable hotspots custom editor', () => {
             toJSON: () => ({}),
         });
         fireEvent.click(canvas, { clientX: 100, clientY: 80 });
-        expect(screen.getByRole('heading', { name: 'Product for the new hotspot' })).toBeInTheDocument();
-        fireEvent.click(screen.getByRole('button', { name: 'Use standard picker' }));
         applyLastProductPicker('sku-hat');
 
         expect(lastValue()).toMatchObject({
@@ -131,70 +124,6 @@ describe('SFNext Toolkit shoppable hotspots custom editor', () => {
         });
         expect(screen.getByRole('button', { name: /Hotspot 1, product sku-hat/ })).toBeInTheDocument();
         expect(screen.getByRole('status')).toHaveTextContent('Valid configuration');
-    });
-
-    test('searches by product name or ID and stores the selected name as an authoring hint', async () => {
-        fetchMock.mockResolvedValue({
-            ok: true,
-            json: () =>
-                Promise.resolve({
-                    products: [
-                        {
-                            productId: '26-00512-068',
-                            productName: 'Kids slim chino trousers',
-                            image: 'https://images.example.test/trouser.jpg',
-                        },
-                    ],
-                }),
-        } as Response);
-        send('sfcc:ready', {
-            value: null,
-            config: {
-                maxHotspots: 12,
-                productSearchEndpoint: 'https://store.example.test/resource/shoppable-product-search',
-            },
-            isRequired: true,
-        });
-        fireEvent.click(screen.getByRole('button', { name: '+ Add hotspot on image' }));
-        const canvas = screen.getByLabelText('Hotspot canvas for desktop');
-        vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
-            x: 0,
-            y: 0,
-            left: 0,
-            top: 0,
-            right: 400,
-            bottom: 200,
-            width: 400,
-            height: 200,
-            toJSON: () => ({}),
-        });
-        fireEvent.click(canvas, { clientX: 200, clientY: 100 });
-        fireEvent.change(screen.getByRole('searchbox', { name: 'Product name or ID' }), {
-            target: { value: 'chino' },
-        });
-        const searchForm = screen.getByRole('searchbox', { name: 'Product name or ID' }).closest('form');
-        if (!searchForm) throw new Error('Missing product search form');
-        fireEvent.submit(searchForm);
-
-        const result = await screen.findByRole('button', {
-            name: /Kids slim chino trousers/,
-        });
-        fireEvent.click(result);
-
-        expect(fetchMock).toHaveBeenCalledWith('https://store.example.test/resource/shoppable-product-search?q=chino', {
-            credentials: 'omit',
-        });
-        expect(lastValue()).toMatchObject({
-            hotspots: [
-                {
-                    productId: '26-00512-068',
-                    productName: 'Kids slim chino trousers',
-                    x: 50,
-                    y: 50,
-                },
-            ],
-        });
-        expect(screen.getByText('Kids slim chino trousers')).toBeInTheDocument();
     });
 
     test('supports independent mobile coordinates and keyboard movement', () => {
@@ -241,7 +170,6 @@ describe('SFNext Toolkit shoppable hotspots custom editor', () => {
         });
         fireEvent.click(screen.getByRole('radio', { name: 'Product Set' }));
         fireEvent.click(screen.getByRole('button', { name: 'Select Product Set' }));
-        fireEvent.click(screen.getByRole('button', { name: 'Use standard picker' }));
         applyLastProductPicker('look-set');
 
         expect(lastValue()).toMatchObject({

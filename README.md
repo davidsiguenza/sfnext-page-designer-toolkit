@@ -116,7 +116,7 @@ Page Designer does not provide a native B2C Content Asset search attribute. Manu
 
 `SFNextToolkit.shoppableImage` supports free product selection or Product Set validation, independent desktop/mobile percentage coordinates, keyboard-accessible 44 px hotspots, current market price and availability, and the storefront's standard Quick Add. Its heading, description, and actions live in a responsive panel attached to the image; merchants can hide the view-all action or the complete panel.
 
-The custom editor always retains the native Product Picker. Optional name/ID search requires the included Managed Runtime resource route and an absolute `productSearchEndpoint`, because Business Manager hosts the editor on a separate origin. See the [component guide](./src/components/sfnext-toolkit/shoppable-image/README.md) for authoring, endpoint configuration, mobile cropping, markets, and accessibility.
+Every product and Product Set is selected with Page Designer's native Product Picker. See the [component guide](./src/components/sfnext-toolkit/shoppable-image/README.md) for authoring, image-library behavior, mobile cropping, markets, and accessibility.
 
 ## PDP Size Guide
 

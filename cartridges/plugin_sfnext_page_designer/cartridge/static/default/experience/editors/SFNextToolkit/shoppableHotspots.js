@@ -31,15 +31,9 @@
         disabled: false,
         required: true,
         maxHotspots: DEFAULT_MAX_HOTSPOTS,
-        productSearchEndpoint: '',
         viewport: 'desktop',
         placing: false,
         localPreview: { desktop: '', mobile: '' },
-        productSelection: null,
-        searchQuery: '',
-        searchResults: [],
-        searchLoading: false,
-        searchError: '',
     };
 
     function createDefaultValue() {
@@ -78,11 +72,6 @@
         if (!url) return '';
         if (/^(https?:)?\/\//i.test(url) || url.charAt(0) === '/') return url;
         return '';
-    }
-
-    function safeSearchEndpoint(value) {
-        var url = cleanString(value);
-        return /^https:\/\//i.test(url) ? url : '';
     }
 
     function normalizeValue(rawValue) {
@@ -269,68 +258,6 @@
         ].join('');
     }
 
-    function searchResultMarkup(product) {
-        return [
-            '<button type="button" class="hotspot-editor__search-result" data-action="search-result" data-product-id="',
-            escapeHtml(product.productId),
-            '" data-product-name="',
-            escapeHtml(product.productName || product.productId),
-            '" aria-label="Select ',
-            escapeHtml(product.productName || product.productId),
-            ', product ',
-            escapeHtml(product.productId),
-            '"',
-            disabledAttribute(),
-            '>',
-            product.image
-                ? '<img src="' + escapeHtml(product.image) + '" alt="" loading="lazy">'
-                : '<span class="hotspot-editor__search-placeholder" aria-hidden="true"></span>',
-            '<span><strong>',
-            escapeHtml(product.productName || product.productId),
-            '</strong><small>',
-            escapeHtml(product.productId),
-            '</small></span><span class="hotspot-editor__search-select">Select</span></button>',
-        ].join('');
-    }
-
-    function productSearchMarkup() {
-        if (!state.productSelection) return '';
-        var results = state.searchResults.map(searchResultMarkup).join('');
-        var feedback = '';
-        if (state.searchLoading) {
-            feedback = '<p class="hotspot-editor__search-feedback" role="status">Searching the catalog…</p>';
-        } else if (state.searchError) {
-            feedback =
-                '<p class="hotspot-editor__search-feedback hotspot-editor__search-feedback--error" role="alert">' +
-                escapeHtml(state.searchError) +
-                '</p>';
-        } else if (state.searchQuery && !results) {
-            feedback = '<p class="hotspot-editor__search-feedback" role="status">No results found.</p>';
-        }
-
-        return [
-            '<section class="hotspot-editor__search-panel" aria-labelledby="product-search-heading">',
-            '<div class="hotspot-editor__section-heading"><div><h2 id="product-search-heading">',
-            escapeHtml(state.productSelection.title || 'Select a product'),
-            '</h2><p>Search by name or ID. The saved name is only an authoring aid; the storefront loads current catalog data.</p></div></div>',
-            '<form class="hotspot-editor__search-form" data-action="search-form"><label class="hotspot-editor__field"><span>Product name or ID</span><input type="search" data-action="search-query" autocomplete="off" minlength="2" maxlength="80" placeholder="For example, chino trousers or 26-00512" value="',
-            escapeHtml(state.searchQuery),
-            '"',
-            disabledAttribute(),
-            '></label><button type="submit" class="hotspot-editor__primary"',
-            state.disabled || state.searchLoading ? ' disabled' : '',
-            '>Search</button></form>',
-            '<div class="hotspot-editor__search-actions"><button type="button" data-action="native-picker"',
-            disabledAttribute(),
-            '>Use standard picker</button><button type="button" data-action="cancel-product-search"',
-            disabledAttribute(),
-            '>Cancel</button></div>',
-            feedback,
-            results ? '<div class="hotspot-editor__search-results">' + results + '</div>' : '',
-            '</section>',
-        ].join('');
-    }
-
     function render() {
         var value = state.value;
         var isProductSet = value.sourceMode === 'productSet';
@@ -341,7 +268,6 @@
             state.viewport === 'mobile' ? value.mobilePreviewUrl || '' : value.desktopPreviewUrl || '';
         var points = value.hotspots.map(hotspotMarkup).join('');
         var cards = value.hotspots.map(hotspotCardMarkup).join('');
-        var productSearch = productSearchMarkup();
 
         document.body.innerHTML = [
             '<main class="hotspot-editor">',
@@ -350,7 +276,6 @@
             state.disabled
                 ? '<p class="hotspot-editor__disabled" role="status">This field is disabled in the current context.</p>'
                 : '',
-            productSearch,
             '<section class="hotspot-editor__section" aria-labelledby="source-heading"><div class="hotspot-editor__section-heading"><div><h2 id="source-heading">1. Product source</h2><p>Free selection offers maximum flexibility. Product Set validates hotspots in the storefront.</p></div><strong>',
             value.hotspots.length,
             ' / ',
@@ -391,7 +316,7 @@
             disabledAttribute(),
             '></label>',
             '<p class="hotspot-editor__hint">The temporary file is shown only in this browser. It is not saved or uploaded again and does not replace the component image.</p>',
-            '<details class="hotspot-editor__advanced"><summary>Advanced: use a preview URL</summary><label class="hotspot-editor__field"><span>Preview URL for ',
+            '<details class="hotspot-editor__advanced"><summary>Advanced: use a B2C library or CDN image URL</summary><label class="hotspot-editor__field"><span>Preview URL for ',
             viewportLabel,
             ' (optional)</span><input type="url" value="',
             escapeHtml(persistedPreview),
@@ -459,116 +384,6 @@
         });
     }
 
-    function resetProductSearch() {
-        state.productSelection = null;
-        state.searchQuery = '';
-        state.searchResults = [];
-        state.searchLoading = false;
-        state.searchError = '';
-        state.searchRequestId = (state.searchRequestId || 0) + 1;
-    }
-
-    function openProductSearch(selection) {
-        state.productSelection = selection;
-        state.searchQuery = '';
-        state.searchResults = [];
-        state.searchLoading = false;
-        state.searchError = '';
-        render();
-        root.setTimeout(function () {
-            var input = document.querySelector('[data-action="search-query"]');
-            if (input) input.focus();
-        }, 0);
-    }
-
-    function applyProductSelection(productId, productName) {
-        var selection = state.productSelection;
-        if (!selection || !productId) return;
-        resetProductSearch();
-
-        if (selection.kind === 'new') {
-            addOrMoveProduct(productId, selection.coordinates, productName);
-            return;
-        }
-        if (selection.kind === 'hotspot') {
-            var hotspot = findHotspot(selection.hotspotId);
-            if (!hotspot) {
-                render();
-                return;
-            }
-            hotspot.productId = productId;
-            if (productName) hotspot.productName = productName;
-            else delete hotspot.productName;
-            commit();
-            return;
-        }
-        if (selection.kind === 'productSet') {
-            state.value.productSetId = productId;
-            commit();
-        }
-    }
-
-    function runProductSearch() {
-        var input = document.querySelector('[data-action="search-query"]');
-        var query = cleanString(input ? input.value : state.searchQuery);
-        state.searchQuery = query;
-        state.searchResults = [];
-        state.searchError = '';
-
-        if (query.length < 2) {
-            state.searchLoading = false;
-            state.searchError = 'Enter at least two characters.';
-            render();
-            return;
-        }
-        if (!state.productSearchEndpoint || typeof root.fetch !== 'function') {
-            state.searchLoading = false;
-            state.searchError = 'Name search is not configured. Use the standard product picker.';
-            render();
-            return;
-        }
-
-        var requestId = (state.searchRequestId || 0) + 1;
-        state.searchRequestId = requestId;
-        state.searchLoading = true;
-        render();
-        root.fetch(state.productSearchEndpoint + '?q=' + encodeURIComponent(query), { credentials: 'omit' })
-            .then(function (response) {
-                return response.json().then(function (payload) {
-                    return { ok: response.ok, payload: payload };
-                });
-            })
-            .then(function (result) {
-                if (state.searchRequestId !== requestId || !state.productSelection) return;
-                var products = Array.isArray(result.payload && result.payload.products)
-                    ? result.payload.products
-                          .map(function (item) {
-                              if (!isPlainObject(item) || !cleanString(item.productId)) return null;
-                              return {
-                                  productId: cleanString(item.productId),
-                                  productName: cleanString(item.productName) || cleanString(item.productId),
-                                  image: safePreviewUrl(item.image),
-                              };
-                          })
-                          .filter(Boolean)
-                    : [];
-                state.searchLoading = false;
-                state.searchResults = result.ok ? products : [];
-                state.searchError = result.ok
-                    ? ''
-                    : cleanString(result.payload && result.payload.error) ||
-                      'The catalog search failed. Use the standard product picker.';
-                render();
-            })
-            .catch(function () {
-                if (state.searchRequestId !== requestId || !state.productSelection) return;
-                state.searchLoading = false;
-                state.searchResults = [];
-                state.searchError = 'The catalog search failed. Use the standard product picker.';
-                render();
-            });
-    }
-
     function coordinatesFromEvent(event, canvas) {
         var rect = canvas.getBoundingClientRect();
         return {
@@ -630,48 +445,12 @@
             });
         });
 
-        var searchForm = document.querySelector('[data-action="search-form"]');
-        if (searchForm) {
-            searchForm.addEventListener('submit', function (event) {
-                event.preventDefault();
-                runProductSearch();
-            });
-        }
-
-        var cancelProductSearch = document.querySelector('[data-action="cancel-product-search"]');
-        if (cancelProductSearch) {
-            cancelProductSearch.addEventListener('click', function () {
-                resetProductSearch();
-                render();
-            });
-        }
-
-        var nativePickerButton = document.querySelector('[data-action="native-picker"]');
-        if (nativePickerButton) {
-            nativePickerButton.addEventListener('click', function () {
-                var selection = state.productSelection;
-                if (!selection) return;
-                openProductPicker(selection.title || 'Select a product', function (productId) {
-                    applyProductSelection(productId, '');
-                });
-            });
-        }
-
-        Array.prototype.forEach.call(document.querySelectorAll('[data-action="search-result"]'), function (button) {
-            button.addEventListener('click', function () {
-                applyProductSelection(
-                    cleanString(button.getAttribute('data-product-id')),
-                    cleanString(button.getAttribute('data-product-name'))
-                );
-            });
-        });
-
         var productSetButton = document.querySelector('[data-action="product-set"]');
         if (productSetButton) {
             productSetButton.addEventListener('click', function () {
-                openProductSearch({
-                    kind: 'productSet',
-                    title: 'Select the Product Set',
+                openProductPicker('Select the Product Set', function (productId) {
+                    state.value.productSetId = productId;
+                    commit();
                 });
             });
         }
@@ -721,10 +500,8 @@
             canvas.addEventListener('click', function (event) {
                 if (!state.placing || event.target.closest('[data-hotspot-id]')) return;
                 var coordinates = coordinatesFromEvent(event, canvas);
-                openProductSearch({
-                    kind: 'new',
-                    title: 'Product for the new hotspot',
-                    coordinates: coordinates,
+                openProductPicker('Product for the new hotspot', function (productId) {
+                    addOrMoveProduct(productId, coordinates);
                 });
             });
         }
@@ -733,10 +510,10 @@
             button.addEventListener('click', function () {
                 var hotspot = findHotspot(button.getAttribute('data-id'));
                 if (!hotspot) return;
-                openProductSearch({
-                    kind: 'hotspot',
-                    title: 'Change the hotspot product',
-                    hotspotId: hotspot.id,
+                openProductPicker('Change the hotspot product', function (productId) {
+                    hotspot.productId = productId;
+                    delete hotspot.productName;
+                    commit();
                 });
             });
         });
@@ -853,14 +630,12 @@
         state.maxHotspots = Number.isFinite(configuredMax)
             ? Math.max(1, Math.min(24, configuredMax))
             : DEFAULT_MAX_HOTSPOTS;
-        state.productSearchEndpoint = safeSearchEndpoint(ready.config && ready.config.productSearchEndpoint);
         state.disabled = Boolean(ready.isDisabled);
         state.required = ready.isRequired !== false;
         state.value = normalizeValue(ready.value);
         state.viewport = 'desktop';
         state.placing = false;
         state.localPreview = { desktop: '', mobile: '' };
-        resetProductSearch();
         render();
     });
 
@@ -868,7 +643,6 @@
         state.value = normalizeValue(value);
         state.placing = false;
         state.localPreview = { desktop: '', mobile: '' };
-        resetProductSearch();
         render();
     });
 

@@ -159,7 +159,6 @@ describe('SFNext Toolkit shoppable image metadata', () => {
                 configuration: {
                     schemaVersion: 1,
                     maxHotspots: 12,
-                    productSearchEndpoint: '',
                 },
             },
         });

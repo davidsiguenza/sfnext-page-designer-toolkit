@@ -11,14 +11,16 @@ Storefront Next Page Designer component with two product-source modes:
 2. Select the desktop image and, only when the mobile crop differs, an optional mobile image.
 3. Open `Products and interactive hotspots`.
 4. Select free-selection or Product Set mode.
-5. Temporarily choose the same image file for positioning. This browser-only preview is neither saved nor published; a preview URL remains available as an advanced option.
-6. Select the image, search for a product by name or ID, and drag the hotspot into position. The native Product Picker remains available as a fallback.
+5. Temporarily choose the same image file for positioning. This browser-only preview is neither saved nor published; an absolute image URL from the B2C library or an approved CDN remains available as an advanced option.
+6. Select a position on the image, choose the product in Page Designer's native Product Picker, and drag the hotspot if it needs adjustment.
 7. Switch to the mobile view to inherit desktop coordinates or define independent mobile coordinates for a different crop.
 8. Decide whether to show the integrated editorial panel and, separately, its `View all` action.
 
 The editor stores normalized coordinates from `0` to `100`, not pixels. The storefront preserves the image aspect ratio, so coordinates stay aligned while the image scales. A different mobile crop requires its own hotspot coordinates.
 
-Page Designer runs custom editors in an isolated iframe and does not expose sibling attribute values. The visual editor therefore cannot read `desktopImage` automatically. The native image field remains the only published image; the file chosen in the Studio is a temporary local positioning reference.
+Page Designer runs custom editors in an isolated iframe and does not expose sibling attribute values. The visual editor therefore cannot read `desktopImage` automatically. The native image field remains the only published image; it selects media from the current B2C Commerce site library, while the file chosen in the Studio is only a temporary local positioning reference.
+
+Salesforce CMS is separate from the B2C Commerce site library. A CMS-backed variant can be built with a `cms_record` attribute and a defined CMS content type, but it would be a distinct source mode and the isolated hotspot editor still could not reuse that sibling value automatically.
 
 ## Storefront behavior
 
@@ -31,13 +33,9 @@ Page Designer runs custom editors in an isolated iframe and does not expose sibl
 
 Free-selection mode deliberately does not provide a blind “add all” action because master products require variant selection. The modal resolves each size or variant without inventing an artificial PDP. Product Set mode reuses the standard set flow.
 
-## Product-name search setup
+## Product selection
 
-The native `sfcc:productPicker` works without additional configuration and supports the platform's normal product selection flow. Inline name/ID search is optional because a Business Manager custom editor runs on a different origin from Managed Runtime.
-
-To enable inline search, deploy `src/routes/resource.shoppable-product-search.ts` with the storefront and set the custom editor's `productSearchEndpoint` metadata value to that route's absolute HTTPS URL, for example `https://your-mrt-host.example/resource/shoppable-product-search`. Keep it empty when the host is not known at build time; the editor then explains that name search is unavailable and offers the native picker.
-
-The resource route accepts only same-origin or Salesforce Commerce Cloud authoring origins, returns at most eight minimal authoring results, disables caching, and never persists the query or selected display name as storefront product truth.
+The editor uses only the prebuilt `sfcc:productPicker` for hotspot products and Product Sets. It needs no Managed Runtime search endpoint, keeps authoring inside the standard B2C Commerce selection flow, and stores only the selected product ID as catalog truth.
 
 ## Markets and accessibility
 

@@ -41,8 +41,7 @@
                         "type": "SFNextToolkit.shoppableHotspots",
                         "configuration": {
                             "schemaVersion": 1,
-                            "maxHotspots": 12,
-                            "productSearchEndpoint": ""
+                            "maxHotspots": 12
                         }
                     }
                 },
