@@ -4,7 +4,15 @@ A reusable Page Designer component and template library for Salesforce B2C Comme
 
 The toolkit adds merchant-configurable PLP, PDP, blank, blog-home, blog-post, and Branding Studio page types together with reusable editorial, promotional, trust, FAQ, navigation, category, product, video, sizing, theme, and Content Asset components. It contains no brand assets, catalog IDs, credentials, or fixed site configuration. The optional Size Guide is the deliberate exception to brand-neutral content: it ships a versioned Mayoral reference dataset and clearly bounded comparison rules.
 
-Start with the [complete cartridge and authoring guide](./cartridges/plugin_sfnext_page_designer/README.md), which documents every component, its use case, installation, Business Manager setup, deployment, accessibility guidance, and troubleshooting.
+Start with the [unified component catalog](./docs/COMPONENT-CATALOG.md) to browse every custom Page Designer component kept on `main`, with direct links to its source, metadata, Storybook story, and authoring guide. The [complete Storefront Next cartridge guide](./cartridges/plugin_sfnext_page_designer/README.md) covers installation, Business Manager setup, deployment, accessibility, and troubleshooting in depth.
+
+## Unified component catalog
+
+`main` is the canonical, cumulative branch for the component library. It currently contains 30 custom Storefront Next component types and one isolated SFRA component package; historical feature branches are development records, not separate installation sources.
+
+- [Browse all components in one catalog](./docs/COMPONENT-CATALOG.md)
+- Run `pnpm storybook` for the available interactive Storefront Next examples.
+- Use the links in the catalog to jump directly to implementation, Page Designer metadata, tests, and package-specific instructions.
 
 ## SFRA components
 
@@ -14,6 +22,7 @@ The first package is [Two-column image, text, and CTA](./sfra/two-column-image-c
 
 ## Toolkit at a glance
 
+- Repository total: 31 custom Page Designer component types across Storefront Next and SFRA.
 - Page types: blank landing page, product listing page, product detail page, blog home, shared blog-post layout, and a safe Branding Studio workspace.
 - Components: 30 reusable types, including Campaign Hero, Shoppable Image, Motion Showcase, Embedded Video, editorial layouts, a responsive single Product Card, curated or category-driven Product Carousel, configurable PLP grid, Blog Post Grid, Content Collection, PDP Size Guide, visual Site Theme, and the four-part Mega Menu enhancement.
 - Delivery: 39 Page Designer metadata definitions in `plugin_sfnext_page_designer`—30 components, 6 pages, and 3 custom visual editors—and the matching React implementation for Managed Runtime.
@@ -67,7 +76,7 @@ git clone --branch v1.0.0 --depth 1 \
   https://github.com/SalesforceCommerceCloud/storefront-next-template my-storefront
 ```
 
-Check **[Releases](../../releases)** for all versions.
+Check **[Releases](https://github.com/davidsiguenza/sfnext-page-designer-toolkit/releases)** for all versions.
 
 ### Template version & SDK compatibility
 
@@ -223,11 +232,11 @@ src/
 
 ## Documentation
 
-- 📊 [Data Retrieval](./README-DATA.md)
-- 🔐 [Authentication & Session Management](./README-AUTH.md)
-- 🌍 [Internationalization (i18n)](./README-I18N.md)
-- 🧪 [Tests & Coverage](./README-TESTS.md)
-- 🔍 [ESLint Configuration & TypeScript Enforcement](./README-ESLINT.md)
+- 📊 [Data Retrieval](./docs/README-DATA.md)
+- 🔐 [Authentication & Session Management](./docs/README-AUTH.md)
+- 🌍 [Internationalization (i18n)](./docs/README-I18N.md)
+- 🧪 [Tests & Coverage](./docs/README-TESTS.md)
+- 🔍 [ESLint Configuration & TypeScript Enforcement](./docs/README-ESLINT.md)
 - 🖼️ [Images](./docs/README-IMAGES.md)
 - ⚡ [Performance Best Practices](./docs/README-PERFORMANCE.md)
 - 📈 [Performance Metrics](./docs/README-PERFORMANCE-METRICS.md)
