@@ -153,6 +153,16 @@ export class SFNextToolkitShoppableImageMetadata {
     hotspotTheme?: string;
 
     @AttributeDefinition({
+        id: 'revealHotspotsOnInteraction',
+        name: 'Reveal hotspots on interaction',
+        description:
+            'Keeps the campaign image clean. Hover or keyboard focus reveals the hotspots on desktop; the Shop the Look indicator reveals them on touch devices.',
+        type: 'boolean',
+        defaultValue: false,
+    })
+    revealHotspotsOnInteraction?: boolean;
+
+    @AttributeDefinition({
         id: 'showProductPreview',
         name: 'Show product preview on focus',
         description: 'On desktop, shows current name, price, and availability on hover or keyboard focus.',
@@ -208,6 +218,7 @@ export interface ShoppableImageProps extends Omit<ComponentPropsWithoutRef<'sect
     description?: string;
     showViewAllButton?: boolean;
     hotspotTheme?: string;
+    revealHotspotsOnInteraction?: boolean;
     showProductPreview?: boolean;
     showHotspotNumbers?: boolean;
     viewAllLabel?: string;
@@ -356,6 +367,7 @@ export default function ShoppableImage({
     description,
     showViewAllButton = true,
     hotspotTheme,
+    revealHotspotsOnInteraction = false,
     showProductPreview = true,
     showHotspotNumbers = false,
     viewAllLabel = 'View all products',
@@ -373,10 +385,14 @@ export default function ShoppableImage({
     const { t } = useTranslation('product');
     const navigate = useNavigate();
     const titleId = useId();
+    const hotspotRegionId = `${titleId}-hotspots`;
     const [listOpen, setListOpen] = useState(false);
     const [listMounted, setListMounted] = useState(false);
     const [quickViewOpen, setQuickViewOpen] = useState(false);
     const [activeProductId, setActiveProductId] = useState<string | null>(null);
+    const [isPointerInside, setIsPointerInside] = useState(false);
+    const [isFocusInside, setIsFocusInside] = useState(false);
+    const [hotspotsPinned, setHotspotsPinned] = useState(false);
     const viewAllButtonRef = useRef<HTMLButtonElement>(null);
     const quickViewTriggerRef = useRef<HTMLElement | null>(null);
     const config = data?.config ?? normalizeShoppableImageConfig(hotspotConfig);
@@ -385,6 +401,9 @@ export default function ShoppableImage({
     const theme = resolveTheme(hotspotTheme);
     const hotspots = data?.hotspots ?? [];
     const liveHotspots = isDesignMode ? hotspots : hotspots.filter(({ product }) => product);
+    const interactionRevealEnabled = revealHotspotsOnInteraction && liveHotspots.length > 0;
+    const hotspotsVisible =
+        isDesignMode || !interactionRevealEnabled || isPointerInside || isFocusInside || hotspotsPinned;
     const uniqueProducts = useMemo(
         () => Array.from(new Map((data?.products ?? []).map((product) => [product.productId, product])).values()),
         [data?.products]
@@ -442,6 +461,21 @@ export default function ShoppableImage({
                 data-slot="shoppable-image-surface"
                 className="rounded-ui border border-border bg-card text-card-foreground shadow-ui">
                 <div
+                    data-slot="shoppable-image-media"
+                    data-hotspot-visibility={interactionRevealEnabled ? 'interaction' : 'always'}
+                    onMouseEnter={interactionRevealEnabled ? () => setIsPointerInside(true) : undefined}
+                    onMouseLeave={interactionRevealEnabled ? () => setIsPointerInside(false) : undefined}
+                    onFocusCapture={interactionRevealEnabled ? () => setIsFocusInside(true) : undefined}
+                    onBlurCapture={
+                        interactionRevealEnabled
+                            ? (event) => {
+                                  const nextTarget = event.relatedTarget as Node | null;
+                                  if (!nextTarget || !event.currentTarget.contains(nextTarget)) {
+                                      setIsFocusInside(false);
+                                  }
+                              }
+                            : undefined
+                    }
                     className={cn(
                         'relative isolate z-10 bg-muted',
                         showEditorialPanel ? 'rounded-t-ui' : 'rounded-ui'
@@ -472,52 +506,88 @@ export default function ShoppableImage({
                         />
                     ) : null}
 
-                    {liveHotspots.map((hotspot, index) => {
-                        const tooltipId = `${titleId}-hotspot-${index + 1}`;
-                        const product = hotspot.product;
-                        const available = product ? isProductAvailable(product) : false;
-                        const accessibleName = product
-                            ? `${t('quickAdd')}: ${hotspot.label || product.productName}. ${available ? t('inStock') : t('outOfStockLabel')}`
-                            : `Hotspot ${index + 1}: product ${hotspot.productId} unavailable`;
-                        const positionStyle: HotspotPositionStyle = {
-                            '--hotspot-x-desktop': `${hotspot.x}%`,
-                            '--hotspot-y-desktop': `${hotspot.y}%`,
-                            '--hotspot-x-mobile': `${hotspot.mobileX ?? hotspot.x}%`,
-                            '--hotspot-y-mobile': `${hotspot.mobileY ?? hotspot.y}%`,
-                        };
+                    {interactionRevealEnabled ? (
+                        <button
+                            type="button"
+                            aria-controls={hotspotRegionId}
+                            aria-pressed={hotspotsPinned}
+                            aria-label={
+                                hotspotsPinned
+                                    ? `Hide ${liveHotspots.length} product hotspots`
+                                    : `Show ${liveHotspots.length} product hotspots`
+                            }
+                            onClick={() => setHotspotsPinned((current) => !current)}
+                            className="absolute right-3 top-3 z-40 inline-flex min-h-11 max-w-[calc(100%-1.5rem)] items-center gap-2 rounded-full border border-border bg-background/90 px-3 py-2 text-xs font-semibold text-foreground shadow-lg backdrop-blur-sm transition-colors hover:bg-background focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/70">
+                            <ShoppingBag className="size-4 shrink-0" aria-hidden="true" />
+                            <span className="hidden truncate sm:inline">{heading || 'Shop the look'}</span>
+                            <span
+                                aria-hidden="true"
+                                className="grid size-5 shrink-0 place-items-center rounded-full bg-foreground/10 text-[0.6875rem]">
+                                {liveHotspots.length}
+                            </span>
+                        </button>
+                    ) : null}
 
-                        return (
-                            <div
-                                key={hotspot.id}
-                                style={positionStyle}
-                                className="sfnext-shoppable-image__hotspot group absolute left-[var(--hotspot-x-desktop)] top-[var(--hotspot-y-desktop)] z-10 -translate-x-1/2 -translate-y-1/2 hover:z-30 focus-within:z-30 max-[47.999rem]:left-[var(--hotspot-x-mobile,var(--hotspot-x-desktop))] max-[47.999rem]:top-[var(--hotspot-y-mobile,var(--hotspot-y-desktop))]">
-                                <button
-                                    type="button"
-                                    aria-label={accessibleName}
-                                    aria-describedby={product && showProductPreview ? tooltipId : undefined}
-                                    aria-disabled={!product}
-                                    disabled={!product}
-                                    onClick={(event) =>
-                                        product && openQuickView(product.productId, event.currentTarget)
-                                    }
-                                    className={cn(
-                                        'sfnext-shoppable-image__marker flex size-11 items-center justify-center rounded-full border-2 text-sm font-bold transition-transform motion-reduce:transition-none motion-safe:hover:scale-110 motion-safe:focus-visible:scale-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/70 disabled:cursor-not-allowed disabled:border-destructive disabled:bg-destructive/90 disabled:text-destructive-foreground',
-                                        markerThemeClasses[theme]
-                                    )}>
-                                    {showHotspotNumbers ? index + 1 : <Plus className="size-5" aria-hidden="true" />}
-                                </button>
-                                {product && showProductPreview ? (
-                                    <HotspotProductSummary
-                                        product={product}
-                                        currency={data?.currency}
-                                        tooltipId={tooltipId}
-                                        x={hotspot.x}
-                                        y={hotspot.y}
-                                    />
-                                ) : null}
-                            </div>
-                        );
-                    })}
+                    <div
+                        id={hotspotRegionId}
+                        data-slot="shoppable-image-hotspots"
+                        aria-hidden={!hotspotsVisible}
+                        className={cn(
+                            'absolute inset-0 z-10 transition-opacity duration-200 motion-reduce:transition-none',
+                            hotspotsVisible ? 'opacity-100' : 'pointer-events-none opacity-0'
+                        )}>
+                        {liveHotspots.map((hotspot, index) => {
+                            const tooltipId = `${titleId}-hotspot-${index + 1}`;
+                            const product = hotspot.product;
+                            const available = product ? isProductAvailable(product) : false;
+                            const accessibleName = product
+                                ? `${t('quickAdd')}: ${hotspot.label || product.productName}. ${available ? t('inStock') : t('outOfStockLabel')}`
+                                : `Hotspot ${index + 1}: product ${hotspot.productId} unavailable`;
+                            const positionStyle: HotspotPositionStyle = {
+                                '--hotspot-x-desktop': `${hotspot.x}%`,
+                                '--hotspot-y-desktop': `${hotspot.y}%`,
+                                '--hotspot-x-mobile': `${hotspot.mobileX ?? hotspot.x}%`,
+                                '--hotspot-y-mobile': `${hotspot.mobileY ?? hotspot.y}%`,
+                            };
+
+                            return (
+                                <div
+                                    key={hotspot.id}
+                                    style={positionStyle}
+                                    className="sfnext-shoppable-image__hotspot group absolute left-[var(--hotspot-x-desktop)] top-[var(--hotspot-y-desktop)] z-10 -translate-x-1/2 -translate-y-1/2 hover:z-30 focus-within:z-30 max-[47.999rem]:left-[var(--hotspot-x-mobile,var(--hotspot-x-desktop))] max-[47.999rem]:top-[var(--hotspot-y-mobile,var(--hotspot-y-desktop))]">
+                                    <button
+                                        type="button"
+                                        tabIndex={hotspotsVisible ? 0 : -1}
+                                        aria-label={accessibleName}
+                                        aria-describedby={product && showProductPreview ? tooltipId : undefined}
+                                        aria-disabled={!product}
+                                        disabled={!product}
+                                        onClick={(event) =>
+                                            product && openQuickView(product.productId, event.currentTarget)
+                                        }
+                                        className={cn(
+                                            'sfnext-shoppable-image__marker flex size-11 items-center justify-center rounded-full border-2 text-sm font-bold transition-transform motion-reduce:transition-none motion-safe:hover:scale-110 motion-safe:focus-visible:scale-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/70 disabled:cursor-not-allowed disabled:border-destructive disabled:bg-destructive/90 disabled:text-destructive-foreground',
+                                            markerThemeClasses[theme]
+                                        )}>
+                                        {showHotspotNumbers ? (
+                                            index + 1
+                                        ) : (
+                                            <Plus className="size-5" aria-hidden="true" />
+                                        )}
+                                    </button>
+                                    {product && showProductPreview ? (
+                                        <HotspotProductSummary
+                                            product={product}
+                                            currency={data?.currency}
+                                            tooltipId={tooltipId}
+                                            x={hotspot.x}
+                                            y={hotspot.y}
+                                        />
+                                    ) : null}
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
 
                 {showEditorialPanel ? (

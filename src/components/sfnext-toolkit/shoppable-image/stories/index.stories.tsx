@@ -116,6 +116,7 @@ const meta: Meta<typeof ShoppableImage> = {
         showContentPanel: true,
         showViewAllButton: true,
         hotspotTheme: 'light',
+        revealHotspotsOnInteraction: false,
         showProductPreview: true,
         showHotspotNumbers: false,
         data,
@@ -144,6 +145,10 @@ export const NumberedBrandPoints: Story = {
 
 export const ImageOnly: Story = {
     args: { showContentPanel: false },
+};
+
+export const RevealOnInteraction: Story = {
+    args: { revealHotspotsOnInteraction: true, showContentPanel: false },
 };
 
 export const ProductSet: Story = {

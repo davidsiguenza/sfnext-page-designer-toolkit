@@ -358,22 +358,33 @@ input:disabled {
     position: absolute;
     z-index: 2;
     display: grid;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 1.625rem;
+    height: 1.625rem;
     padding: 0;
     transform: translate(-50%, -50%);
     place-items: center;
-    border: 0.15rem solid rgba(0, 0, 0, 0.28);
+    border: 0.1rem solid rgba(0, 0, 0, 0.32);
     border-radius: 50%;
     background: #ffffff;
     color: #111111;
-    box-shadow: 0 0.25rem 0.7rem rgba(0, 0, 0, 0.28);
+    box-shadow: 0 0.16rem 0.42rem rgba(0, 0, 0, 0.3);
+    cursor: grab;
     touch-action: none;
 }
 
 .hotspot-editor__point span {
-    font-size: 0.78rem;
+    font-size: 0.66rem;
     font-weight: 800;
+}
+
+.hotspot-editor__point:active {
+    cursor: grabbing;
+}
+
+.hotspot-editor__point:focus-visible {
+    z-index: 3;
+    outline: 0.14rem solid var(--editor-brand);
+    outline-offset: 0.12rem;
 }
 
 .hotspot-editor__canvas-actions {

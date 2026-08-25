@@ -15,6 +15,7 @@ Storefront Next Page Designer component with two product-source modes:
 6. Select a position on the image, choose the product in Page Designer's native Product Picker, and drag the hotspot if it needs adjustment.
 7. Switch to the mobile view to inherit desktop coordinates or define independent mobile coordinates for a different crop.
 8. Decide whether to show the integrated editorial panel and, separately, its `View all` action.
+9. Optionally enable `Reveal hotspots on interaction` to keep the campaign image clean until hover, keyboard focus, or activation of the corner indicator.
 
 The editor stores normalized coordinates from `0` to `100`, not pixels. The storefront preserves the image aspect ratio, so coordinates stay aligned while the image scales. A different mobile crop requires its own hotspot coordinates.
 
@@ -25,6 +26,7 @@ Salesforce CMS is separate from the B2C Commerce site library. A CMS-backed vari
 ## Storefront behavior
 
 - Desktop hover or focus shows the current product name, price, and availability.
+- `Reveal hotspots on interaction` hides the markers until the image receives hover/focus. A compact `Shop the look` control in the corner reveals and pins them on touch devices; the option is off by default for backward compatibility.
 - Click, Enter, or Space opens the standard Quick Add with variants, size selection, and Add to Cart.
 - Mobile hotspots retain a 44 × 44 px touch target and open Quick Add on tap.
 - `View all products` opens an accessible modal containing current products and an individual Quick Add action.
@@ -43,7 +45,7 @@ Product data is not frozen into content. On each render, the loader calls SCAPI 
 
 While that request runs, the fallback immediately renders the campaign image and optional editorial panel. Only hotspots, prices, and product actions wait for SCAPI.
 
-Hotspots are semantic buttons reachable by keyboard. They announce product and availability, expose a visible focus state, and return focus to their activator after Quick Add closes. Availability and Quick Add labels reuse storefront translations.
+Hotspots are semantic buttons reachable by keyboard. In interaction-reveal mode, focusing the corner control reveals the points before they enter the tab order. They announce product and availability, expose a visible focus state, and return focus to their activator after Quick Add closes. Availability and Quick Add labels reuse storefront translations.
 
 ## Technical contract
 

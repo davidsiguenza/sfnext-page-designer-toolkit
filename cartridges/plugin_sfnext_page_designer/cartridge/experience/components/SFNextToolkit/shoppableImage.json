@@ -86,6 +86,14 @@
                     "default_value": "light"
                 },
                 {
+                    "id": "revealHotspotsOnInteraction",
+                    "name": "Reveal hotspots on interaction",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Keeps the campaign image clean. Hover or keyboard focus reveals the hotspots on desktop; the Shop the Look indicator reveals them on touch devices.",
+                    "default_value": false
+                },
+                {
                     "id": "showProductPreview",
                     "name": "Show product preview on focus",
                     "type": "boolean",

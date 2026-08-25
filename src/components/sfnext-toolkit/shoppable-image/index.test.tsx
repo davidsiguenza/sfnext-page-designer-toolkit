@@ -163,6 +163,7 @@ describe('SFNext Toolkit shoppable image metadata', () => {
             },
         });
         expect(fields.hotspotTheme.values).toEqual(['light', 'dark', 'brand']);
+        expect(fields.revealHotspotsOnInteraction).toMatchObject({ type: 'boolean', defaultValue: false });
         expect(fields.showContentPanel).toMatchObject({ type: 'boolean', defaultValue: true });
         expect(fields.showViewAllButton).toMatchObject({ type: 'boolean', defaultValue: true });
     });
@@ -206,9 +207,7 @@ describe('SFNext Toolkit shoppable image rendering', () => {
         expect(tooltips[0]).toHaveAttribute('data-vertical-placement', 'below');
         expect(tooltips[1]).toHaveAttribute('data-horizontal-placement', 'center');
         expect(tooltips[1]).toHaveAttribute('data-vertical-placement', 'above');
-        expect(tooltips[0].closest('[data-slot]')?.querySelector('.relative.isolate')).not.toHaveClass(
-            'overflow-hidden'
-        );
+        expect(container.querySelector('[data-slot="shoppable-image-media"]')).not.toHaveClass('overflow-hidden');
     });
 
     test('resolves native Page Designer image values', () => {
@@ -299,6 +298,60 @@ describe('SFNext Toolkit shoppable image rendering', () => {
 
         expect(screen.getByRole('heading', { name: 'Shop the look' })).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'View all products' })).not.toBeInTheDocument();
+    });
+
+    test('reveals clean-image hotspots on hover and through the touch-friendly indicator', async () => {
+        const user = userEvent.setup();
+        const { container } = renderComponent(
+            <ShoppableImage
+                desktopImage="/campaign.jpg"
+                heading="Autumn look"
+                revealHotspotsOnInteraction
+                data={baseData}
+            />
+        );
+
+        const media = container.querySelector('[data-slot="shoppable-image-media"]');
+        const hotspotRegion = container.querySelector('[data-slot="shoppable-image-hotspots"]');
+        const indicator = screen.getByRole('button', { name: 'Show 2 product hotspots' });
+
+        expect(media).toHaveAttribute('data-hotspot-visibility', 'interaction');
+        expect(hotspotRegion).toHaveAttribute('aria-hidden', 'true');
+        expect(hotspotRegion).toHaveClass('pointer-events-none', 'opacity-0');
+        expect(hotspotRegion?.querySelectorAll('button')[0]).toHaveAttribute('tabindex', '-1');
+        expect(indicator).toHaveTextContent('Autumn look');
+        expect(indicator).toHaveAttribute('aria-pressed', 'false');
+
+        await user.hover(media as HTMLElement);
+        expect(hotspotRegion).toHaveAttribute('aria-hidden', 'false');
+        expect(hotspotRegion?.querySelectorAll('button')[0]).toHaveAttribute('tabindex', '0');
+
+        await user.unhover(media as HTMLElement);
+        expect(hotspotRegion).toHaveAttribute('aria-hidden', 'true');
+
+        await user.click(indicator);
+        expect(indicator).toHaveAttribute('aria-pressed', 'true');
+        expect(hotspotRegion).toHaveAttribute('aria-hidden', 'false');
+
+        await user.click(screen.getByRole('button', { name: /Knitted hat/ }));
+        expect(await screen.findByTestId('quick-view')).toHaveTextContent('sku-hat');
+    });
+
+    test('reveals interaction-mode hotspots before they enter the keyboard tab order', async () => {
+        const user = userEvent.setup();
+        const { container } = renderComponent(
+            <ShoppableImage desktopImage="/campaign.jpg" revealHotspotsOnInteraction data={baseData} />
+        );
+
+        const indicator = screen.getByRole('button', { name: 'Show 2 product hotspots' });
+        const hotspotRegion = container.querySelector('[data-slot="shoppable-image-hotspots"]');
+
+        await user.tab();
+        expect(indicator).toHaveFocus();
+        expect(hotspotRegion).toHaveAttribute('aria-hidden', 'false');
+
+        await user.tab();
+        expect(screen.getByRole('button', { name: /Knitted hat/ })).toHaveFocus();
     });
 
     test('opens the standard Quick Add from pointer or keyboard activation', async () => {
