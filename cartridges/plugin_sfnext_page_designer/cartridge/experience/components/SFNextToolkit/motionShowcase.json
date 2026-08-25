@@ -1,0 +1,141 @@
+{
+    "name": "Motion Showcase · Media + Content",
+    "description": "Animated editorial content whose effect, duration, curve, delay, sequence and trigger use controlled design-system tokens.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "motionShowcase",
+            "name": "Motion Showcase · Media + Content",
+            "description": "Animated editorial content whose effect, duration, curve, delay, sequence and trigger use controlled design-system tokens.",
+            "attribute_definitions": [
+                {
+                    "id": "imageUrl",
+                    "name": "Image",
+                    "type": "image",
+                    "required": true,
+                    "description": "Field: imageUrl"
+                },
+                {
+                    "id": "imageAlt",
+                    "name": "Image Alt Text",
+                    "type": "string",
+                    "required": false,
+                    "description": "Describe informative images. When empty, the heading is used."
+                },
+                {
+                    "id": "eyebrow",
+                    "name": "Eyebrow",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: eyebrow"
+                },
+                {
+                    "id": "heading",
+                    "name": "Heading",
+                    "type": "string",
+                    "required": true,
+                    "description": "Field: heading"
+                },
+                {
+                    "id": "headingLevel",
+                    "name": "Heading Level",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: headingLevel",
+                    "values": ["h2", "h3", "h4"],
+                    "default_value": "h2"
+                },
+                {
+                    "id": "content",
+                    "name": "Content",
+                    "type": "markup",
+                    "required": false,
+                    "description": "Field: content"
+                },
+                {
+                    "id": "ctaLabel",
+                    "name": "CTA Label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: ctaLabel"
+                },
+                {
+                    "id": "ctaUrl",
+                    "name": "CTA URL",
+                    "type": "url",
+                    "required": false,
+                    "description": "Field: ctaUrl"
+                },
+                {
+                    "id": "ctaStyle",
+                    "name": "CTA Style",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: ctaStyle",
+                    "values": ["primary", "secondary", "outline", "link"],
+                    "default_value": "primary"
+                },
+                {
+                    "id": "mediaPosition",
+                    "name": "Desktop Image Position",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: mediaPosition",
+                    "values": ["left", "right"],
+                    "default_value": "left"
+                },
+                {
+                    "id": "mediaRatio",
+                    "name": "Image Ratio",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: mediaRatio",
+                    "values": ["landscape", "square", "portrait", "auto"],
+                    "default_value": "landscape"
+                },
+                {
+                    "id": "surface",
+                    "name": "Surface",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: surface",
+                    "values": ["transparent", "background", "muted", "card", "secondary"],
+                    "default_value": "card"
+                },
+                {
+                    "id": "contentAlignment",
+                    "name": "Vertical Content Alignment",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: contentAlignment",
+                    "values": ["start", "center", "end"],
+                    "default_value": "center"
+                },
+                {
+                    "id": "contentSpacing",
+                    "name": "Content Spacing",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: contentSpacing",
+                    "values": ["sm", "md", "lg"],
+                    "default_value": "md"
+                },
+                {
+                    "id": "motion",
+                    "name": "Motion Settings",
+                    "type": "custom",
+                    "required": false,
+                    "description": "Open the visual editor to configure reusable motion design tokens and replay the preview.",
+                    "editor_definition": {
+                        "type": "SFNextToolkit.motionEditor",
+                        "configuration": {
+                            "schemaVersion": 1
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

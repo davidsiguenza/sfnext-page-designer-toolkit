@@ -4,11 +4,11 @@ This directory contains the Storefront Next side of the reusable Page Designer
 toolkit. It registers the toolkit page types with the application and keeps the
 hand-authored PLP, PDP, blank, blog-home, blog-post, and Branding Studio metadata sources that are copied into
 `plugin_sfnext_page_designer` during generation. The public contract currently
-contains 6 page types and 29 component types: 19 general-purpose root blocks, 7
+contains 6 page types and 30 component types: 20 general-purpose root blocks, 7
 nested contextual children, and the deliberately constrained **Mega Menu Enhancements**,
 PDP **Size Guide**, and site-wide **Site Theme** components. Together with the
-visual theme and shoppable-hotspot custom editors, they generate 37 JSON toolkit metadata definitions
-(29 components, 6 pages, and 2 editors).
+visual theme, shoppable-hotspot, and motion custom editors, they generate 39 JSON
+toolkit metadata definitions (30 components, 6 pages, and 3 editors).
 
 The complete merchant and developer guide lives in
 [`cartridges/plugin_sfnext_page_designer/README.md`](../../../cartridges/plugin_sfnext_page_designer/README.md).
@@ -34,6 +34,10 @@ accessibility, troubleshooting, and safe removal.
   visual editor supports free products or Product Set validation, independent
   desktop/mobile coordinates, the native Product Picker, and optional name/ID
   search through a separately configured Managed Runtime resource endpoint.
+- `src/components/sfnext-toolkit/motion-showcase` composes Media Content with a
+  versioned motion value. Its token IDs map to the Storefront Next motion layer;
+  authoring stays static, reduced-motion preferences show the final state, and the
+  live runtime supports load or shared-observer viewport triggers plus optional replay.
 - `src/components/sfnext-toolkit/size-guide` owns a versioned, fail-closed Mayoral
   child sizing engine and its PDP interaction. It accepts exact supported
   brand/size evidence, physical measurements, or low-confidence age orientation;
@@ -59,10 +63,11 @@ accessibility, troubleshooting, and safe removal.
   provider-owned PayPal/Venmo palettes; semantic aliases derive from their configured
   source token until explicitly overridden.
 - `metadata/editors/SFNextToolkit` and the cartridge's matching static resources
-  implement the `SFNextToolkit.themeEditor` and `SFNextToolkit.shoppableHotspots`
-  Page Designer custom attribute editors. The theme editor groups visual color controls by source-token role and stores one
-  versioned JSON value; generated Tailwind `--color-*` bridges and non-color or
-  complex CSS values remain untouched.
+  implement the `SFNextToolkit.themeEditor`, `SFNextToolkit.shoppableHotspots`, and
+  `SFNextToolkit.motionEditor` Page Designer custom attribute editors. Each stores
+  one versioned JSON value: Theme Editor controls allowlisted source colors,
+  Shoppable Hotspots maps products to responsive coordinates, and Motion Editor
+  exposes reusable effects, durations, curves, delays, sequencing, triggers, and replay.
 - `src/components/sfnext-toolkit/mega-menu*` defines the ordinary **Mega Menu
   Enhancements** content block, category-targeted panels, curated links, and one
   optional graphical feature per panel. The host navigation integration enriches

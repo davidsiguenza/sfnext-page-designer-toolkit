@@ -9,8 +9,8 @@ Start with the [complete cartridge and authoring guide](./cartridges/plugin_sfne
 ## Toolkit at a glance
 
 - Page types: blank landing page, product listing page, product detail page, blog home, shared blog-post layout, and a safe Branding Studio workspace.
-- Components: 29 reusable types, including Campaign Hero, Shoppable Image, Embedded Video, editorial layouts, a responsive single Product Card, curated or category-driven Product Carousel, configurable PLP grid, Blog Post Grid, Content Collection, PDP Size Guide, visual Site Theme, and the four-part Mega Menu enhancement.
-- Delivery: 37 Page Designer metadata definitions in `plugin_sfnext_page_designer`—29 components, 6 pages, and 2 custom visual editors—and the matching React implementation for Managed Runtime.
+- Components: 30 reusable types, including Campaign Hero, Shoppable Image, Motion Showcase, Embedded Video, editorial layouts, a responsive single Product Card, curated or category-driven Product Carousel, configurable PLP grid, Blog Post Grid, Content Collection, PDP Size Guide, visual Site Theme, and the four-part Mega Menu enhancement.
+- Delivery: 39 Page Designer metadata definitions in `plugin_sfnext_page_designer`—30 components, 6 pages, and 3 custom visual editors—and the matching React implementation for Managed Runtime.
 - Safety: namespaced type IDs, restricted nested regions, safe merchant links, semantic design tokens, and accessible defaults.
 
 ## Prerequisites
@@ -117,6 +117,12 @@ Page Designer does not provide a native B2C Content Asset search attribute. Manu
 `SFNextToolkit.shoppableImage` supports free product selection or Product Set validation, independent desktop/mobile percentage coordinates, keyboard-accessible 44 px hotspots, current market price and availability, and the storefront's standard Quick Add. Its heading, description, and actions live in a responsive panel attached to the image; merchants can hide the view-all action or the complete panel.
 
 Every product and Product Set is selected with Page Designer's native Product Picker. See the [component guide](./src/components/sfnext-toolkit/shoppable-image/README.md) for authoring, image-library behavior, mobile cropping, markets, and accessibility.
+
+## Motion Showcase
+
+`SFNextToolkit.motionShowcase` combines the established Media Content layout with a visual motion editor. Merchants choose allowlisted effect, duration, curve, delay, together/stagger sequencing, load or viewport trigger, and optional viewport replay tokens instead of entering raw CSS or JavaScript.
+
+The storefront resolves those semantic IDs through overridable `--ds-motion-*` design-system tokens. Edit mode stays static, `prefers-reduced-motion: reduce` always reveals the final state, focused content cannot be hidden by replay, and all viewport instances share one `IntersectionObserver`.
 
 ## PDP Size Guide
 

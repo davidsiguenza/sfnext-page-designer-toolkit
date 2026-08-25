@@ -6,3 +6,157 @@
         transform: translateY(0);
     }
 }
+/*
+ * Motion design-system base values. A vertical can define the public
+ * --ds-motion-* aliases; components retain these defaults as a safe fallback.
+ */
+:root {
+    --ds-motion-default-duration-fast: 160ms;
+    --ds-motion-default-duration-standard: 280ms;
+    --ds-motion-default-duration-slow: 420ms;
+    --ds-motion-default-delay-none: 0ms;
+    --ds-motion-default-delay-short: 80ms;
+    --ds-motion-default-delay-medium: 160ms;
+    --ds-motion-default-delay-long: 240ms;
+    --ds-motion-default-stagger-tight: 40ms;
+    --ds-motion-default-stagger-standard: 80ms;
+    --ds-motion-default-stagger-relaxed: 120ms;
+    --ds-motion-default-ease-standard: cubic-bezier(0.2, 0, 0.2, 1);
+    --ds-motion-default-ease-enter: cubic-bezier(0, 0, 0.2, 1);
+    --ds-motion-default-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+    --ds-motion-default-ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    --ds-motion-default-distance-small: 1rem;
+    --ds-motion-default-distance-medium: 2.5rem;
+}
+
+[data-motion-root] {
+    --motion-duration: var(--ds-motion-duration-standard, var(--ds-motion-default-duration-standard, 280ms));
+    --motion-delay: var(--ds-motion-delay-none, var(--ds-motion-default-delay-none, 0ms));
+    --motion-stagger: var(--ds-motion-stagger-standard, var(--ds-motion-default-stagger-standard, 80ms));
+    --motion-easing: var(--ds-motion-ease-enter, var(--ds-motion-default-ease-enter, cubic-bezier(0, 0, 0.2, 1)));
+    --motion-from-transform: translate3d(
+        0,
+        var(--ds-motion-distance-small, var(--ds-motion-default-distance-small, 1rem)),
+        0
+    );
+}
+
+[data-motion-root][data-motion-duration='fast'] {
+    --motion-duration: var(--ds-motion-duration-fast, var(--ds-motion-default-duration-fast, 160ms));
+}
+
+[data-motion-root][data-motion-duration='slow'] {
+    --motion-duration: var(--ds-motion-duration-slow, var(--ds-motion-default-duration-slow, 420ms));
+}
+
+[data-motion-root][data-motion-easing='standard'] {
+    --motion-easing: var(
+        --ds-motion-ease-standard,
+        var(--ds-motion-default-ease-standard, cubic-bezier(0.2, 0, 0.2, 1))
+    );
+}
+
+[data-motion-root][data-motion-easing='exit'] {
+    --motion-easing: var(--ds-motion-ease-exit, var(--ds-motion-default-ease-exit, cubic-bezier(0.4, 0, 1, 1)));
+}
+
+[data-motion-root][data-motion-easing='emphasized'] {
+    --motion-easing: var(
+        --ds-motion-ease-emphasized,
+        var(--ds-motion-default-ease-emphasized, cubic-bezier(0.2, 0, 0, 1))
+    );
+}
+
+[data-motion-root][data-motion-delay='short'] {
+    --motion-delay: var(--ds-motion-delay-short, var(--ds-motion-default-delay-short, 80ms));
+}
+
+[data-motion-root][data-motion-delay='medium'] {
+    --motion-delay: var(--ds-motion-delay-medium, var(--ds-motion-default-delay-medium, 160ms));
+}
+
+[data-motion-root][data-motion-delay='long'] {
+    --motion-delay: var(--ds-motion-delay-long, var(--ds-motion-default-delay-long, 240ms));
+}
+
+[data-motion-root][data-motion-sequence='together'] {
+    --motion-stagger: 0ms;
+}
+
+[data-motion-root][data-motion-stagger='tight'] {
+    --motion-stagger: var(--ds-motion-stagger-tight, var(--ds-motion-default-stagger-tight, 40ms));
+}
+
+[data-motion-root][data-motion-stagger='relaxed'] {
+    --motion-stagger: var(--ds-motion-stagger-relaxed, var(--ds-motion-default-stagger-relaxed, 120ms));
+}
+
+[data-motion-root][data-motion-effect='fade'] {
+    --motion-from-transform: translate3d(0, 0, 0);
+}
+
+[data-motion-root][data-motion-effect='slide_left'] {
+    --motion-from-transform: translate3d(
+        calc(0px - var(--ds-motion-distance-medium, var(--ds-motion-default-distance-medium, 2.5rem))),
+        0,
+        0
+    );
+}
+
+[data-motion-root][data-motion-effect='slide_right'] {
+    --motion-from-transform: translate3d(
+        var(--ds-motion-distance-medium, var(--ds-motion-default-distance-medium, 2.5rem)),
+        0,
+        0
+    );
+}
+
+[data-motion-root][data-motion-effect='scale'] {
+    --motion-from-transform: scale(0.94);
+}
+
+[data-motion-root][data-motion-ready='true']:not([data-motion-effect='none']) [data-motion-item] {
+    opacity: 0;
+    transform: var(--motion-from-transform);
+    transition-delay: var(--motion-item-delay, var(--motion-delay));
+    transition-duration: var(--motion-duration);
+    transition-property: opacity, transform;
+    transition-timing-function: var(--motion-easing);
+    will-change: opacity, transform;
+}
+
+[data-motion-root][data-motion-sequence='stagger'] [data-motion-order='1'] {
+    --motion-item-delay: calc(var(--motion-delay) + var(--motion-stagger));
+}
+
+[data-motion-root][data-motion-sequence='stagger'] [data-motion-order='2'] {
+    --motion-item-delay: calc(var(--motion-delay) + var(--motion-stagger) + var(--motion-stagger));
+}
+
+[data-motion-root][data-motion-sequence='stagger'] [data-motion-order='3'] {
+    --motion-item-delay: calc(
+        var(--motion-delay) + var(--motion-stagger) + var(--motion-stagger) + var(--motion-stagger)
+    );
+}
+
+[data-motion-root][data-motion-sequence='stagger'] [data-motion-order='4'] {
+    --motion-item-delay: calc(
+        var(--motion-delay) + var(--motion-stagger) + var(--motion-stagger) + var(--motion-stagger) +
+            var(--motion-stagger)
+    );
+}
+
+[data-motion-root][data-motion-ready='true'][data-motion-visible='true'] [data-motion-item] {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-motion-root] [data-motion-item] {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+        will-change: auto !important;
+    }
+}

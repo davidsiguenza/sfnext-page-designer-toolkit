@@ -1,0 +1,8 @@
+{
+    "name": "Motion Design Studio",
+    "description": "Visual editor for token-based animation settings with an interactive preview.",
+    "resources": {
+        "styles": ["experience/editors/SFNextToolkit/motionEditor.css"],
+        "scripts": ["experience/editors/SFNextToolkit/motionEditor.js"]
+    }
+}

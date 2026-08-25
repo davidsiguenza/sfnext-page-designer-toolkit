@@ -1,6 +1,6 @@
 # Storefront Next Page Designer Toolkit
 
-`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides 6 merchant-facing page types, 29 component types, and 2 custom editors without brand assets, catalog IDs, credentials, or fixed site configuration. The optional Size Guide intentionally includes a versioned Mayoral sizing dataset; no Mayoral imagery or product data is bundled.
+`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides 6 merchant-facing page types, 30 component types, and 3 custom editors without brand assets, catalog IDs, credentials, or fixed site configuration. The optional Size Guide intentionally includes a versioned Mayoral sizing dataset; no Mayoral imagery or product data is bundled.
 
 The toolkit has two required parts:
 
@@ -26,39 +26,40 @@ The PLP and PDP page types use the standard `plp` and `pdp` aspect definitions f
 
 ### Component types
 
-| Type ID                                          | Best used for                                                                                           | Data dependency          |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `component.SFNextToolkit.heroBanner`             | Campaign launches with responsive imagery, safe overlays, semantic headings, and two CTAs.              | None                     |
-| `component.SFNextToolkit.shoppableImage`         | Campaign imagery with catalog hotspots, Quick Add, a product-list modal, and optional Product Set flow. | Products APIs            |
-| `component.SFNextToolkit.embeddedVideo`          | Responsive YouTube, Vimeo, or direct video with privacy, playback, caption, and transcript controls.    | None                     |
-| `component.SFNextToolkit.promoStrip`             | Delivery, sale, member, or service messages in a compact themed strip.                                  | None                     |
-| `component.SFNextToolkit.section`                | Page sections with controlled width, spacing, surface, and a nested content region.                     | None                     |
-| `component.SFNextToolkit.responsiveColumns`      | Responsive two- or three-column compositions with controlled ratios and mobile order.                   | None                     |
-| `component.SFNextToolkit.richText`               | Headings, merchant-authored rich text, and an optional call to action.                                  | None                     |
-| `component.SFNextToolkit.mediaContent`           | Editorial image-and-copy layouts for campaigns, brand stories, and PDP storytelling.                    | None                     |
-| `component.SFNextToolkit.megaMenu`               | `Mega Menu Enhancements` content block assigned to the standard header's site-wide region.              | Standard navigation      |
-| `component.SFNextToolkit.megaMenuPanel`          | Editorial additions for one root category, with curated links and at most one graphical feature.        | Target root category     |
-| `component.SFNextToolkit.megaMenuLink`           | Safe curated menu destination for a URL, category, product, or B2C Content Asset.                       | Selected destination     |
-| `component.SFNextToolkit.megaMenuFeature`        | Graphical menu card driven by category, product, B2C Content, Salesforce CMS, or custom data.           | Source-dependent         |
-| `component.SFNextToolkit.promoGrid`              | Equal or featured-first collections of promotional cards.                                               | None                     |
-| `component.SFNextToolkit.promoCard`              | Overlay or stacked image, copy, and CTA used inside a Promo Grid.                                       | None                     |
-| `component.SFNextToolkit.categoryCarousel`       | A scrollable collection of catalog-backed or manually selected categories.                              | Categories API           |
-| `component.SFNextToolkit.categoryCard`           | One catalog-backed category with optional editorial image and copy overrides.                           | Category API             |
-| `component.SFNextToolkit.productCard`            | One selected product in a container-responsive card with configurable image type, fields, and actions.  | Products API             |
-| `component.SFNextToolkit.productCarousel`        | Manually curated products or N category products in catalog, daily-random, or request-random order.     | Product Search API       |
-| `component.SFNextToolkit.productRecommendations` | Einstein-powered personalised product carousel with a clear Page Designer authoring state.              | Einstein + Products APIs |
-| `component.SFNextToolkit.trustBar`               | A responsive row of service and confidence messages.                                                    | None                     |
-| `component.SFNextToolkit.trustItem`              | One delivery, returns, payment, support, store, or gift message inside a Trust Bar.                     | None                     |
-| `component.SFNextToolkit.accordion`              | FAQ, delivery, returns, care, and long-form supporting information.                                     | None                     |
-| `component.SFNextToolkit.accordionItem`          | One accessible disclosure inside an Accordion.                                                          | None                     |
-| `component.SFNextToolkit.categoryHero`           | A PLP hero that defaults to the current category and supports editorial overrides.                      | Current category route   |
-| `component.SFNextToolkit.productList`            | PLP image view type, product fields, swatches, actions, and custom catalog attributes.                  | PLP search runtime       |
-| `component.SFNextToolkit.blogPostGrid`           | Search, filter, sort, and paginate localized blog Content Assets in editorial cards.                    | Shopper Experience API   |
-| `component.SFNextToolkit.contentCollection`      | Manually selected or latest folder content, including blog and generic assets, in a grid or carousel.   | Shopper Experience API   |
-| `component.SFNextToolkit.sizeGuide`              | PDP fit assistant using bounded Mayoral brand, measurement, and age rules plus product availability.    | Current PDP product      |
-| `component.SFNextToolkit.siteTheme`              | Visual, allowlisted source-token palette published through the Header's site-wide theme region.         | None                     |
+| Type ID                                          | Best used for                                                                                            | Data dependency          |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `component.SFNextToolkit.heroBanner`             | Campaign launches with responsive imagery, safe overlays, semantic headings, and two CTAs.               | None                     |
+| `component.SFNextToolkit.shoppableImage`         | Campaign imagery with catalog hotspots, Quick Add, a product-list modal, and optional Product Set flow.  | Products APIs            |
+| `component.SFNextToolkit.embeddedVideo`          | Responsive YouTube, Vimeo, or direct video with privacy, playback, caption, and transcript controls.     | None                     |
+| `component.SFNextToolkit.promoStrip`             | Delivery, sale, member, or service messages in a compact themed strip.                                   | None                     |
+| `component.SFNextToolkit.section`                | Page sections with controlled width, spacing, surface, and a nested content region.                      | None                     |
+| `component.SFNextToolkit.responsiveColumns`      | Responsive two- or three-column compositions with controlled ratios and mobile order.                    | None                     |
+| `component.SFNextToolkit.richText`               | Headings, merchant-authored rich text, and an optional call to action.                                   | None                     |
+| `component.SFNextToolkit.mediaContent`           | Editorial image-and-copy layouts for campaigns, brand stories, and PDP storytelling.                     | None                     |
+| `component.SFNextToolkit.motionShowcase`         | Media-and-copy storytelling with token-based effects, timing, sequencing, and load or viewport triggers. | None                     |
+| `component.SFNextToolkit.megaMenu`               | `Mega Menu Enhancements` content block assigned to the standard header's site-wide region.               | Standard navigation      |
+| `component.SFNextToolkit.megaMenuPanel`          | Editorial additions for one root category, with curated links and at most one graphical feature.         | Target root category     |
+| `component.SFNextToolkit.megaMenuLink`           | Safe curated menu destination for a URL, category, product, or B2C Content Asset.                        | Selected destination     |
+| `component.SFNextToolkit.megaMenuFeature`        | Graphical menu card driven by category, product, B2C Content, Salesforce CMS, or custom data.            | Source-dependent         |
+| `component.SFNextToolkit.promoGrid`              | Equal or featured-first collections of promotional cards.                                                | None                     |
+| `component.SFNextToolkit.promoCard`              | Overlay or stacked image, copy, and CTA used inside a Promo Grid.                                        | None                     |
+| `component.SFNextToolkit.categoryCarousel`       | A scrollable collection of catalog-backed or manually selected categories.                               | Categories API           |
+| `component.SFNextToolkit.categoryCard`           | One catalog-backed category with optional editorial image and copy overrides.                            | Category API             |
+| `component.SFNextToolkit.productCard`            | One selected product in a container-responsive card with configurable image type, fields, and actions.   | Products API             |
+| `component.SFNextToolkit.productCarousel`        | Manually curated products or N category products in catalog, daily-random, or request-random order.      | Product Search API       |
+| `component.SFNextToolkit.productRecommendations` | Einstein-powered personalised product carousel with a clear Page Designer authoring state.               | Einstein + Products APIs |
+| `component.SFNextToolkit.trustBar`               | A responsive row of service and confidence messages.                                                     | None                     |
+| `component.SFNextToolkit.trustItem`              | One delivery, returns, payment, support, store, or gift message inside a Trust Bar.                      | None                     |
+| `component.SFNextToolkit.accordion`              | FAQ, delivery, returns, care, and long-form supporting information.                                      | None                     |
+| `component.SFNextToolkit.accordionItem`          | One accessible disclosure inside an Accordion.                                                           | None                     |
+| `component.SFNextToolkit.categoryHero`           | A PLP hero that defaults to the current category and supports editorial overrides.                       | Current category route   |
+| `component.SFNextToolkit.productList`            | PLP image view type, product fields, swatches, actions, and custom catalog attributes.                   | PLP search runtime       |
+| `component.SFNextToolkit.blogPostGrid`           | Search, filter, sort, and paginate localized blog Content Assets in editorial cards.                     | Shopper Experience API   |
+| `component.SFNextToolkit.contentCollection`      | Manually selected or latest folder content, including blog and generic assets, in a grid or carousel.    | Shopper Experience API   |
+| `component.SFNextToolkit.sizeGuide`              | PDP fit assistant using bounded Mayoral brand, measurement, and age rules plus product availability.     | Current PDP product      |
+| `component.SFNextToolkit.siteTheme`              | Visual, allowlisted source-token palette published through the Header's site-wide theme region.          | None                     |
 
-Nineteen component types are general-purpose root-page blocks. Seven are nested contextual building blocks rather than loose page blocks: `accordionItem`, `categoryCard`, `megaMenuPanel`, `megaMenuLink`, `megaMenuFeature`, `promoCard`, and `trustItem`. The three remaining components are deliberately constrained: `sizeGuide` appears only in a PDP's max-one `productTools` region; `megaMenu` is staged as a content block for **Header > Mega Menu Enhancements**; and `siteTheme` is staged in Branding Studio for **Header > Site Theme**. The last two are ordinary content blocks with no fixed component ID and must not be published as ordinary page content. These restrictions keep the Page Designer palette useful and prevent invalid or unexpectedly global compositions.
+Twenty component types are general-purpose root-page blocks. Seven are nested contextual building blocks rather than loose page blocks: `accordionItem`, `categoryCard`, `megaMenuPanel`, `megaMenuLink`, `megaMenuFeature`, `promoCard`, and `trustItem`. The three remaining components are deliberately constrained: `sizeGuide` appears only in a PDP's max-one `productTools` region; `megaMenu` is staged as a content block for **Header > Mega Menu Enhancements**; and `siteTheme` is staged in Branding Studio for **Header > Site Theme**. The last two are ordinary content blocks with no fixed component ID and must not be published as ordinary page content. These restrictions keep the Page Designer palette useful and prevent invalid or unexpectedly global compositions.
 
 The included standard Home, About, PLP, Search, and PDP host metadata explicitly excludes those ten contextual/constrained types from every ordinary region; PLP keeps its dedicated Product List inclusion and PDP keeps its dedicated Size Guide inclusion. The same boundary is enforced in generic Grid columns, Header Announcement, Section content, and Responsive Columns, so nesting cannot reintroduce an invalid drop target. `componentPreview` remains open for development previews. Site Theme also has a runtime guard that emits live CSS only when its immediate region is the embedded Header's exact `siteTheme` region. When porting the toolkit to a Storefront Next project with additional page types or container components, apply the same exclusions to every non-contextual region: a plugin component type cannot restrict a third-party host region by itself.
 
@@ -115,6 +116,12 @@ Use the `h1` option once when Rich Text supplies the primary title of a blank la
 Use Media Content when an image and copy belong together. Merchants can choose common image positions and responsive layout presets while the component reuses Storefront Next image optimization, focal points, semantic tokens, links, and buttons.
 
 Typical examples include a brand story, campaign feature, material story, sustainability message, or editorial PDP content.
+
+### Motion Showcase
+
+Motion Showcase keeps the Media Content authoring model and adds one `SFNextToolkit.motionEditor` value for animation. Merchants choose semantic effect, duration, curve, delay, together/stagger sequencing, load/viewport trigger, and optional viewport replay tokens; the editor always saves one complete versioned object and previews the base design-system timings.
+
+The storefront maps those IDs to the public `--ds-motion-*` token layer, so a vertical can tune timings without changing Page Designer content. Edit mode stays visible and static, `prefers-reduced-motion: reduce` always reveals the final state, and viewport instances share one observer. Focused content is never hidden again by replay. The component accepts no arbitrary CSS, keyframes, JavaScript, or raw timing values.
 
 ### Promo Grid and Promo Card
 
@@ -354,7 +361,7 @@ pnpm cartridge:validate
 pnpm build
 ```
 
-`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types and custom-editor definition/resources, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest. Validation also enforces the complete 29-type public component contract and rejects unresolved TypeScript expressions or enum defaults that are not present in their value lists. A complete generated toolkit contains 37 JSON metadata files: 29 component definitions, 6 page definitions, and 2 custom-editor definitions. The custom editors' server modules and static JavaScript/CSS are additional cartridge resources, not JSON metadata definitions.
+`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types and custom-editor definitions/resources, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest. Validation also enforces the complete 30-type public component contract and rejects unresolved TypeScript expressions or enum defaults that are not present in their value lists. A complete generated toolkit contains 39 JSON metadata files: 30 component definitions, 6 page definitions, and 3 custom-editor definitions. The custom editors' server modules and static JavaScript/CSS are additional cartridge resources, not JSON metadata definitions.
 
 `cartridge:validate` validates both the standard Storefront Next metadata and every file in this cartridge with the B2C tooling schema validator.
 
@@ -493,7 +500,7 @@ Then:
 4. Merge the Header integrations into the target release's root application shell and `navigation-menu-mega` implementation. `Layout.header` must remain the only embedded component, with fixed `component_id: header`, max-one `siteTheme` and `megaMenuEnhancements` regions, and the corresponding type inclusions. Preserve the requested Header ID with Page Designer `mode`/`pdToken`. Project only its Site Theme child into the root `PageDesignerProvider` before the route outlet so checkout and authentication layouts inherit it too; cache only that sanitized published projection per site/locale for 30 seconds, skip the cache entirely in Edit/Preview, and bound both cold and expired refreshes to one second with a fail-closed code-palette fallback. Let `_app` stream the request-scoped raw owner and attach the optional Mega Menu feature batches for the inherited navigation; when root has a cold miss in that same request, the raw owner promise is reused rather than fetched twice. Do not cache the full Header tree, fetch either feature as a second fixed component, or give its ordinary content block a fixed ID. Preserve the host category tree, focus/keyboard behavior, single menu state, mobile menu, category banners, and standard no-enhancement fallback instead of replacing the navigation wholesale.
 5. Keep the Site Theme publication guard intact when adapting the application shell: suppress the published global projection in Edit/Preview so the staged/focused registry component owns the scoped sample; live ordinary page content produces no style; and only a child projected from the embedded Header owner may emit allowlisted source variables at `:root`.
 6. Extend the host CSP `frame-src` and `media-src` directives with the approved video origins described under Embedded Video.
-7. Run `pnpm cartridge:generate` and `pnpm cartridge:validate`. Do not copy a stale generated registry or edit it manually. Validation should report 37 JSON toolkit metadata files (29 components, 6 pages, and 2 custom editors), plus the editors' server/static resources.
+7. Run `pnpm cartridge:generate` and `pnpm cartridge:validate`. Do not copy a stale generated registry or edit it manually. Validation should report 39 JSON toolkit metadata files (30 components, 6 pages, and 3 custom editors), plus the editors' server/static resources.
 8. Deploy both the updated `app_storefrontnext_base` and generated `plugin_sfnext_page_designer` cartridges with `pnpm cartridge:deploy:page-designer:install --reload`, activate the code version, and place `plugin_sfnext_page_designer` before `app_storefrontnext_base` in the target site's cartridge path. Repeat the dual-cartridge deployment whenever the Header host metadata changes; plugin-only deployment is sufficient only for later metadata-only updates that preserve that contract.
 9. If Blog Post Grid, Content Collection, blog routes, or Content-backed Mega Menu Features are required, import `site-imports/sfnext-toolkit-blog` when its fields are used, create the desired library folder (the default is `sfnext-blog`), and create online assets in the locales the storefront serves. Generic Content use does not require the SFNext Blog custom fields, but mapped attributes must exist on `Content`.
 10. Preserve the SLAS client's existing scopes and add `sfcc.shopper-experience.contents`. Also confirm that the instance API configuration allows the Shopper Experience component, content, and content-search resources used by the runtime. Product/category Mega Menu sources use the target storefront's existing Shopper Products access; Salesforce CMS mode and a Custom feature seeded from `cms_record` use the host Salesforce CMS/Page Designer configuration instead of the B2C Content Asset API. Size Guide performs no extra shopper API call; it consumes the already loaded PDP product.

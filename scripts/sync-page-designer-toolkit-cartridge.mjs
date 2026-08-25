@@ -30,6 +30,7 @@ const requiredToolkitComponentTypes = [
     'megaMenuFeature',
     'megaMenuLink',
     'megaMenuPanel',
+    'motionShowcase',
     'productCard',
     'productCarousel',
     'productList',
@@ -245,6 +246,29 @@ function validateShoppableImageContract(file, metadata) {
     return failures;
 }
 
+function validateMotionShowcaseContract(file, metadata) {
+    if (file !== 'components/SFNextToolkit/motionShowcase.json') return [];
+
+    const attributes = (metadata.attribute_definition_groups ?? []).flatMap(
+        (group) => group.attribute_definitions ?? []
+    );
+    const motion = attributes.find((attribute) => attribute.id === 'motion');
+    const editor = motion?.editor_definition;
+    const failures = [];
+
+    if (motion?.type !== 'custom' || editor?.type !== 'SFNextToolkit.motionEditor') {
+        failures.push(`${file}#motion: must use the SFNextToolkit.motionEditor custom editor`);
+    }
+    if (editor?.configuration?.schemaVersion !== 1) {
+        failures.push(`${file}#motion: editor configuration must contain numeric schemaVersion=1`);
+    }
+    if (motion?.default_value !== undefined) {
+        failures.push(`${file}#motion: custom attributes must not declare default_value`);
+    }
+
+    return failures;
+}
+
 async function validateContextualRegionContracts() {
     const contracts = [
         [baseExperienceDirectory, 'pages/homePage.json', ['headerbanner', 'main']],
@@ -428,6 +452,7 @@ async function validateToolkitCartridge() {
         const metadata = JSON.parse(await readFile(absolutePath, 'utf8'));
         failures.push(...validateEnumContracts(file, metadata));
         failures.push(...validateShoppableImageContract(file, metadata));
+        failures.push(...validateMotionShowcaseContract(file, metadata));
         if (file.startsWith('editors/')) {
             failures.push(...(await validateEditorContracts(file, metadata)));
         }
