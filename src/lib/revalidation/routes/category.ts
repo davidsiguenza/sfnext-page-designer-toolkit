@@ -24,8 +24,8 @@ import { getActionPath, isAmbientMutation } from './shared';
  *
  * Two cases are suppressed beyond React Router's default:
  *
- * 1. **Client-only param toggles.** The filters-panel open/closed flag and pending-action params live in the URL for
- *    shareability but never affect server data. A navigation that touches only those, is skipped.
+ * 1. **Client-only param toggles.** The filters-panel state, PLP card view, and pending-action params live in the URL
+ *    for shareability but never affect server data. A navigation that touches only those is skipped.
  * 2. **Listing-irrelevant mutations.** A non-`GET` submission triggers RR's default post-action revalidation, but
  *    cart/wishlist/etc. mutations don't change listing data — cart state propagates via the `__sfdc_basket` cookie
  *    and the action's own fetcher result, wishlist via the client-side provider. Only the shared
@@ -48,7 +48,7 @@ export function shouldRevalidate({
     formAction,
     defaultShouldRevalidate,
 }: ShouldRevalidateFunctionArgs): boolean {
-    // Client-only param toggles (filters panel, pending action)
+    // Client-only param toggles (filters panel, PLP card view, pending action)
     const clientOnlyParamsChanged =
         currentUrl.pathname === nextUrl.pathname &&
         currentUrl.search !== nextUrl.search &&

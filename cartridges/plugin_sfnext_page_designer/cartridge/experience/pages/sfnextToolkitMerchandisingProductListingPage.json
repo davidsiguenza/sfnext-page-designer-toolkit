@@ -1,0 +1,81 @@
+{
+    "name": "SFNext Toolkit - Merchandising Product Listing",
+    "description": "Reusable PLP with configurable sticky controls, product-card views and editorial interlinks inside the product grid.",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "plpTopFullWidth",
+            "name": "Top Full Width",
+            "component_type_exclusions": [
+                { "type_id": "SFNextToolkit.accordionItem" },
+                { "type_id": "SFNextToolkit.categoryCard" },
+                { "type_id": "SFNextToolkit.editorialCard" },
+                { "type_id": "SFNextToolkit.megaMenu" },
+                { "type_id": "SFNextToolkit.megaMenuFeature" },
+                { "type_id": "SFNextToolkit.megaMenuLink" },
+                { "type_id": "SFNextToolkit.megaMenuPanel" },
+                { "type_id": "SFNextToolkit.mixedMediaSlide" },
+                { "type_id": "SFNextToolkit.pdpLayout" },
+                { "type_id": "SFNextToolkit.plpMerchandisingGrid" },
+                { "type_id": "SFNextToolkit.productList" },
+                { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.siteTheme" },
+                { "type_id": "SFNextToolkit.sizeGuide" },
+                { "type_id": "SFNextToolkit.trustItem" }
+            ],
+            "max_components": 5
+        },
+        {
+            "id": "plpTopContent",
+            "name": "Top Content",
+            "component_type_exclusions": [
+                { "type_id": "SFNextToolkit.accordionItem" },
+                { "type_id": "SFNextToolkit.categoryCard" },
+                { "type_id": "SFNextToolkit.editorialCard" },
+                { "type_id": "SFNextToolkit.megaMenu" },
+                { "type_id": "SFNextToolkit.megaMenuFeature" },
+                { "type_id": "SFNextToolkit.megaMenuLink" },
+                { "type_id": "SFNextToolkit.megaMenuPanel" },
+                { "type_id": "SFNextToolkit.mixedMediaSlide" },
+                { "type_id": "SFNextToolkit.pdpLayout" },
+                { "type_id": "SFNextToolkit.plpMerchandisingGrid" },
+                { "type_id": "SFNextToolkit.productList" },
+                { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.siteTheme" },
+                { "type_id": "SFNextToolkit.sizeGuide" },
+                { "type_id": "SFNextToolkit.trustItem" }
+            ],
+            "max_components": 5
+        },
+        {
+            "id": "plpMerchandisingGrid",
+            "name": "PLP Merchandising Grid",
+            "component_type_inclusions": [{ "type_id": "SFNextToolkit.plpMerchandisingGrid" }],
+            "max_components": 1
+        },
+        {
+            "id": "plpBottom",
+            "name": "Bottom Content",
+            "component_type_exclusions": [
+                { "type_id": "SFNextToolkit.accordionItem" },
+                { "type_id": "SFNextToolkit.categoryCard" },
+                { "type_id": "SFNextToolkit.editorialCard" },
+                { "type_id": "SFNextToolkit.megaMenu" },
+                { "type_id": "SFNextToolkit.megaMenuFeature" },
+                { "type_id": "SFNextToolkit.megaMenuLink" },
+                { "type_id": "SFNextToolkit.megaMenuPanel" },
+                { "type_id": "SFNextToolkit.mixedMediaSlide" },
+                { "type_id": "SFNextToolkit.pdpLayout" },
+                { "type_id": "SFNextToolkit.plpMerchandisingGrid" },
+                { "type_id": "SFNextToolkit.productList" },
+                { "type_id": "SFNextToolkit.promoCard" },
+                { "type_id": "SFNextToolkit.siteTheme" },
+                { "type_id": "SFNextToolkit.sizeGuide" },
+                { "type_id": "SFNextToolkit.trustItem" }
+            ],
+            "max_components": 5
+        }
+    ],
+    "supported_aspect_types": ["plp"],
+    "route": "/:siteId/:localeId/category/:categoryId"
+}

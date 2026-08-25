@@ -2,13 +2,13 @@
 
 This directory contains the Storefront Next side of the reusable Page Designer
 toolkit. It registers the toolkit page types with the application and keeps the
-hand-authored PLP, PDP, blank, blog-home, blog-post, and Branding Studio metadata sources that are copied into
+hand-authored PLP, PDP, Category Landing, blank, blog-home, blog-post, and Branding Studio metadata sources that are copied into
 `plugin_sfnext_page_designer` during generation. The public contract currently
-contains 6 page types and 30 component types: 20 general-purpose root blocks, 7
-nested contextual children, and the deliberately constrained **Mega Menu Enhancements**,
-PDP **Size Guide**, and site-wide **Site Theme** components. Together with the
-visual theme, shoppable-hotspot, and motion custom editors, they generate 39 JSON
-toolkit metadata definitions (30 components, 6 pages, and 3 editors).
+contains 9 page types and 36 component types: 22 general-purpose root blocks, 9
+nested contextual children, and five deliberately constrained configuration or
+site-wide components. Together with the visual theme, shoppable-hotspot, and
+motion custom editors, they generate 48 JSON toolkit metadata definitions
+(36 components, 9 pages, and 3 editors).
 
 The complete merchant and developer guide lives in
 [`cartridges/plugin_sfnext_page_designer/README.md`](../../../cartridges/plugin_sfnext_page_designer/README.md).
@@ -38,6 +38,19 @@ accessibility, troubleshooting, and safe removal.
   versioned motion value. Its token IDs map to the Storefront Next motion layer;
   authoring stays static, reduced-motion preferences show the final state, and the
   live runtime supports load or shared-observer viewport triggers plus optional replay.
+- `src/components/sfnext-toolkit/pdp-layout` configures reusable PDP column
+  ratios, media order, gallery presentation, sticky information, and optional
+  bounded previous/next product navigation. `src/components/product-view` and
+  the PDP route remain responsible for the standard commerce experience.
+- `src/components/sfnext-toolkit/plp-merchandising-grid` configures reusable
+  PLP columns, density, card surfaces and views, sticky controls, and a restricted
+  nested `editorialCards` region. `editorial-card` items are interleaved with
+  the existing Product Tiles without changing Product Search or pagination.
+- `category-landing` owns the lightweight category route branch. It returns
+  before Product Search and product schema work, then renders the dedicated CLP
+  regions. `category-quick-links`, `mixed-media-carousel`, and
+  `mixed-media-slide` provide contextual navigation and accessible image/video
+  storytelling; the shoppable region also accepts Shoppable Image.
 - `src/components/sfnext-toolkit/size-guide` owns a versioned, fail-closed Mayoral
   child sizing engine and its PDP interaction. It accepts exact supported
   brand/size evidence, physical measurements, or low-confidence age orientation;

@@ -26,7 +26,12 @@
             "defaultCtaText": "今すぐお買い物"
         },
         "previousImage": "前の画像",
-        "nextImage": "次の画像"
+        "nextImage": "次の画像",
+        "media": {
+            "playVideo": "動画を再生",
+            "captions": "字幕",
+            "viewTranscript": "文字起こしを表示"
+        }
     },
     "search": {
         "results": "次の検索結果: ",
@@ -1403,6 +1408,12 @@
         "banner": {
             "productsAvailable_one": "1 product available",
             "productsAvailable_other": "{{count}} products available"
+        },
+        "cardViews": {
+            "label": "商品カード表示",
+            "standard": "標準",
+            "editorial": "エディトリアル",
+            "compact": "コンパクト"
         }
     },
     "maintenancePage": {

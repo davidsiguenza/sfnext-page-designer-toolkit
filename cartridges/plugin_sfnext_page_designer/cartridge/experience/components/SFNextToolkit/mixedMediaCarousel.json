@@ -1,0 +1,83 @@
+{
+    "name": "Mixed Media Carousel",
+    "description": "One-slide-at-a-time carousel for merchant-authored image and video slides, with optional navigation and safe looping.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "slides",
+            "name": "Mixed media slides",
+            "component_type_inclusions": [
+                {
+                    "type_id": "SFNextToolkit.mixedMediaSlide"
+                }
+            ],
+            "max_components": 10
+        }
+    ],
+    "attribute_definition_groups": [
+        {
+            "id": "mixedMediaCarousel",
+            "name": "Mixed Media Carousel",
+            "description": "One-slide-at-a-time carousel for merchant-authored image and video slides, with optional navigation and safe looping.",
+            "attribute_definitions": [
+                {
+                    "id": "title",
+                    "name": "Title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: title"
+                },
+                {
+                    "id": "subtitle",
+                    "name": "Subtitle",
+                    "type": "text",
+                    "required": false,
+                    "description": "Field: subtitle"
+                },
+                {
+                    "id": "ariaLabel",
+                    "name": "Accessible carousel label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Used when no visible title is provided.",
+                    "default_value": "Mixed media carousel"
+                },
+                {
+                    "id": "surface",
+                    "name": "Surface tone",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: surface",
+                    "values": ["default", "muted"],
+                    "default_value": "default"
+                },
+                {
+                    "id": "contentWidth",
+                    "name": "Carousel width",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: contentWidth",
+                    "values": ["full", "contained"],
+                    "default_value": "full"
+                },
+                {
+                    "id": "showNavigation",
+                    "name": "Show previous and next controls",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showNavigation",
+                    "default_value": true
+                },
+                {
+                    "id": "loop",
+                    "name": "Loop navigation",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Lets shoppers continue from the last slide to the first. Automatic playback is intentionally disabled.",
+                    "default_value": false
+                }
+            ]
+        }
+    ]
+}

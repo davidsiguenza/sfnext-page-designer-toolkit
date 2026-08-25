@@ -84,6 +84,11 @@ export function RegionWrapper({ region, children, className, designMetadata, ...
                 region={region}
                 designMetadata={{
                     id: region.id,
+                    ...(designMetadata?.name ? { name: designMetadata.name } : {}),
+                    ...(designMetadata?.description ? { description: designMetadata.description } : {}),
+                    ...(typeof designMetadata?.maxComponents === 'number'
+                        ? { maxComponents: designMetadata.maxComponents }
+                        : {}),
                     contentLinkUuids: region?.components?.map((cmp) => cmp.contentLinkUuid ?? cmp.id) || [],
                     componentTypeExclusions: designMetadata?.componentTypeExclusions || [],
                     componentTypeInclusions: designMetadata?.componentTypeInclusions || [],

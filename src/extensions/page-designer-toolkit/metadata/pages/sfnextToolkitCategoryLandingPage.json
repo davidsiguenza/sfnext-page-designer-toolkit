@@ -1,0 +1,88 @@
+{
+    "name": "SFNext Toolkit - Category Landing",
+    "description": "Editorial Storefront Next category landing page with a contextual hero, sticky category navigation, flexible campaign content, shoppable storytelling and supporting content regions.",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "clpHero",
+            "name": "CLP Hero",
+            "component_type_inclusions": [
+                { "type_id": "SFNextToolkit.heroBanner" },
+                { "type_id": "SFNextToolkit.mixedMediaCarousel" }
+            ],
+            "max_components": 1
+        },
+        {
+            "id": "clpQuickLinks",
+            "name": "Category Quick Links",
+            "component_type_inclusions": [{ "type_id": "SFNextToolkit.categoryQuickLinks" }],
+            "max_components": 1
+        },
+        {
+            "id": "clpMain",
+            "name": "Main Editorial Content",
+            "component_type_inclusions": [
+                { "type_id": "SFNextToolkit.accordion" },
+                { "type_id": "SFNextToolkit.categoryCarousel" },
+                { "type_id": "SFNextToolkit.contentCollection" },
+                { "type_id": "SFNextToolkit.embeddedVideo" },
+                { "type_id": "SFNextToolkit.mediaContent" },
+                { "type_id": "SFNextToolkit.mixedMediaCarousel" },
+                { "type_id": "SFNextToolkit.motionShowcase" },
+                { "type_id": "SFNextToolkit.productCarousel" },
+                { "type_id": "SFNextToolkit.productRecommendations" },
+                { "type_id": "SFNextToolkit.promoGrid" },
+                { "type_id": "SFNextToolkit.promoStrip" },
+                { "type_id": "SFNextToolkit.responsiveColumns" },
+                { "type_id": "SFNextToolkit.richText" },
+                { "type_id": "SFNextToolkit.section" },
+                { "type_id": "SFNextToolkit.trustBar" }
+            ],
+            "max_components": 12
+        },
+        {
+            "id": "clpShoppable",
+            "name": "Shoppable Content",
+            "component_type_inclusions": [
+                { "type_id": "SFNextToolkit.productCard" },
+                { "type_id": "SFNextToolkit.productCarousel" },
+                { "type_id": "SFNextToolkit.productRecommendations" },
+                { "type_id": "SFNextToolkit.section" },
+                { "type_id": "SFNextToolkit.shoppableImage" }
+            ],
+            "max_components": 4
+        },
+        {
+            "id": "clpSocial",
+            "name": "Social and Community Content",
+            "component_type_inclusions": [
+                { "type_id": "SFNextToolkit.contentCollection" },
+                { "type_id": "SFNextToolkit.embeddedVideo" },
+                { "type_id": "SFNextToolkit.mediaContent" },
+                { "type_id": "SFNextToolkit.mixedMediaCarousel" },
+                { "type_id": "SFNextToolkit.motionShowcase" },
+                { "type_id": "SFNextToolkit.promoGrid" },
+                { "type_id": "SFNextToolkit.richText" },
+                { "type_id": "SFNextToolkit.section" }
+            ],
+            "max_components": 6
+        },
+        {
+            "id": "clpBottom",
+            "name": "Bottom Content",
+            "component_type_inclusions": [
+                { "type_id": "SFNextToolkit.accordion" },
+                { "type_id": "SFNextToolkit.contentCollection" },
+                { "type_id": "SFNextToolkit.mediaContent" },
+                { "type_id": "SFNextToolkit.promoStrip" },
+                { "type_id": "SFNextToolkit.responsiveColumns" },
+                { "type_id": "SFNextToolkit.richText" },
+                { "type_id": "SFNextToolkit.section" },
+                { "type_id": "SFNextToolkit.trustBar" }
+            ],
+            "max_components": 8
+        }
+    ],
+    "supported_aspect_types": ["plp"],
+    "route": "/:siteId/:localeId/category/:categoryId"
+}

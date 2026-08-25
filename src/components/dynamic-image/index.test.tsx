@@ -1073,6 +1073,63 @@ describe('Dynamic Image Component', () => {
         // it verbatim — never rewrite to a non-existent `/images/hero-01.jpg?sfrm=webp`.
         const LOCAL_SRC = '/images/hero-01.webp';
 
+        test('uses one browser-selected image request for responsive art direction', () => {
+            render(
+                <DynamicImage
+                    src="/images/hero-desktop.webp"
+                    alt="Hero"
+                    widths={['100vw']}
+                    artDirection={[
+                        { src: '/images/hero-mobile.webp', media: '(max-width: 47.999rem)', widths: ['100vw'] },
+                    ]}
+                />
+            );
+
+            expect(screen.getAllByRole('img')).toHaveLength(1);
+            const picture = screen.getByRole('img').closest('picture');
+            expect(picture).toBeInTheDocument();
+            expect(picture?.querySelector('source')).toHaveAttribute('media', '(max-width: 47.999rem)');
+            expect(picture?.querySelector('source')).toHaveAttribute('srcset', '/images/hero-mobile.webp');
+            expect(screen.getByRole('img')).toHaveAttribute('src', '/images/hero-desktop.webp');
+        });
+
+        test('scopes prioritized art-direction preloads to mutually exclusive viewports', () => {
+            (isServer as Mock).mockReturnValue(true);
+
+            try {
+                render(
+                    <DynamicImage
+                        src="/images/hero-desktop.webp"
+                        alt="Hero"
+                        widths={['100vw']}
+                        priority="high"
+                        preloadMedia="(min-width: 48rem)"
+                        artDirection={[
+                            {
+                                src: '/images/hero-mobile.webp',
+                                media: '(max-width: 47.999rem)',
+                                widths: ['100vw'],
+                            },
+                        ]}
+                    />
+                );
+
+                expect(preloadMock).toHaveBeenCalledTimes(2);
+                expect(preloadMock).toHaveBeenNthCalledWith(
+                    1,
+                    '/images/hero-mobile.webp',
+                    expect.objectContaining({ media: '(max-width: 47.999rem)', fetchPriority: 'high' })
+                );
+                expect(preloadMock).toHaveBeenNthCalledWith(
+                    2,
+                    '/images/hero-desktop.webp',
+                    expect.objectContaining({ media: '(min-width: 48rem)', fetchPriority: 'high' })
+                );
+            } finally {
+                (isServer as Mock).mockReturnValue(false);
+            }
+        });
+
         test('renders the img with the original relative src, not a DIS-rewritten .jpg', () => {
             render(<DynamicImage src={LOCAL_SRC} alt="Hero" widths={['100vw']} />);
 

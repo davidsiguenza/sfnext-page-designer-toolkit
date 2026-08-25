@@ -83,6 +83,17 @@ describe.each(LISTINGS)('$name shouldRevalidate', ({ listing, otherListing }) =>
                 )
             ).toBe(false);
         });
+
+        test('skips when only the PLP card view changes', () => {
+            expect(
+                shouldRevalidate(
+                    args({
+                        currentUrl: new URL(`${listing}&plpView=standard`),
+                        nextUrl: new URL(`${listing}&plpView=editorial`),
+                    })
+                )
+            ).toBe(false);
+        });
     });
 
     describe('genuine navigations (no submission)', () => {

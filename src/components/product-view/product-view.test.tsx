@@ -594,5 +594,40 @@ describe('ProductView', () => {
 
             expect(capturedImageGalleryProps.last?.widths).toBeUndefined();
         });
+
+        test('applies Page Designer columns, media order, sticky info, and gallery presentation', () => {
+            const { container } = renderProductView({
+                product: mockProduct,
+                layout: {
+                    desktopColumnRatio: '70-30',
+                    mediaSide: 'right',
+                    galleryPresentation: 'strip',
+                    stickyProductInfo: true,
+                },
+            });
+
+            const layout = container.querySelector('[data-slot="product-view-layout"]');
+            const media = container.querySelector('[data-slot="product-view-media"]');
+            const information = container.querySelector('[data-slot="product-view-information"]');
+
+            expect(layout).toHaveClass('lg:grid-cols-[3fr_7fr]');
+            expect(media).toHaveClass('lg:order-2');
+            expect(information).toHaveClass('lg:order-1', 'lg:sticky', 'lg:self-start');
+            expect(capturedImageGalleryProps.last).toMatchObject({
+                horizontalThumbnails: true,
+                showThumbnails: true,
+                widths: { main: { base: '100vw', lg: '70vw', '2xl': 950 } },
+            });
+        });
+
+        test('uses main-image controls without thumbnails for carousel presentation', () => {
+            renderProductView({ product: mockProduct, layout: { galleryPresentation: 'carousel' } });
+
+            expect(capturedImageGalleryProps.last).toMatchObject({
+                showNavigationArrows: true,
+                horizontalThumbnails: false,
+                showThumbnails: false,
+            });
+        });
     });
 });

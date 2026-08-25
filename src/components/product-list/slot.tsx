@@ -31,10 +31,11 @@ export interface ProductListSlotProps {
  */
 export function ProductListSlot({ page, runtime }: ProductListSlotProps) {
     const fallback = <DeferredProductGrid {...runtime} tilePresentation={DEFAULT_PRODUCT_LIST_CONFIG} />;
+    const legacyProductList = <Region page={page} regionId="plpProductList" errorElement={fallback} />;
 
     return (
         <ProductListRuntimeProvider value={runtime}>
-            <Region page={page} regionId="plpProductList" errorElement={fallback} />
+            <Region page={page} regionId="plpMerchandisingGrid" errorElement={legacyProductList} />
         </ProductListRuntimeProvider>
     );
 }

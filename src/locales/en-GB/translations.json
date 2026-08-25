@@ -31,7 +31,12 @@
         "productGrid": {
             "loadFailed": "Unable to load additional products."
         },
-        "quickCategoryFilters": "Quick category filters"
+        "quickCategoryFilters": "Quick category filters",
+        "media": {
+            "playVideo": "Play video",
+            "captions": "Captions",
+            "viewTranscript": "View transcript"
+        }
     },
     "search": {
         "results": "Search Results for",
@@ -1589,6 +1594,12 @@
             "next": "Next",
             "nextPage": "Next page",
             "page": "Page {{number}}"
+        },
+        "cardViews": {
+            "label": "Product card view",
+            "standard": "Standard",
+            "editorial": "Editorial",
+            "compact": "Compact"
         }
     },
     "maintenancePage": {

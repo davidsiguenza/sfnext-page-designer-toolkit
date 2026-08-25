@@ -94,16 +94,20 @@ describe('use-filters-panel-state', () => {
     });
 
     describe('getSearchWithoutClientOnlyParams', () => {
-        test('removes filters, action, and actionParams while preserving other params', () => {
+        test('removes filters, card view, action, and actionParams while preserving other params', () => {
             expect(
                 getSearchWithoutClientOnlyParams(
-                    '?q=shoes&filters=open&action=addToWishlist&actionParams=%7B%7D&sort=price-asc'
+                    '?q=shoes&filters=open&plpView=editorial&action=addToWishlist&actionParams=%7B%7D&sort=price-asc'
                 )
             ).toBe('?q=shoes&sort=price-asc');
         });
 
         test('returns empty string when only client-only params are present', () => {
-            expect(getSearchWithoutClientOnlyParams('?filters=open&action=addToWishlist&actionParams=%7B%7D')).toBe('');
+            expect(
+                getSearchWithoutClientOnlyParams(
+                    '?filters=open&plpView=compact&action=addToWishlist&actionParams=%7B%7D'
+                )
+            ).toBe('');
         });
 
         test('preserves non-client-only params', () => {

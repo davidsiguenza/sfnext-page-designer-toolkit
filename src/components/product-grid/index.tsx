@@ -17,3 +17,4 @@
 export { default } from './deferred';
 export type { DeferredProductGridProps } from './deferred';
 export { default as ProductGrid } from './grid';
+export type { ProductGridEditorialItem, ProductGridPresentation } from './grid';

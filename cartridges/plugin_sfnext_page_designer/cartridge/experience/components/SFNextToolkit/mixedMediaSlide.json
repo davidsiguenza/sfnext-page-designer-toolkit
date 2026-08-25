@@ -1,0 +1,183 @@
+{
+    "name": "Mixed Media Slide",
+    "description": "Image or accessible video slide with responsive art direction and an optional safe editorial call to action. Use only inside a Mixed Media Carousel.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "mixedMediaSlide",
+            "name": "Mixed Media Slide",
+            "description": "Image or accessible video slide with responsive art direction and an optional safe editorial call to action. Use only inside a Mixed Media Carousel.",
+            "attribute_definitions": [
+                {
+                    "id": "mediaType",
+                    "name": "Media type",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: mediaType",
+                    "values": ["image", "video"],
+                    "default_value": "image"
+                },
+                {
+                    "id": "desktopImage",
+                    "name": "Desktop image",
+                    "type": "image",
+                    "required": false,
+                    "description": "Primary image used when Media type is Image."
+                },
+                {
+                    "id": "mobileImage",
+                    "name": "Mobile image",
+                    "type": "image",
+                    "required": false,
+                    "description": "Optional alternate crop displayed below the tablet breakpoint."
+                },
+                {
+                    "id": "imageAlt",
+                    "name": "Image alternative text",
+                    "type": "string",
+                    "required": false,
+                    "description": "Describe informative imagery. Leave empty only when Decorative image is enabled."
+                },
+                {
+                    "id": "decorativeImage",
+                    "name": "Decorative image",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Hides the image from assistive technology when adjacent copy conveys the same meaning.",
+                    "default_value": false
+                },
+                {
+                    "id": "priorityImage",
+                    "name": "Prioritize image loading",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Enable only for the first above-the-fold slide. Other slides remain lazy-loaded.",
+                    "default_value": false
+                },
+                {
+                    "id": "videoUrl",
+                    "name": "Video URL",
+                    "type": "url",
+                    "required": false,
+                    "description": "Secure YouTube, Vimeo, MP4, WebM or Ogg URL used when Media type is Video."
+                },
+                {
+                    "id": "videoTitle",
+                    "name": "Accessible video title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Required when Media type is Video."
+                },
+                {
+                    "id": "posterImage",
+                    "name": "Video poster",
+                    "type": "image",
+                    "required": false,
+                    "description": "Field: posterImage"
+                },
+                {
+                    "id": "captionsUrl",
+                    "name": "WebVTT captions URL",
+                    "type": "url",
+                    "required": false,
+                    "description": "Optional captions for direct video files."
+                },
+                {
+                    "id": "captionsLanguage",
+                    "name": "Captions language",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional BCP 47 language code. Leave empty to use the current storefront locale."
+                },
+                {
+                    "id": "transcriptUrl",
+                    "name": "Transcript URL",
+                    "type": "url",
+                    "required": false,
+                    "description": "Field: transcriptUrl"
+                },
+                {
+                    "id": "clickToPlay",
+                    "name": "Click to play",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Defers third-party video loading until the shopper activates it.",
+                    "default_value": true
+                },
+                {
+                    "id": "aspectRatio",
+                    "name": "Media aspect ratio",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: aspectRatio",
+                    "values": ["widescreen", "cinematic", "standard", "square", "portrait"],
+                    "default_value": "widescreen"
+                },
+                {
+                    "id": "eyebrow",
+                    "name": "Eyebrow",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: eyebrow"
+                },
+                {
+                    "id": "title",
+                    "name": "Title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: title"
+                },
+                {
+                    "id": "body",
+                    "name": "Body",
+                    "type": "text",
+                    "required": false,
+                    "description": "Field: body"
+                },
+                {
+                    "id": "headingLevel",
+                    "name": "Heading level",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Choose the level that follows the surrounding page heading hierarchy.",
+                    "values": ["h2", "h3"],
+                    "default_value": "h2"
+                },
+                {
+                    "id": "contentPlacement",
+                    "name": "Content placement",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Overlay is available for image slides; video content is always displayed below the player.",
+                    "values": ["overlay", "below"],
+                    "default_value": "overlay"
+                },
+                {
+                    "id": "contentAlignment",
+                    "name": "Content alignment",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: contentAlignment",
+                    "values": ["left", "center", "right"],
+                    "default_value": "left"
+                },
+                {
+                    "id": "ctaLabel",
+                    "name": "CTA label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: ctaLabel"
+                },
+                {
+                    "id": "ctaUrl",
+                    "name": "CTA destination",
+                    "type": "url",
+                    "required": false,
+                    "description": "Field: ctaUrl"
+                }
+            ]
+        }
+    ]
+}

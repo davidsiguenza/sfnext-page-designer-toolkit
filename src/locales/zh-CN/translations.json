@@ -27,7 +27,12 @@
             "defaultCtaText": "立即购买"
         },
         "previousImage": "上一张图片",
-        "nextImage": "下一张图片"
+        "nextImage": "下一张图片",
+        "media": {
+            "playVideo": "播放视频",
+            "captions": "字幕",
+            "viewTranscript": "查看文字稿"
+        }
     },
     "search": {
         "results": "搜索以下方面的结果：",
@@ -1406,6 +1411,12 @@
         "banner": {
             "productsAvailable_one": "1 product available",
             "productsAvailable_other": "{{count}} products available"
+        },
+        "cardViews": {
+            "label": "商品卡片视图",
+            "standard": "标准",
+            "editorial": "编辑",
+            "compact": "紧凑"
         }
     },
     "maintenancePage": {

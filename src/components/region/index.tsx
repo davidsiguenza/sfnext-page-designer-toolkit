@@ -71,6 +71,9 @@ export type RegionProps = PageRegionProps | ComponentRegionProps;
 function getDesignMetadata(regionId: string, metadata?: RegionDesignMetadata) {
     return {
         id: regionId,
+        ...(metadata?.name ? { name: metadata.name } : {}),
+        ...(metadata?.description ? { description: metadata.description } : {}),
+        ...(typeof metadata?.maxComponents === 'number' ? { maxComponents: metadata.maxComponents } : {}),
         componentTypeExclusions: metadata?.componentTypeExclusions ?? [],
         componentTypeInclusions: metadata?.componentTypeInclusions ?? [],
     };

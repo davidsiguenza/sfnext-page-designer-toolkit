@@ -67,6 +67,7 @@ vi.mock('@/components/typography', () => ({
 }));
 
 vi.mock('@/components/product/skeletons', () => ({
+    ProductMainSkeleton: () => <div data-testid="product-main-skeleton">Loading product layout...</div>,
     ProductRecommendationsSkeleton: () => <div data-testid="recommendations-skeleton">Loading recommendations...</div>,
 }));
 
@@ -483,7 +484,7 @@ describe('Product Detail Route', () => {
             expect(mockLoaderData).toHaveProperty('productSchema');
         });
 
-        test('renders ProductContent directly with resolved product (no Suspense around product)', async () => {
+        test('renders ProductContent directly when the PDP layout is already resolved', async () => {
             vi.mocked(isProductSet).mockReturnValue(false);
             vi.mocked(isProductBundle).mockReturnValue(false);
 
@@ -500,10 +501,10 @@ describe('Product Detail Route', () => {
 
             const { queryByTestId, getByTestId } = render(<ProductPage loaderData={mockLoaderData} />);
 
-            // ProductContent renders synchronously — the route no longer mounts a
-            // Suspense boundary around the product
+            // Manually constructed data without a layout uses the synchronous default.
             expect(getByTestId('product-view')).toBeInTheDocument();
             expect(queryByTestId('product-skeleton')).not.toBeInTheDocument();
+            expect(queryByTestId('product-main-skeleton')).not.toBeInTheDocument();
             expect(getByTestId('product-view').querySelector('[data-region-id="productTools"]')).toBeInTheDocument();
         });
 

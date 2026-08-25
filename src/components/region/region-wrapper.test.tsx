@@ -136,6 +136,9 @@ describe('RegionWrapper', () => {
                 region={region}
                 designMetadata={{
                     id: 'rM',
+                    name: 'Main editorial content',
+                    description: 'Merchant-authored campaign modules',
+                    maxComponents: 12,
                     componentTypeExclusions: ['e1'],
                     componentTypeInclusions: ['i1'],
                 }}>
@@ -146,6 +149,11 @@ describe('RegionWrapper', () => {
         const last = decoratedCalls.at(-1);
         expect(last?.designMetadata?.componentTypeExclusions).toEqual(['e1']);
         expect(last?.designMetadata?.componentTypeInclusions).toEqual(['i1']);
+        expect(last?.designMetadata).toMatchObject({
+            name: 'Main editorial content',
+            description: 'Merchant-authored campaign modules',
+            maxComponents: 12,
+        });
     });
 
     test('(design mode but no region id) falls back to plain renderer', () => {

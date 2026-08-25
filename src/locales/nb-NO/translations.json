@@ -27,7 +27,12 @@
             "defaultCtaText": "Handle nå"
         },
         "previousImage": "Forrige bilde",
-        "nextImage": "Neste bilde"
+        "nextImage": "Neste bilde",
+        "media": {
+            "playVideo": "Spill av video",
+            "captions": "Undertekster",
+            "viewTranscript": "Vis transkripsjon"
+        }
     },
     "search": {
         "results": "Søkeresultater for",
@@ -1339,6 +1344,12 @@
         "banner": {
             "productsAvailable_one": "1 product available",
             "productsAvailable_other": "{{count}} products available"
+        },
+        "cardViews": {
+            "label": "Produktkortvisning",
+            "standard": "Standard",
+            "editorial": "Redaksjonell",
+            "compact": "Kompakt"
         }
     },
     "maintenancePage": {

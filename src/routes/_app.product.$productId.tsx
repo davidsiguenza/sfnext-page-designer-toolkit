@@ -32,6 +32,7 @@ import CategoryBreadcrumbs from '@/components/category-breadcrumbs';
 import { CategoryBreadcrumbsSkeleton } from '@/components/category-breadcrumbs/skeleton';
 import { isProductSet, isProductBundle } from '@/lib/product/product-utils';
 import ProductRecommendations from '@/components/product-recommendations';
+import { ProductMainSkeleton } from '@/components/product/skeletons';
 import { EINSTEIN_RECOMMENDERS } from '@/lib/product/einstein-recommenders';
 import { useTranslation } from 'react-i18next';
 import { useAnalytics } from '@/hooks/use-analytics';
@@ -89,16 +90,30 @@ import {
 } from '@/extensions/shipping-delivery/lib/api/shipping-delivery.server';
 import { ShippingDeliveryProvider } from '@/extensions/shipping-delivery/context/shipping-delivery-context';
 // @sfdc-extension-block-end SFDC_EXT_SHIPPING_DELIVERY
+import {
+    DEFAULT_PDP_LAYOUT_CONFIG,
+    getPdpLayoutConfigFromPage,
+    type PdpLayoutConfig,
+} from '@/components/sfnext-toolkit/pdp-layout/config';
+import {
+    fetchPdpProductNavigation,
+    type PdpProductNavigationData,
+} from '@/components/sfnext-toolkit/pdp-layout/navigation.server';
+import { PdpProductNavigation } from '@/components/sfnext-toolkit/pdp-layout/product-navigation';
 
 // Kept as a same-file literal because the cartridge generator statically reads
 // decorator values without resolving imports.
 const TOOLKIT_PAGE_REGION_EXCLUSIONS = [
     'SFNextToolkit.accordionItem',
     'SFNextToolkit.categoryCard',
+    'SFNextToolkit.editorialCard',
     'SFNextToolkit.megaMenu',
     'SFNextToolkit.megaMenuFeature',
     'SFNextToolkit.megaMenuLink',
     'SFNextToolkit.megaMenuPanel',
+    'SFNextToolkit.mixedMediaSlide',
+    'SFNextToolkit.pdpLayout',
+    'SFNextToolkit.plpMerchandisingGrid',
     'SFNextToolkit.promoCard',
     'SFNextToolkit.siteTheme',
     'SFNextToolkit.sizeGuide',
@@ -139,6 +154,8 @@ export type ProductPageData = {
     product: ShopperProducts.schemas['Product'];
     category: Promise<ShopperProducts.schemas['Category'] | undefined>;
     page: ReturnType<typeof fetchPageWithComponentData>;
+    pdpLayout?: PdpLayoutConfig | Promise<PdpLayoutConfig>;
+    pdpProductNavigation?: Promise<PdpProductNavigationData>;
     pageKey: string;
     pageUrl: string;
     productSchema: Promise<ReturnType<typeof generateProductSchema> | null>;
@@ -235,15 +252,22 @@ export async function loader(args: Route.LoaderArgs): Promise<ProductPageData> {
         throw new Response('Product not found', { status: 404 });
     }
 
-    const masterProductPromise = (() => {
-        if (product.master?.masterId) {
-            return fetchProductById(context, product.master.masterId, {
-                ...(currency ? { currency } : {}),
-            });
-        }
-
-        return null;
-    })();
+    const masterProductId = product.master?.masterId;
+    const masterProductPromise = masterProductId
+        ? fetchProductById(context, masterProductId, {
+              ...(currency ? { currency } : {}),
+          }).catch((error: unknown) => {
+              logger.warn('Product: optional master lookup failed; continuing without master category', {
+                  productId,
+                  masterProductId,
+                  error,
+              });
+              return null;
+          })
+        : Promise.resolve(null);
+    const primaryCategoryIdPromise: Promise<string | undefined> = product.primaryCategoryId
+        ? Promise.resolve(product.primaryCategoryId)
+        : Promise.resolve(masterProductPromise).then((masterProduct) => masterProduct?.primaryCategoryId ?? undefined);
 
     // Build the deferred category promise. Category is optional context for the
     // breadcrumbs — failures degrade silently via the route-level <Await errorElement={null}>.
@@ -287,7 +311,7 @@ export async function loader(args: Route.LoaderArgs): Promise<ProductPageData> {
     );
 
     const pagePromise = (async () => {
-        const primaryCategoryId = product.primaryCategoryId ?? (await masterProductPromise)?.primaryCategoryId;
+        const primaryCategoryId = await primaryCategoryIdPromise;
 
         return fetchPageWithComponentData(args, {
             aspectType: 'pdp',
@@ -295,6 +319,39 @@ export async function loader(args: Route.LoaderArgs): Promise<ProductPageData> {
             ...(primaryCategoryId ? { categoryId: primaryCategoryId } : {}),
         });
     })();
+
+    // Keep the optional Shopper Experience lookup off the loader's critical path.
+    // Product content streams behind a stable 50/50 skeleton until the layout is
+    // known, avoiding both a TTFB penalty on standard PDPs and a hydration shift.
+    const pdpLayoutPromise = pagePromise.then(getPdpLayoutConfigFromPage).catch((error: unknown) => {
+        logger.warn('Product: PDP layout lookup failed; continuing with the default layout', {
+            productId,
+            error,
+        });
+        return DEFAULT_PDP_LAYOUT_CONFIG;
+    });
+    const pdpProductNavigation: Promise<PdpProductNavigationData> = pdpLayoutPromise
+        .then(async (pdpLayout) => {
+            if (!pdpLayout.enableProductNavigation) return {};
+
+            const primaryCategoryId = await primaryCategoryIdPromise;
+            if (!primaryCategoryId) return {};
+
+            return fetchPdpProductNavigation(context, {
+                categoryId: primaryCategoryId,
+                currentProductIds: [productId, product.id, product.master?.masterId].filter(
+                    (candidate): candidate is string => Boolean(candidate)
+                ),
+                currency,
+            });
+        })
+        .catch((error: unknown) => {
+            logger.warn('Product: adjacent-product navigation failed; continuing without navigation', {
+                productId,
+                error,
+            });
+            return {};
+        });
 
     // @sfdc-extension-block-start SFDC_EXT_RATINGS_REVIEWS
     // Await the summary started earlier (ran in parallel with fetchProductById).
@@ -311,6 +368,8 @@ export async function loader(args: Route.LoaderArgs): Promise<ProductPageData> {
          * Handle errors gracefully - return page with empty componentData if fetch failed.
          */
         page: pagePromise,
+        pdpLayout: pdpLayoutPromise,
+        pdpProductNavigation,
         pageKey: productId,
         pageUrl,
         productSchema: productSchemaPromise,
@@ -356,6 +415,8 @@ function ProductContent({
     returnsWarrantyPromise,
     pdpCollapsiblesPromise,
     // @sfdc-extension-block-end SFDC_EXT_PRODUCT_CONTENT
+    pdpLayout,
+    pdpProductNavigation,
 }: {
     product: ShopperProducts.schemas['Product'];
     page: ProductPageData['page'];
@@ -369,6 +430,8 @@ function ProductContent({
     returnsWarrantyPromise: Promise<ReturnsAndWarrantyData>;
     pdpCollapsiblesPromise: Promise<Array<HtmlContent | null>>;
     // @sfdc-extension-block-end SFDC_EXT_PRODUCT_CONTENT
+    pdpLayout?: PdpLayoutConfig;
+    pdpProductNavigation?: Promise<PdpProductNavigationData>;
 }) {
     const analytics = useAnalytics();
     const lastTrackedProductIdRef = useRef<string | null>(null);
@@ -416,13 +479,24 @@ function ProductContent({
                             }}
                         />
                         <div className="space-y-8">
+                            {pdpProductNavigation && (
+                                <Suspense fallback={null}>
+                                    <Await resolve={pdpProductNavigation} errorElement={null}>
+                                        {(navigation) => <PdpProductNavigation {...navigation} />}
+                                    </Await>
+                                </Suspense>
+                            )}
                             {isProductASet || isProductABundle ? (
                                 <>
-                                    <ProductView product={product} productToolsSlot={productToolsSlot} />
+                                    <ProductView
+                                        product={product}
+                                        productToolsSlot={productToolsSlot}
+                                        layout={pdpLayout}
+                                    />
                                     <ChildProducts parentProduct={product} />
                                 </>
                             ) : (
-                                <ProductView product={product} productToolsSlot={productToolsSlot} />
+                                <ProductView product={product} productToolsSlot={productToolsSlot} layout={pdpLayout} />
                             )}
 
                             {/* @sfdc-extension-block-start SFDC_EXT_RATINGS_REVIEWS */}
@@ -448,6 +522,7 @@ function ProductContent({
  */
 function ProductDetailView({ loaderData }: { loaderData: ProductPageData }) {
     const { t } = useTranslation('product');
+    const pdpLayout = loaderData.pdpLayout ?? DEFAULT_PDP_LAYOUT_CONFIG;
     const content = (
         <div className="min-h-screen bg-background">
             <div className="section-container pb-4 lg:pb-8">
@@ -463,21 +538,32 @@ function ProductDetailView({ loaderData }: { loaderData: ProductPageData }) {
                     </Await>
                 </Suspense>
 
-                {/* Main Product Content — product is resolved synchronously by the loader */}
-                <ProductContent
-                    product={loaderData.product}
-                    page={loaderData.page}
-                    url={loaderData.pageUrl}
-                    // @sfdc-extension-block-start SFDC_EXT_RATINGS_REVIEWS
-                    reviewsSummary={loaderData.reviewsSummary}
-                    reviewsList={loaderData.reviewsList}
-                    writeReviewForm={loaderData.writeReviewForm}
-                    // @sfdc-extension-block-end SFDC_EXT_RATINGS_REVIEWS
-                    // @sfdc-extension-block-start SFDC_EXT_PRODUCT_CONTENT
-                    returnsWarrantyPromise={loaderData.returnsWarranty}
-                    pdpCollapsiblesPromise={loaderData.pdpCollapsibles}
-                    // @sfdc-extension-block-end SFDC_EXT_PRODUCT_CONTENT
-                />
+                {/* PDP Layout Configuration — visible as an authoring summary in EDIT mode only. */}
+                <Region page={loaderData.page} regionId="pdpLayout" />
+
+                {/* Main Product Content — stream once Page Designer has selected the stable grid. */}
+                <Suspense fallback={<ProductMainSkeleton />}>
+                    <Await resolve={pdpLayout}>
+                        {(resolvedPdpLayout) => (
+                            <ProductContent
+                                product={loaderData.product}
+                                page={loaderData.page}
+                                url={loaderData.pageUrl}
+                                // @sfdc-extension-block-start SFDC_EXT_RATINGS_REVIEWS
+                                reviewsSummary={loaderData.reviewsSummary}
+                                reviewsList={loaderData.reviewsList}
+                                writeReviewForm={loaderData.writeReviewForm}
+                                // @sfdc-extension-block-end SFDC_EXT_RATINGS_REVIEWS
+                                // @sfdc-extension-block-start SFDC_EXT_PRODUCT_CONTENT
+                                returnsWarrantyPromise={loaderData.returnsWarranty}
+                                pdpCollapsiblesPromise={loaderData.pdpCollapsibles}
+                                // @sfdc-extension-block-end SFDC_EXT_PRODUCT_CONTENT
+                                pdpLayout={resolvedPdpLayout}
+                                pdpProductNavigation={loaderData.pdpProductNavigation}
+                            />
+                        )}
+                    </Await>
+                </Suspense>
 
                 {/* Engagement Content Region - Shows page content or recommendations */}
                 <Region

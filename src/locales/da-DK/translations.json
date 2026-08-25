@@ -26,7 +26,12 @@
             "defaultCtaText": "Køb nu"
         },
         "previousImage": "Forrige billede",
-        "nextImage": "Næste billede"
+        "nextImage": "Næste billede",
+        "media": {
+            "playVideo": "Afspil video",
+            "captions": "Undertekster",
+            "viewTranscript": "Se transskription"
+        }
     },
     "search": {
         "results": "Søgeresultater for",
@@ -1339,6 +1344,12 @@
         "banner": {
             "productsAvailable_one": "1 product available",
             "productsAvailable_other": "{{count}} products available"
+        },
+        "cardViews": {
+            "label": "Produktkortvisning",
+            "standard": "Standard",
+            "editorial": "Redaktionel",
+            "compact": "Kompakt"
         }
     },
     "maintenancePage": {

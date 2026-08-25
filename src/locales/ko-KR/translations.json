@@ -26,7 +26,12 @@
             "defaultCtaText": "지금 쇼핑하기"
         },
         "previousImage": "이전 이미지",
-        "nextImage": "다음 이미지"
+        "nextImage": "다음 이미지",
+        "media": {
+            "playVideo": "동영상 재생",
+            "captions": "자막",
+            "viewTranscript": "대본 보기"
+        }
     },
     "search": {
         "results": "검색 결과",
@@ -1399,6 +1404,12 @@
         "banner": {
             "productsAvailable_one": "1 product available",
             "productsAvailable_other": "{{count}} products available"
+        },
+        "cardViews": {
+            "label": "상품 카드 보기",
+            "standard": "표준",
+            "editorial": "에디토리얼",
+            "compact": "컴팩트"
         }
     },
     "maintenancePage": {

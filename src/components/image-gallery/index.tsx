@@ -67,6 +67,8 @@ interface ImageGalleryProps {
     navigationArrowSize?: 'sm' | 'lg';
     /** Use horizontal scrollable thumbnail strip with arrows instead of grid */
     horizontalThumbnails?: boolean;
+    /** Hide thumbnails and use only the main-image carousel controls. */
+    showThumbnails?: boolean;
     productName?: string;
     /**
      * Per-callsite responsive widths for the main image and grid thumbnails. Either field may be
@@ -139,6 +141,7 @@ export default function ImageGallery({
     showNavigationArrows = false,
     navigationArrowSize = 'sm',
     horizontalThumbnails = false,
+    showThumbnails = true,
     productName,
     widths,
 }: ImageGalleryProps): ReactElement {
@@ -259,7 +262,7 @@ export default function ImageGallery({
                 </div>
 
                 {/* Thumbnail Navigation */}
-                {images.length > 1 && !horizontalThumbnails && (
+                {images.length > 1 && showThumbnails && !horizontalThumbnails && (
                     <div className="grid grid-cols-4 gap-2 sm:gap-3" data-gallery-thumbs>
                         {images.map((image, index) => (
                             <button
@@ -291,7 +294,7 @@ export default function ImageGallery({
                 )}
 
                 {/* Horizontal Scrollable Thumbnail Strip */}
-                {images.length > 1 && horizontalThumbnails && (
+                {images.length > 1 && showThumbnails && horizontalThumbnails && (
                     <div className="relative flex items-center gap-2">
                         {images.length > 4 && (
                             <button

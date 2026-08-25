@@ -34,6 +34,17 @@ import { AllProvidersWrapper } from '@/test-utils/context-provider';
 import { generateCategorySchema } from '@/utils/category-schema';
 import { useAnalytics } from '@/hooks/use-analytics';
 import type { Route } from './+types/_app.category.$categoryId';
+import { DEFAULT_PRODUCT_LIST_CONFIG } from '@/components/product-list/config';
+
+const mockPageDesignerMode = vi.hoisted(() => ({ isDesignMode: false, isPreviewMode: false }));
+
+vi.mock('@salesforce/storefront-next-runtime/design/react/core', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@salesforce/storefront-next-runtime/design/react/core')>();
+    return {
+        ...actual,
+        usePageDesignerMode: () => mockPageDesignerMode,
+    };
+});
 
 vi.mock('react-router', async (importOriginal) => {
     const actual = await importOriginal<typeof import('react-router')>();
@@ -118,6 +129,17 @@ const createMockPage = (regions: any[] = []): ShopperExperience.schemas['Page'] 
         } as never,
         regions,
     }) as ShopperExperience.schemas['Page'];
+
+const createMockCategoryLandingPage = () =>
+    ({
+        id: 'category-landing-page',
+        typeId: 'sfnextToolkitCategoryLandingPage',
+        designMetadata: {
+            regionDefinitions: [],
+        } as never,
+        regions: [],
+        componentData: {},
+    }) as NonNullable<Awaited<ReturnType<typeof fetchPageWithComponentData>>>;
 
 // Mock empty Page Designer regions by rendering their runtime fallback. The
 // configurable product-list slot relies on this behavior to preserve legacy PLPs.
@@ -281,6 +303,8 @@ describe('CategoryPage', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        mockPageDesignerMode.isDesignMode = false;
+        mockPageDesignerMode.isPreviewMode = false;
         (getConfig as any).mockReturnValue(mockConfig);
         (fetchCategory as any).mockResolvedValue(mockCategory);
         (fetchSearchProducts as any).mockResolvedValue(mockSearchResult);
@@ -364,6 +388,41 @@ describe('CategoryPage', () => {
             expect(result.searchResultCritical).toEqual(mockSearchResult);
         });
 
+        test('should load an editorial category landing page without product search or schema work', async () => {
+            (fetchPageWithComponentData as any).mockResolvedValue(createMockCategoryLandingPage());
+            (fetchSearchProducts as any).mockRejectedValue(new Error('Product search should not run'));
+
+            const result = await loader(createLoaderArgs('https://example.com/category/electronics'));
+
+            expect(result.pageKind).toBe('category-landing');
+            expect(result.pageUrl).toBe('https://example.com/category/electronics');
+            expect(fetchSearchProducts).not.toHaveBeenCalled();
+            expect(generateCategorySchema).not.toHaveBeenCalled();
+            expect(result.searchResultCritical).toBeUndefined();
+            expect(result.categorySchema).toBeUndefined();
+        });
+
+        test('should remove product-list state from category landing URLs while preserving unrelated parameters', async () => {
+            (fetchPageWithComponentData as any).mockResolvedValue(createMockCategoryLandingPage());
+            let response: Response | undefined;
+
+            try {
+                await loader(
+                    createLoaderArgs(
+                        'https://example.com/category/electronics?q=dresses&offset=24&sort=price-low-to-high&refine=color%3Dblue&pid=product-1&filters=open&plpView=editorial&action=addToWishlist&actionParams=%7B%7D&utm_source=workshop'
+                    )
+                );
+            } catch (error) {
+                response = error as Response;
+            }
+
+            expect(response).toBeInstanceOf(Response);
+            expect(response?.status).toBe(302);
+            expect(response?.headers.get('Location')).toBe('/category/electronics?utm_source=workshop');
+            expect(fetchSearchProducts).not.toHaveBeenCalled();
+            expect(generateCategorySchema).not.toHaveBeenCalled();
+        });
+
         test('should handle query parameters correctly', async () => {
             await loader(
                 createLoaderArgs(
@@ -445,6 +504,53 @@ describe('CategoryPage', () => {
                 );
             }
             expect(result.productListConfigKey).toContain('hi-res');
+        });
+
+        test('should derive search fields and layout behavior from the reusable merchandising grid', async () => {
+            (fetchPageWithComponentData as any).mockResolvedValue({
+                ...createMockPage([
+                    {
+                        id: 'plpMerchandisingGrid',
+                        components: [
+                            {
+                                id: 'configured-grid',
+                                typeId: 'SFNextToolkit.plpMerchandisingGrid',
+                                data: {
+                                    stickyControls: true,
+                                    stickyFilters: true,
+                                    desktopColumns: '3',
+                                    imageViewType: 'large',
+                                    showSwatches: false,
+                                    additionalAttributes: 'c_material|Material',
+                                },
+                            },
+                        ],
+                    },
+                ]),
+                componentData: {},
+            });
+
+            const result = await loader(createLoaderArgs('https://example.com/category/electronics'));
+
+            expect(fetchSearchProducts).toHaveBeenCalledTimes(2);
+            for (const [, parameters] of (fetchSearchProducts as any).mock.calls) {
+                expect(parameters).toEqual(
+                    expect.objectContaining({
+                        imgTypes: 'large',
+                        includedCustomVariationProperties: ['c_material'],
+                    })
+                );
+            }
+            expect(result.plpMerchandisingConfig).toMatchObject({
+                stickyControls: true,
+                stickyFilters: true,
+                desktopColumns: '3',
+                productList: {
+                    imageViewType: 'large',
+                    showSwatches: false,
+                },
+            });
+            expect(JSON.parse(result.productListConfigKey ?? '[]').slice(0, 2)).toEqual([true, true]);
         });
 
         test('should throw 404 when category fetch fails with NormalizedApiError 404', async () => {
@@ -944,6 +1050,53 @@ describe('CategoryPage', () => {
                 expect(screen.getByTestId('product-grid')).toBeInTheDocument();
                 expect(screen.getByTestId('category-pagination')).toBeInTheDocument();
             });
+        });
+
+        test('should apply optional sticky controls and filters in Page Designer Preview', async () => {
+            mockPageDesignerMode.isPreviewMode = true;
+            const loaderData: CategoryPageData = {
+                category: mockCategory,
+                searchResultCritical: mockSearchResult,
+                searchResultNonCritical: Promise.resolve(mockSearchResult),
+                page: { ...createMockPage(), componentData: {} },
+                productListConfigKey: 'sticky-grid',
+                plpMerchandisingConfig: {
+                    stickyControls: true,
+                    stickyFilters: true,
+                    defaultCardView: 'standard',
+                    allowedCardViews: ['standard'],
+                    cardSurface: 'card',
+                    gridDensity: 'regular',
+                    desktopColumns: '4',
+                    productList: DEFAULT_PRODUCT_LIST_CONFIG,
+                },
+                categoryId: 'electronics',
+                refine: ['cgid=electronics'],
+                currency: 'USD',
+                locale: 'en-US',
+                pageUrl: 'http://localhost/category/test',
+                initialFiltersOpen: true,
+                categorySchema: Promise.resolve(null),
+                wishlistInitialState: Promise.resolve({
+                    customerId: null,
+                    productIds: new Set(),
+                }),
+            };
+
+            render(
+                <MemoryRouter initialEntries={['/category/electronics?filters=open']}>
+                    <AllProvidersWrapper>
+                        <CategoryPage loaderData={loaderData} />
+                    </AllProvidersWrapper>
+                </MemoryRouter>
+            );
+
+            const heading = await screen.findByRole('heading', { name: 'Electronics (25)' });
+            expect(heading.parentElement).toHaveClass('sticky', 'z-30');
+            expect(screen.getByTestId('category-refinements').parentElement).toHaveClass(
+                'lg:sticky',
+                'lg:overflow-y-auto'
+            );
         });
 
         test('should display category name or id as fallback', async () => {
@@ -1477,6 +1630,40 @@ describe('CategoryPage', () => {
         beforeEach(() => {
             mockTrackViewCategory.mockClear();
             mockTrackClickProductInCategory.mockClear();
+        });
+
+        test('should track an editorial category landing view without product impressions', async () => {
+            const loaderData: CategoryPageData = {
+                pageKind: 'category-landing',
+                category: mockCategory,
+                page: createMockCategoryLandingPage(),
+                categoryId: 'electronics',
+                currency: 'USD',
+                locale: 'en-US',
+                pageUrl: 'http://localhost/category/electronics',
+                wishlistInitialState: Promise.resolve({
+                    customerId: null,
+                    productIds: new Set(),
+                }),
+            };
+
+            render(
+                <MemoryRouter>
+                    <AllProvidersWrapper>
+                        <CategoryPage loaderData={loaderData} />
+                    </AllProvidersWrapper>
+                </MemoryRouter>
+            );
+
+            await waitFor(() => {
+                expect(mockTrackViewCategory).toHaveBeenCalledWith({
+                    category: mockCategory,
+                    searchResults: [],
+                    sort: '',
+                    refinements: {},
+                });
+            });
+            expect(screen.queryByTestId('product-grid')).not.toBeInTheDocument();
         });
 
         test('should call trackClickProductInCategory when product is clicked', async () => {

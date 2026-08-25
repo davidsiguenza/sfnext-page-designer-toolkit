@@ -143,6 +143,7 @@ export function buildEmbedUrl(
     const parameters = new URLSearchParams();
 
     if (source.kind === 'youtube') {
+        parameters.set('enablejsapi', '1');
         parameters.set('playsinline', '1');
         parameters.set('rel', '0');
         parameters.set('autoplay', options.autoplay ? '1' : '0');

@@ -1,0 +1,72 @@
+{
+    "name": "Category Quick Links",
+    "description": "Context-aware horizontal navigation for the current category children, with an optional alternate source category and storefront-only sticky behavior.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "categoryQuickLinks",
+            "name": "Category Quick Links",
+            "description": "Context-aware horizontal navigation for the current category children, with an optional alternate source category and storefront-only sticky behavior.",
+            "attribute_definitions": [
+                {
+                    "id": "sourceCategory",
+                    "name": "Source category override",
+                    "type": "category",
+                    "required": false,
+                    "description": "Optional category whose immediate children become links. Leave empty to use the current category."
+                },
+                {
+                    "id": "title",
+                    "name": "Visible title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional heading displayed before the links."
+                },
+                {
+                    "id": "ariaLabel",
+                    "name": "Accessible navigation label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Concise label announced for this navigation when no visible title is provided.",
+                    "default_value": "Category quick links"
+                },
+                {
+                    "id": "sticky",
+                    "name": "Sticky below header",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Keeps the links below the storefront header while scrolling. Disabled in Page Designer edit mode.",
+                    "default_value": false
+                },
+                {
+                    "id": "tone",
+                    "name": "Surface tone",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: tone",
+                    "values": ["default", "muted"],
+                    "default_value": "default"
+                },
+                {
+                    "id": "alignment",
+                    "name": "Desktop alignment",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Links remain horizontally scrollable on small screens.",
+                    "values": ["start", "center"],
+                    "default_value": "start"
+                },
+                {
+                    "id": "maxItems",
+                    "name": "Maximum links",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Limits the current category children displayed, from one to twenty.",
+                    "default_value": 12
+                }
+            ]
+        }
+    ]
+}

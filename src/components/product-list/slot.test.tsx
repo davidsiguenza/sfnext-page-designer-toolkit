@@ -60,6 +60,12 @@ describe('ProductListSlot', () => {
         expect(regionSpy).toHaveBeenCalledWith(
             expect.objectContaining({
                 page: null,
+                regionId: 'plpMerchandisingGrid',
+            })
+        );
+        expect(regionSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                page: null,
                 regionId: 'plpProductList',
             })
         );

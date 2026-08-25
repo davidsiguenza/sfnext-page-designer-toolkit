@@ -26,7 +26,12 @@
             "defaultCtaText": "Jetzt shoppen"
         },
         "previousImage": "Vorheriges Bild",
-        "nextImage": "Nächstes Bild"
+        "nextImage": "Nächstes Bild",
+        "media": {
+            "playVideo": "Video abspielen",
+            "captions": "Untertitel",
+            "viewTranscript": "Transkript anzeigen"
+        }
     },
     "search": {
         "results": "Suchergebnisse für",
@@ -1339,6 +1344,12 @@
         "banner": {
             "productsAvailable_one": "1 product available",
             "productsAvailable_other": "{{count}} products available"
+        },
+        "cardViews": {
+            "label": "Produktkartenansicht",
+            "standard": "Standard",
+            "editorial": "Editorial",
+            "compact": "Kompakt"
         }
     },
     "maintenancePage": {

@@ -25,7 +25,7 @@ import {
     type ProductListConfig,
 } from '@/components/product-list/config';
 import { ConfigWrapper } from '@/test-utils/config';
-import ProductGrid from './grid';
+import ProductGrid, { type ProductGridEditorialItem, type ProductGridPresentation } from './grid';
 
 const { t } = getTranslation();
 const productTilePresentationSpy = vi.fn();
@@ -39,19 +39,25 @@ vi.mock('@/components/product-tile', () => ({
         showPickupAvailable,
         handleProductClick,
         tilePresentation,
+        className,
+        style,
     }: {
         product: ShopperSearch.schemas['ProductSearchHit'];
         topCategoryName?: string;
         showPickupAvailable?: boolean;
         handleProductClick?: (p: ShopperSearch.schemas['ProductSearchHit']) => void;
         tilePresentation?: ProductListConfig;
+        className?: string;
+        style?: React.CSSProperties;
     }) => {
         productTilePresentationSpy(product.productId, tilePresentation);
         return (
             <div
                 data-testid={`product-tile-${product.productId}`}
                 data-top-category={topCategoryName ?? ''}
-                data-pickup={String(showPickupAvailable ?? false)}>
+                data-pickup={String(showPickupAvailable ?? false)}
+                className={className}
+                style={style}>
                 <button onClick={() => handleProductClick?.(product)}>{product.productName}</button>
             </div>
         );
@@ -95,6 +101,8 @@ interface RenderOptions {
     handleProductClick?: (p: ProductHit) => void;
     topCategoryName?: string;
     tilePresentation?: ProductListConfig;
+    gridPresentation?: ProductGridPresentation;
+    editorialItems?: ProductGridEditorialItem[];
     isLoading?: boolean;
     skeletonCount?: number;
     // @sfdc-extension-line SFDC_EXT_BOPIS
@@ -108,6 +116,8 @@ const renderGrid = ({
     handleProductClick,
     topCategoryName,
     tilePresentation,
+    gridPresentation,
+    editorialItems,
     isLoading,
     skeletonCount,
     // @sfdc-extension-line SFDC_EXT_BOPIS
@@ -123,6 +133,8 @@ const renderGrid = ({
                     handleProductClick={handleProductClick}
                     topCategoryName={topCategoryName}
                     tilePresentation={tilePresentation}
+                    gridPresentation={gridPresentation}
+                    editorialItems={editorialItems}
                     isLoading={isLoading}
                     skeletonCount={skeletonCount}
                     // @sfdc-extension-line SFDC_EXT_BOPIS
@@ -218,6 +230,77 @@ describe('ProductGrid — mixed critical and non-critical', () => {
 
         expect(productTilePresentationSpy).toHaveBeenCalledWith('p2', largeTilePresentation);
         expect(productTilePresentationSpy).toHaveBeenCalledWith('p3', largeTilePresentation);
+    });
+
+    test('interleaves editorial content without changing or duplicating product tiles', () => {
+        renderGrid({
+            critical: [p1, p2],
+            nonCritical: [p3],
+            gridPresentation: {
+                desktopColumns: '3',
+                density: 'comfortable',
+                cardSurface: 'muted',
+                cardView: 'editorial',
+            },
+            editorialItems: [
+                {
+                    key: 'editorial-card',
+                    position: 2,
+                    element: <article data-testid="editorial-card">Editorial</article>,
+                },
+            ],
+        });
+
+        expect(screen.getAllByTestId(/^product-tile-p/)).toHaveLength(3);
+        const gridItems = Array.from(screen.getByTestId('editorial-card').parentElement?.children ?? []);
+        expect(gridItems.map((item) => item.getAttribute('data-testid'))).toEqual([
+            'product-tile-p1',
+            'product-tile-p2',
+            'editorial-card',
+            'product-tile-p3',
+        ]);
+        expect(screen.getByTestId('editorial-card')).not.toHaveStyle({ order: 25 });
+
+        const grid = screen.getByTestId('editorial-card').parentElement;
+        expect(grid).toHaveClass('sm:grid-cols-3', 'gap-y-10');
+        expect(screen.getByTestId('product-tile-p1')).toHaveClass('bg-muted', '[--ui-border-width:0px]');
+    });
+
+    test('holds out-of-range editorials until deferred product positions exist', () => {
+        const editorialItems = [
+            {
+                key: 'late-editorial',
+                position: 10,
+                element: <article data-testid="late-editorial">Late editorial</article>,
+            },
+        ];
+        const loadingView = renderGrid({ critical: [p1, p2], skeletonCount: 4, editorialItems });
+
+        expect(screen.queryByTestId('late-editorial')).not.toBeInTheDocument();
+        loadingView.unmount();
+
+        const products = Array.from({ length: 12 }, (_, index) => makeProduct(`resolved-${index}`, `Product ${index}`));
+        renderGrid({ critical: products.slice(0, 2), nonCritical: products.slice(2), editorialItems });
+
+        expect(screen.getByTestId('late-editorial')).toBeInTheDocument();
+    });
+
+    test('prioritizes only critical product images, not interleaved editorial images', () => {
+        renderGrid({
+            critical: [p1, p2],
+            editorialItems: [
+                {
+                    key: 'editorial-card',
+                    position: 0,
+                    element: <article data-testid="editorial-card">Editorial</article>,
+                },
+            ],
+        });
+
+        const prioritizedProviders = dynamicImageValueSpy.mock.calls.filter(
+            ([value]) => typeof value?.hasSource === 'function'
+        );
+        expect(prioritizedProviders).toHaveLength(2);
     });
 });
 

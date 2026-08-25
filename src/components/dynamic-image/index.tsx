@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type ElementType, type ImgHTMLAttributes, useMemo } from 'react';
+import { Fragment, type ElementType, type ImgHTMLAttributes, useMemo } from 'react';
 import { preload } from 'react-dom';
 import type { ComponentDesignMetadata } from '@salesforce/storefront-next-runtime/design/react';
 import { useConfig } from '@salesforce/storefront-next-runtime/config';
@@ -28,6 +28,14 @@ import { Component } from '@/lib/decorators/component';
 import { AttributeDefinition } from '@/lib/decorators/attribute-definition';
 import { RegionDefinition } from '@/lib/decorators/region-definition';
 import type { ComponentType } from '@/components/region';
+
+interface DynamicImageArtDirection {
+    /** Alternate crop selected by the browser when this media query matches. */
+    src: string;
+    media: string;
+    widths?: DynamicImageDimensions | string;
+    heights?: DynamicImageDimensions | string;
+}
 
 interface DynamicImageProps {
     src: string;
@@ -53,6 +61,10 @@ interface DynamicImageProps {
     className?: string;
     loading?: HTMLImageElement['loading'];
     priority?: HTMLImageElement['fetchPriority'];
+    /** Optional `<picture>` sources for true browser-selected art direction. */
+    artDirection?: DynamicImageArtDirection[];
+    /** Media query applied to the default image's SSR preload when art direction is prioritized. */
+    preloadMedia?: string;
     // Page Designer styling props
     objectFit?: 'contain' | 'cover' | 'fill' | 'none' | 'scale-down';
     borderRadius?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | 'full';
@@ -273,6 +285,9 @@ const parseDimensionsString = (value?: string | DynamicImageDimensions): Dynamic
     return parsed.length > 0 ? parsed : undefined;
 };
 
+const combineMediaQueries = (...queries: Array<string | undefined>): string =>
+    queries.filter((query): query is string => Boolean(query?.trim())).join(' and ');
+
 /**
  * Responsive image component optimized to work with the Dynamic Imaging Service.
  * Via this component it's easy to create a `<picture>` element with related
@@ -319,6 +334,8 @@ const DynamicImage = ({
     className,
     loading,
     priority,
+    artDirection = [],
+    preloadMedia,
     objectFit = 'cover',
     borderRadius = 'none',
     boxShadow = 'none',
@@ -364,6 +381,28 @@ const DynamicImage = ({
     );
     const imageContext = useDynamicImageContext();
 
+    const resolvedArtDirection = useMemo(
+        () =>
+            artDirection
+                .filter(({ src: alternateSrc, media }) => Boolean(alternateSrc?.trim() && media?.trim()))
+                .map(({ src: alternateSrc, media, widths: alternateWidths, heights: alternateHeights }) => {
+                    const resolved = resolveDynamicImageAttributes({
+                        src: alternateSrc,
+                        config,
+                        widths: parseDimensionsString(alternateWidths),
+                        heights: parseDimensionsString(alternateHeights),
+                    });
+                    return {
+                        media,
+                        ...resolved,
+                        fallbackSrc: resolved.enableDis
+                            ? replaceImageFormat(resolved.src, resolved.fallbackFormat, undefined, config)
+                            : resolved.src,
+                    };
+                }),
+        [artDirection, config]
+    );
+
     const effectivePriority = priority ?? (imageContext?.hasSource(transformedSrc) ? 'high' : 'auto');
     const effectiveLoading = loading ?? (effectivePriority === 'high' ? 'eager' : 'lazy');
 
@@ -388,6 +427,27 @@ const DynamicImage = ({
     });
 
     if (isServer() && effectivePriority === 'high') {
+        for (const alternate of resolvedArtDirection) {
+            if (alternate.links.length > 0) {
+                alternate.links.forEach(({ type, media, sizes, srcSet, href }) => {
+                    preload(href, {
+                        as: 'image',
+                        fetchPriority: 'high',
+                        imageSrcSet: srcSet,
+                        imageSizes: sizes,
+                        type,
+                        media: combineMediaQueries(alternate.media, media),
+                    });
+                });
+            } else if (alternate.fallbackSrc) {
+                preload(alternate.fallbackSrc, {
+                    as: 'image',
+                    fetchPriority: 'high',
+                    media: alternate.media,
+                });
+            }
+        }
+
         if (links.length > 0) {
             links.forEach(({ type, media, sizes, srcSet, href }) => {
                 preload(href, {
@@ -396,22 +456,40 @@ const DynamicImage = ({
                     imageSrcSet: srcSet,
                     imageSizes: sizes,
                     type,
-                    media,
+                    media: combineMediaQueries(preloadMedia, media),
                 });
             });
         } else if (effectiveImageProps.src) {
             // No per-breakpoint links — the image has a single static variant (no widths/heights requested, a local
             // bundled asset, or any image when DIS is disabled). Preload the one URL the <img> resolves to so an LCP
             // hero still gets its <link rel="preload">, whether or not dimensions were supplied.
-            preload(effectiveImageProps.src, { as: 'image', fetchPriority: 'high' });
+            preload(effectiveImageProps.src, {
+                as: 'image',
+                fetchPriority: 'high',
+                ...(preloadMedia && { media: preloadMedia }),
+            });
         }
     }
 
     return (
         <>
             <div className={cn(styleClasses, className)} {...rest}>
-                {sources.length > 0 ? (
+                {sources.length > 0 || resolvedArtDirection.length > 0 ? (
                     <picture>
+                        {resolvedArtDirection.map((alternate) => (
+                            <Fragment key={`${alternate.media}:${alternate.transformedSrc}`}>
+                                {alternate.sources.map(({ type, srcSet, sizes, media }) => (
+                                    <source
+                                        key={`${type}:${media}:${srcSet}`}
+                                        type={type}
+                                        media={combineMediaQueries(alternate.media, media)}
+                                        sizes={sizes}
+                                        srcSet={srcSet}
+                                    />
+                                ))}
+                                <source media={alternate.media} srcSet={alternate.fallbackSrc} />
+                            </Fragment>
+                        ))}
                         {sources.map(({ type, srcSet, sizes, media }, idx) => (
                             // eslint-disable-next-line react/no-array-index-key
                             <source key={idx} type={type} {...(media && { media })} sizes={sizes} srcSet={srcSet} />

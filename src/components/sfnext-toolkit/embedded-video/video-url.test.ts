@@ -69,6 +69,7 @@ describe('embedded video URL security', () => {
         expect(Object.fromEntries(url.searchParams)).toMatchObject({
             autoplay: '1',
             controls: '0',
+            enablejsapi: '1',
             loop: '1',
             playlist: 'M7lc1UVf-VE',
             playsinline: '1',

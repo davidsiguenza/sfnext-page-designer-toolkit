@@ -24,7 +24,12 @@
             "defaultCtaText": "Nu shoppen"
         },
         "previousImage": "Vorige afbeelding",
-        "nextImage": "Volgende afbeelding"
+        "nextImage": "Volgende afbeelding",
+        "media": {
+            "playVideo": "Video afspelen",
+            "captions": "Ondertiteling",
+            "viewTranscript": "Transcript bekijken"
+        }
     },
     "search": {
         "results": "Zoekresultaten voor",
@@ -1340,6 +1345,12 @@
         "banner": {
             "productsAvailable_one": "1 product available",
             "productsAvailable_other": "{{count}} products available"
+        },
+        "cardViews": {
+            "label": "Productkaartweergave",
+            "standard": "Standaard",
+            "editorial": "Redactioneel",
+            "compact": "Compact"
         }
     },
     "maintenancePage": {

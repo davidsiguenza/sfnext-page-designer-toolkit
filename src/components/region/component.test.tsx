@@ -86,7 +86,11 @@ describe('Component', () => {
 
     describe('Async data loading', () => {
         test('shows custom fallback while loading, then renders with resolved data', async () => {
-            const Fallback: FC<any> = (props) => <div data-testid="fallback">Loading {props.title}</div>;
+            let capturedFallbackProps: any;
+            const Fallback: FC<any> = (props) => {
+                capturedFallbackProps = props;
+                return <div data-testid="fallback">Loading {props.title}</div>;
+            };
             (registry.getFallback as any).mockReturnValue(Fallback);
 
             let capturedProps: any;
@@ -115,6 +119,11 @@ describe('Component', () => {
             // Verify fallback shows with component.data props
             expect(screen.getByTestId('fallback')).toBeInTheDocument();
             expect(screen.getByText('Loading Hero Title')).toBeInTheDocument();
+            expect(capturedFallbackProps).toMatchObject({
+                title: 'Hero Title',
+                subtitle: 'Subtitle',
+                component,
+            });
 
             // Resolve data
             const resolvedData = { apiData: 'test' };

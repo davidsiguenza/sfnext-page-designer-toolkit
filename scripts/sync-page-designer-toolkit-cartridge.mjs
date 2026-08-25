@@ -13,8 +13,8 @@ const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const projectDirectory = resolve(scriptDirectory, '..');
 const cartridgeName = 'plugin_sfnext_page_designer';
 const componentGroup = 'SFNextToolkit';
-// Public component contract. Keeping this explicit prevents a decorator typo or
-// parser regression from silently shrinking the Business Manager component set.
+// Public metadata contract. Keeping this explicit prevents decorator/parser
+// regressions and accidental source files from silently changing Business Manager.
 const requiredToolkitComponentTypes = [
     'accordion',
     'accordionItem',
@@ -22,7 +22,9 @@ const requiredToolkitComponentTypes = [
     'categoryCard',
     'categoryCarousel',
     'categoryHero',
+    'categoryQuickLinks',
     'contentCollection',
+    'editorialCard',
     'embeddedVideo',
     'heroBanner',
     'mediaContent',
@@ -30,7 +32,11 @@ const requiredToolkitComponentTypes = [
     'megaMenuFeature',
     'megaMenuLink',
     'megaMenuPanel',
+    'mixedMediaCarousel',
+    'mixedMediaSlide',
     'motionShowcase',
+    'pdpLayout',
+    'plpMerchandisingGrid',
     'productCard',
     'productCarousel',
     'productList',
@@ -47,13 +53,33 @@ const requiredToolkitComponentTypes = [
     'trustBar',
     'trustItem',
 ];
+const requiredToolkitPageFiles = [
+    'sfnextToolkitBlankPage.json',
+    'sfnextToolkitBlogHomePage.json',
+    'sfnextToolkitBlogPostPage.json',
+    'sfnextToolkitBrandingStudioPage.json',
+    'sfnextToolkitCategoryLandingPage.json',
+    'sfnextToolkitFlexibleProductDetailPage.json',
+    'sfnextToolkitMerchandisingProductListingPage.json',
+    'sfnextToolkitProductDetailPage.json',
+    'sfnextToolkitProductListingPage.json',
+];
+const requiredToolkitEditorFiles = [
+    'SFNextToolkit/motionEditor.json',
+    'SFNextToolkit/shoppableHotspots.json',
+    'SFNextToolkit/themeEditor.json',
+];
 const contextualToolkitTypeIds = [
     'SFNextToolkit.accordionItem',
     'SFNextToolkit.categoryCard',
+    'SFNextToolkit.editorialCard',
     'SFNextToolkit.megaMenu',
     'SFNextToolkit.megaMenuFeature',
     'SFNextToolkit.megaMenuLink',
     'SFNextToolkit.megaMenuPanel',
+    'SFNextToolkit.mixedMediaSlide',
+    'SFNextToolkit.pdpLayout',
+    'SFNextToolkit.plpMerchandisingGrid',
     'SFNextToolkit.promoCard',
     'SFNextToolkit.siteTheme',
     'SFNextToolkit.sizeGuide',
@@ -288,6 +314,24 @@ async function validateContextualRegionContracts() {
         ],
         [experienceDirectory, 'components/SFNextToolkit/section.json', ['content']],
         [experienceDirectory, 'components/SFNextToolkit/responsiveColumns.json', ['column1', 'column2', 'column3']],
+        [experienceDirectory, 'pages/sfnextToolkitBlogHomePage.json', ['afterPosts']],
+        [experienceDirectory, 'pages/sfnextToolkitBlogPostPage.json', ['beforeArticle', 'afterArticle']],
+        [experienceDirectory, 'pages/sfnextToolkitProductDetailPage.json', ['promoContent', 'engagementContent']],
+        [
+            experienceDirectory,
+            'pages/sfnextToolkitProductListingPage.json',
+            ['plpTopFullWidth', 'plpTopContent', 'plpBottom'],
+        ],
+        [
+            experienceDirectory,
+            'pages/sfnextToolkitFlexibleProductDetailPage.json',
+            ['promoContent', 'engagementContent'],
+        ],
+        [
+            experienceDirectory,
+            'pages/sfnextToolkitMerchandisingProductListingPage.json',
+            ['plpTopFullWidth', 'plpTopContent', 'plpBottom'],
+        ],
     ];
     const failures = [];
 
@@ -314,6 +358,7 @@ async function validateProductToolsRegionContracts() {
     const contracts = [
         [baseExperienceDirectory, 'pages/productDetailPage.json'],
         [experienceDirectory, 'pages/sfnextToolkitProductDetailPage.json'],
+        [experienceDirectory, 'pages/sfnextToolkitFlexibleProductDetailPage.json'],
     ];
     const expectedTypeIds = ['SFNextToolkit.sizeGuide'];
     const failures = [];
@@ -337,6 +382,45 @@ async function validateProductToolsRegionContracts() {
 
         if (region.component_type_exclusions !== undefined) {
             failures.push(`${file}#productTools: component_type_exclusions must not be declared with inclusions`);
+        }
+    }
+
+    return failures;
+}
+
+async function validateExclusiveRegionContracts() {
+    const contracts = [
+        ['pages/sfnextToolkitFlexibleProductDetailPage.json', 'pdpLayout', 'SFNextToolkit.pdpLayout', 1],
+        [
+            'pages/sfnextToolkitMerchandisingProductListingPage.json',
+            'plpMerchandisingGrid',
+            'SFNextToolkit.plpMerchandisingGrid',
+            1,
+        ],
+        ['components/SFNextToolkit/plpMerchandisingGrid.json', 'editorialCards', 'SFNextToolkit.editorialCard', 12],
+        ['components/SFNextToolkit/mixedMediaCarousel.json', 'slides', 'SFNextToolkit.mixedMediaSlide', 10],
+    ];
+    const failures = [];
+
+    for (const [file, regionId, expectedTypeId, maxComponents] of contracts) {
+        const metadata = JSON.parse(await readFile(join(experienceDirectory, file), 'utf8'));
+        const region = metadata.region_definitions?.find((candidate) => candidate.id === regionId);
+        if (!region) {
+            failures.push(`${file}#${regionId}: required exclusive region is missing`);
+            continue;
+        }
+
+        if (region.max_components !== maxComponents) {
+            failures.push(`${file}#${regionId}: max_components must be ${maxComponents}`);
+        }
+
+        const includedTypeIds = (region.component_type_inclusions ?? []).map((candidate) => candidate.type_id);
+        if (includedTypeIds.length !== 1 || includedTypeIds[0] !== expectedTypeId) {
+            failures.push(`${file}#${regionId}: component_type_inclusions must contain only ${expectedTypeId}`);
+        }
+
+        if (region.component_type_exclusions !== undefined) {
+            failures.push(`${file}#${regionId}: component_type_exclusions must not be declared with inclusions`);
         }
     }
 
@@ -411,17 +495,28 @@ async function validateEditorContracts(file, metadata) {
 async function validateToolkitCartridge() {
     const expectedFiles = await expectedMetadataFiles();
     const actualFiles = await listJsonFiles(experienceDirectory);
-    const requiredComponentFiles = requiredToolkitComponentTypes.map(
-        (typeId) => `components/${componentGroup}/${typeId}.json`
-    );
-    const missingRequiredComponents = requiredComponentFiles.filter((file) => !actualFiles.includes(file));
+    const publicContractFiles = [
+        ...requiredToolkitComponentTypes.map((typeId) => `components/${componentGroup}/${typeId}.json`),
+        ...requiredToolkitPageFiles.map((file) => `pages/${file}`),
+        ...requiredToolkitEditorFiles.map((file) => `editors/${file}`),
+    ].sort();
+    const missingPublicContractFiles = publicContractFiles.filter((file) => !actualFiles.includes(file));
+    const outsidePublicContractFiles = actualFiles.filter((file) => !publicContractFiles.includes(file));
     const missingFiles = expectedFiles.filter((file) => !actualFiles.includes(file));
     const unexpectedFiles = actualFiles.filter((file) => !expectedFiles.includes(file));
 
-    if (missingRequiredComponents.length || missingFiles.length || unexpectedFiles.length) {
+    if (
+        missingPublicContractFiles.length ||
+        outsidePublicContractFiles.length ||
+        missingFiles.length ||
+        unexpectedFiles.length
+    ) {
         const details = [
-            ...(missingRequiredComponents.length
-                ? [`missing required component types: ${missingRequiredComponents.join(', ')}`]
+            ...(missingPublicContractFiles.length
+                ? [`missing public contract files: ${missingPublicContractFiles.join(', ')}`]
+                : []),
+            ...(outsidePublicContractFiles.length
+                ? [`outside public contract: ${outsidePublicContractFiles.join(', ')}`]
                 : []),
             ...(missingFiles.length ? [`missing: ${missingFiles.join(', ')}`] : []),
             ...(unexpectedFiles.length ? [`unexpected: ${unexpectedFiles.join(', ')}`] : []),
@@ -439,6 +534,7 @@ async function validateToolkitCartridge() {
     const failures = [];
     failures.push(...(await validateContextualRegionContracts()));
     failures.push(...(await validateProductToolsRegionContracts()));
+    failures.push(...(await validateExclusiveRegionContracts()));
 
     for (const file of actualFiles) {
         const absolutePath = join(experienceDirectory, file);

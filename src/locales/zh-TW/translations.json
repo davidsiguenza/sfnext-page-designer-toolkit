@@ -27,7 +27,12 @@
             "defaultCtaText": "立即選購"
         },
         "previousImage": "上一張圖像",
-        "nextImage": "下一張圖像"
+        "nextImage": "下一張圖像",
+        "media": {
+            "playVideo": "播放影片",
+            "captions": "字幕",
+            "viewTranscript": "查看文字稿"
+        }
     },
     "search": {
         "results": "搜尋結果",
@@ -1404,6 +1409,12 @@
         "banner": {
             "productsAvailable_one": "1 product available",
             "productsAvailable_other": "{{count}} products available"
+        },
+        "cardViews": {
+            "label": "商品卡片檢視",
+            "standard": "標準",
+            "editorial": "編輯",
+            "compact": "精簡"
         }
     },
     "maintenancePage": {

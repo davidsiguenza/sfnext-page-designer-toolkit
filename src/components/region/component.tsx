@@ -68,7 +68,10 @@ export const Component = memo(function Component({ component, className, regionI
     };
 
     return (
-        <Suspense fallback={FallbackComponent ? <FallbackComponent {...(component.data ?? {})} /> : <div />}>
+        <Suspense
+            fallback={
+                FallbackComponent ? <FallbackComponent {...(component.data ?? {})} component={component} /> : <div />
+            }>
             <Await
                 resolve={dataPromise}
                 errorElement={<ComponentErrorFallback componentId={component.id} componentTypeId={component.typeId} />}>

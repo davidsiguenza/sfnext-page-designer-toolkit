@@ -1,0 +1,59 @@
+{
+    "name": "PDP Layout Configuration",
+    "description": "Controls the product media/content columns, gallery presentation, sticky information, and product navigation.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "pdpLayout",
+            "name": "PDP Layout Configuration",
+            "description": "Controls the product media/content columns, gallery presentation, sticky information, and product navigation.",
+            "attribute_definitions": [
+                {
+                    "id": "desktopColumnRatio",
+                    "name": "Desktop column ratio",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Width allocated to product media and product information on desktop.",
+                    "values": ["50-50", "60-40", "65-35", "70-30"],
+                    "default_value": "50-50"
+                },
+                {
+                    "id": "mediaSide",
+                    "name": "Media side",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Places product media on the left or right on desktop. Mobile always shows media first.",
+                    "values": ["left", "right"],
+                    "default_value": "left"
+                },
+                {
+                    "id": "galleryPresentation",
+                    "name": "Gallery presentation",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Shows grid thumbnails, a horizontal thumbnail strip, or carousel controls only.",
+                    "values": ["grid", "strip", "carousel"],
+                    "default_value": "grid"
+                },
+                {
+                    "id": "stickyProductInfo",
+                    "name": "Sticky product information",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Keeps the purchase column visible while the shopper scrolls product media on desktop.",
+                    "default_value": false
+                },
+                {
+                    "id": "enableProductNavigation",
+                    "name": "Enable previous/next products",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Shows links to adjacent products when the current item is available in the bounded primary-category navigation window.",
+                    "default_value": false
+                }
+            ]
+        }
+    ]
+}

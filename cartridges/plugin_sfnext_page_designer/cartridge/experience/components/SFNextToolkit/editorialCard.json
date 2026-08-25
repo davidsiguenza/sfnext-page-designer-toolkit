@@ -1,0 +1,126 @@
+{
+    "name": "PLP Editorial Card",
+    "description": "Shoppable editorial interlink inserted at a deterministic position in a merchandising grid.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "editorialCard",
+            "name": "PLP Editorial Card",
+            "description": "Shoppable editorial interlink inserted at a deterministic position in a merchandising grid.",
+            "attribute_definitions": [
+                {
+                    "id": "position",
+                    "name": "Position after product",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Insert after this many products. Use 0 to place the card before the first product.",
+                    "default_value": 4
+                },
+                {
+                    "id": "columnSpan",
+                    "name": "Desktop column span",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Number of desktop grid columns occupied by the editorial card.",
+                    "values": ["1", "2", "full"],
+                    "default_value": "2"
+                },
+                {
+                    "id": "mobileColumnSpan",
+                    "name": "Mobile column span",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Occupy one or both columns in the mobile product grid.",
+                    "values": ["1", "2"],
+                    "default_value": "2"
+                },
+                {
+                    "id": "rowSpan",
+                    "name": "Row span",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Use two rows for a taller editorial treatment.",
+                    "values": ["1", "2"],
+                    "default_value": "1"
+                },
+                {
+                    "id": "eyebrow",
+                    "name": "Eyebrow",
+                    "type": "string",
+                    "required": false,
+                    "description": "Optional short label displayed above the title."
+                },
+                {
+                    "id": "title",
+                    "name": "Title",
+                    "type": "string",
+                    "required": false,
+                    "description": "Editorial card heading."
+                },
+                {
+                    "id": "description",
+                    "name": "Description",
+                    "type": "text",
+                    "required": false,
+                    "description": "Supporting editorial copy."
+                },
+                {
+                    "id": "imageUrl",
+                    "name": "Image",
+                    "type": "image",
+                    "required": false,
+                    "description": "Editorial image selected from the content library."
+                },
+                {
+                    "id": "imageAlt",
+                    "name": "Image alternative text",
+                    "type": "string",
+                    "required": false,
+                    "description": "Describe informative imagery. If empty, the title is used."
+                },
+                {
+                    "id": "decorativeImage",
+                    "name": "Decorative image",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Enable when the image adds no information beyond the text.",
+                    "default_value": false
+                },
+                {
+                    "id": "buttonText",
+                    "name": "Link label",
+                    "type": "string",
+                    "required": false,
+                    "description": "Accessible label for the editorial interlink."
+                },
+                {
+                    "id": "buttonLink",
+                    "name": "Link destination",
+                    "type": "url",
+                    "required": false,
+                    "description": "Product, category, landing page or other safe destination."
+                },
+                {
+                    "id": "layout",
+                    "name": "Content layout",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Place content below the image or over it in a readable panel.",
+                    "values": ["stacked", "overlay"],
+                    "default_value": "overlay"
+                },
+                {
+                    "id": "ctaStyle",
+                    "name": "Link style",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Semantic storefront treatment for the link.",
+                    "values": ["primary", "secondary", "outline", "link"],
+                    "default_value": "link"
+                }
+            ]
+        }
+    ]
+}

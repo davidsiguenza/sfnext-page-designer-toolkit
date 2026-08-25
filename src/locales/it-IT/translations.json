@@ -29,6 +29,11 @@
         "nextImage": "Immagine successiva",
         "productGrid": {
             "loadFailed": "Impossibile caricare ulteriori prodotti."
+        },
+        "media": {
+            "playVideo": "Riproduci video",
+            "captions": "Sottotitoli",
+            "viewTranscript": "Visualizza trascrizione"
         }
     },
     "search": {
@@ -1492,6 +1497,12 @@
             "next": "Successivo",
             "nextPage": "Pagina successiva",
             "page": "Pagina {{number}}"
+        },
+        "cardViews": {
+            "label": "Vista schede prodotto",
+            "standard": "Standard",
+            "editorial": "Editoriale",
+            "compact": "Compatta"
         }
     },
     "maintenancePage": {

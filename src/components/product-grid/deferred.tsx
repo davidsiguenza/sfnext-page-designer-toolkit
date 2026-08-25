@@ -18,7 +18,7 @@ import { Await } from 'react-router';
 import type { ShopperSearch } from '@/scapi';
 import { useDeferredRender } from '@/hooks/use-deferred-render';
 import type { ProductListConfig } from '@/components/product-list/config';
-import ProductGrid from './grid';
+import ProductGrid, { type ProductGridEditorialItem, type ProductGridPresentation } from './grid';
 
 type ProductSearchHit = ShopperSearch.schemas['ProductSearchHit'];
 
@@ -30,6 +30,8 @@ export interface DeferredProductGridProps {
     handleProductClick?: (product: ProductSearchHit) => void;
     topCategoryName?: string;
     tilePresentation?: ProductListConfig;
+    gridPresentation?: ProductGridPresentation;
+    editorialItems?: ProductGridEditorialItem[];
     isLoading?: boolean;
     errorElement?: ReactElement;
     // @sfdc-extension-line SFDC_EXT_BOPIS
@@ -64,6 +66,8 @@ export default function DeferredProductGrid({
     handleProductClick,
     topCategoryName,
     tilePresentation,
+    gridPresentation,
+    editorialItems,
     isLoading,
     errorElement,
     // @sfdc-extension-line SFDC_EXT_BOPIS
@@ -86,6 +90,8 @@ export default function DeferredProductGrid({
         handleProductClick,
         topCategoryName,
         tilePresentation,
+        gridPresentation,
+        editorialItems,
         isLoading,
         // @sfdc-extension-line SFDC_EXT_BOPIS
         showPickupAvailable,

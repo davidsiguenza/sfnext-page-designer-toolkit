@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Suspense, use, useCallback, useEffect, useMemo, useRef, useTransition } from 'react';
-import { useAsyncError, useLocation, useNavigation, useRouteLoaderData } from 'react-router';
+import { redirect, useAsyncError, useLocation, useNavigation, useRouteLoaderData } from 'react-router';
 import type { loader as rootLoader } from '@/root';
 import type { Route } from './+types/_app.category.$categoryId';
 import type { ShopperProducts, ShopperSearch } from '@/scapi';
@@ -55,22 +55,38 @@ import { generateCategorySchema } from '@/utils/category-schema';
 import { getPublicOrigin } from '@/utils/schema-url';
 import { buildCanonicalUrl } from '@/utils/canonical-url';
 import {
+    ACTION_PARAMS,
+    FILTERS_QUERY_PARAM,
     getInitialFiltersOpen,
-    getSearchWithoutFiltersParam,
+    getSearchWithoutClientOnlyParams,
     useFiltersPanelState,
 } from '@/hooks/use-filters-panel-state';
 import { getLogger } from '@/lib/logger.server';
 import { uiConfig } from '@/lib/config.ui';
+import { usePageDesignerMode } from '@salesforce/storefront-next-runtime/design/react/core';
+import { CategoryLandingPage } from '@/extensions/page-designer-toolkit/category-landing/category-landing-page';
+import { isCategoryLandingPage } from '@/extensions/page-designer-toolkit/category-landing/page-types';
+import {
+    getPLPMerchandisingGridConfigFromPage,
+    getPLPMerchandisingGridConfigKey,
+    PLP_VIEW_QUERY_PARAM,
+    type PLPMerchandisingGridConfig,
+} from '@/components/sfnext-toolkit/plp-merchandising-grid/config';
+import { cn } from '@/lib/utils';
 
 // Kept as a same-file literal because the cartridge generator statically reads
 // decorator values without resolving imports.
 const TOOLKIT_PAGE_REGION_EXCLUSIONS = [
     'SFNextToolkit.accordionItem',
     'SFNextToolkit.categoryCard',
+    'SFNextToolkit.editorialCard',
     'SFNextToolkit.megaMenu',
     'SFNextToolkit.megaMenuFeature',
     'SFNextToolkit.megaMenuLink',
     'SFNextToolkit.megaMenuPanel',
+    'SFNextToolkit.mixedMediaSlide',
+    'SFNextToolkit.pdpLayout',
+    'SFNextToolkit.plpMerchandisingGrid',
     'SFNextToolkit.promoCard',
     'SFNextToolkit.siteTheme',
     'SFNextToolkit.sizeGuide',
@@ -114,21 +130,70 @@ const TOOLKIT_PAGE_REGION_EXCLUSIONS = [
 ])
 export class ProductListingPageMetadata {}
 
-type CategoryPageData = {
+type CategoryPageDefinition = Awaited<ReturnType<typeof fetchPageWithComponentData>>;
+type ResolvedCategoryPageDefinition = NonNullable<CategoryPageDefinition>;
+
+type CategoryPageBaseData = {
     category: ShopperProducts.schemas['Category'];
-    searchResultCritical: ShopperSearch.schemas['ProductSearchResult'];
-    searchResultNonCritical: Promise<ShopperSearch.schemas['ProductSearchResult']>;
-    page: Awaited<ReturnType<typeof fetchPageWithComponentData>>;
-    productListConfigKey: string;
     categoryId: string;
     pageUrl: string;
-    refine: string[];
     currency: string;
     locale: string;
-    initialFiltersOpen?: boolean;
-    categorySchema: Promise<ReturnType<typeof generateCategorySchema> | null>;
     wishlistInitialState: Promise<WishlistInitialState>;
 };
+
+type CategoryLandingPageData = CategoryPageBaseData & {
+    pageKind: 'category-landing';
+    page: ResolvedCategoryPageDefinition;
+    searchResultCritical?: never;
+    searchResultNonCritical?: never;
+    productListConfigKey?: never;
+    plpMerchandisingConfig?: never;
+    refine?: never;
+    initialFiltersOpen?: never;
+    categorySchema?: never;
+};
+
+type ProductListingPageData = CategoryPageBaseData & {
+    /** Optional only for backwards-compatible manually constructed route data; the loader always sets it. */
+    pageKind?: 'product-listing';
+    searchResultCritical: ShopperSearch.schemas['ProductSearchResult'];
+    searchResultNonCritical: Promise<ShopperSearch.schemas['ProductSearchResult']>;
+    page: CategoryPageDefinition;
+    productListConfigKey: string;
+    plpMerchandisingConfig?: PLPMerchandisingGridConfig | null;
+    refine: string[];
+    initialFiltersOpen?: boolean;
+    categorySchema: Promise<ReturnType<typeof generateCategorySchema> | null>;
+};
+
+type CategoryPageData = CategoryLandingPageData | ProductListingPageData;
+
+const CATEGORY_LANDING_CONTENT_QUERY_PARAMS = [
+    'q',
+    'offset',
+    'sort',
+    'refine',
+    'pid',
+    FILTERS_QUERY_PARAM,
+    PLP_VIEW_QUERY_PARAM,
+    ...ACTION_PARAMS,
+] as const;
+
+/** Removes product-list state that has no meaning on an editorial category landing page. */
+export function getCategoryLandingCanonicalRedirect(requestUrl: URL): string | null {
+    const cleanUrl = new URL(requestUrl);
+    let removedContentState = false;
+
+    for (const param of CATEGORY_LANDING_CONTENT_QUERY_PARAMS) {
+        if (cleanUrl.searchParams.has(param)) {
+            cleanUrl.searchParams.delete(param);
+            removedContentState = true;
+        }
+    }
+
+    return removedContentState ? `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}` : null;
+}
 
 /**
  * Server-side loader function that fetches category data and product search results.
@@ -182,7 +247,27 @@ export async function loader(args: Route.LoaderArgs): Promise<CategoryPageData> 
     }
 
     const page = await pagePromise;
-    const productListConfig = getProductListConfigFromPage(page);
+
+    if (page && isCategoryLandingPage(page.typeId)) {
+        const canonicalRedirect = getCategoryLandingCanonicalRedirect(requestUrl);
+        if (canonicalRedirect) {
+            throw redirect(canonicalRedirect);
+        }
+
+        return {
+            pageKind: 'category-landing',
+            category: categoryData,
+            page,
+            categoryId,
+            pageUrl: buildCanonicalUrl(getPublicOrigin(request), requestUrl.pathname, ''),
+            currency,
+            locale,
+            wishlistInitialState: fetchWishlistInitialState(context),
+        };
+    }
+
+    const plpMerchandisingConfig = getPLPMerchandisingGridConfigFromPage(page);
+    const productListConfig = plpMerchandisingConfig?.productList ?? getProductListConfigFromPage(page);
     const productListSearchParameters = getProductListSearchParameters(productListConfig);
 
     // Keep non-category refinements and apply exactly one category refinement.
@@ -254,11 +339,15 @@ export async function loader(args: Route.LoaderArgs): Promise<CategoryPageData> 
         });
 
     return {
+        pageKind: 'product-listing',
         category: categoryData,
         searchResultCritical,
         searchResultNonCritical,
         page,
-        productListConfigKey: getProductListConfigKey(productListConfig),
+        productListConfigKey: plpMerchandisingConfig
+            ? getPLPMerchandisingGridConfigKey(plpMerchandisingConfig)
+            : getProductListConfigKey(productListConfig),
+        plpMerchandisingConfig,
         categoryId,
         pageUrl,
         refine: effectiveRefine,
@@ -309,13 +398,59 @@ function CategoryJsonLd({
     return categorySchema ? <JsonLd data={categorySchema} id="category-schema" nonce={nonce} /> : null;
 }
 
-export default function CategoryPage({
+function CategoryLandingViewAnalytics({
+    category,
+    analyticsKey,
+}: {
+    category: ShopperProducts.schemas['Category'];
+    analyticsKey: string;
+}) {
+    const analytics = useAnalytics();
+    const { isDesignMode, isPreviewMode } = usePageDesignerMode();
+    const lastTrackedDataRef = useRef<string | null>(null);
+
+    useEffect(() => {
+        if (isDesignMode || isPreviewMode || !analytics || analyticsKey === lastTrackedDataRef.current) return;
+        lastTrackedDataRef.current = analyticsKey;
+
+        void analytics.trackViewCategory({
+            category,
+            searchResults: [],
+            sort: '',
+            refinements: {},
+        });
+    }, [analytics, analyticsKey, category, isDesignMode, isPreviewMode]);
+
+    return null;
+}
+
+function CategoryLandingRoute({ loaderData }: { loaderData: CategoryLandingPageData }) {
+    const analyticsKey = `${loaderData.categoryId}-${loaderData.currency}-${loaderData.locale}`;
+
+    return (
+        <WishlistProvider initialState={loaderData.wishlistInitialState}>
+            <CategoryLandingViewAnalytics category={loaderData.category} analyticsKey={analyticsKey} />
+            <CategoryLandingPage category={loaderData.category} page={loaderData.page} pageUrl={loaderData.pageUrl} />
+        </WishlistProvider>
+    );
+}
+
+export default function CategoryPage({ loaderData }: { loaderData: CategoryPageData }) {
+    if (loaderData.pageKind === 'category-landing') {
+        return <CategoryLandingRoute loaderData={loaderData} />;
+    }
+
+    return <ProductListingCategoryPage loaderData={loaderData} />;
+}
+
+function ProductListingCategoryPage({
     loaderData: {
         category,
         searchResultCritical,
         searchResultNonCritical,
         page,
         productListConfigKey,
+        plpMerchandisingConfig,
         categoryId,
         pageUrl,
         refine,
@@ -326,9 +461,12 @@ export default function CategoryPage({
         wishlistInitialState,
     },
 }: {
-    loaderData: CategoryPageData;
+    loaderData: ProductListingPageData;
 }) {
     const config = useConfig();
+    const { isDesignMode, isPreviewMode } = usePageDesignerMode();
+    const stickyControls = Boolean(plpMerchandisingConfig?.stickyControls && !isDesignMode);
+    const stickyFilters = Boolean(plpMerchandisingConfig?.stickyFilters && !isDesignMode);
 
     const [filtersOpen, toggleFiltersOpen] = useFiltersPanelState(initialFiltersOpen);
     const limit = config.search.products.hits.limit;
@@ -347,10 +485,13 @@ export default function CategoryPage({
 
     const location = useLocation();
     const navigation = useNavigation();
-    const searchWithoutFiltersParam = useMemo(() => getSearchWithoutFiltersParam(location.search), [location.search]);
+    const searchWithoutClientOnlyParams = useMemo(
+        () => getSearchWithoutClientOnlyParams(location.search),
+        [location.search]
+    );
     const pageIdentity = `${categoryId}-${currency}-${locale}`;
-    const analyticsKey = `${pageIdentity}-${searchWithoutFiltersParam}-${location.hash}`;
-    const productGridDataKey = `${pageIdentity}-${searchWithoutFiltersParam}-${productListConfigKey}`;
+    const analyticsKey = `${pageIdentity}-${searchWithoutClientOnlyParams}-${location.hash}`;
+    const productGridDataKey = `${pageIdentity}-${searchWithoutClientOnlyParams}-${productListConfigKey}`;
     const selectedFiltersCount = useMemo(
         () => new URLSearchParams(location.search).getAll('refine').length,
         [location.search]
@@ -385,43 +526,49 @@ export default function CategoryPage({
     const [, startTransition] = useTransition();
 
     useEffect(() => {
-        // Only track if we haven't already tracked this specific data combination
-        if (analyticsKey !== lastTrackedDataRef.current) {
-            lastTrackedDataRef.current = analyticsKey;
+        if (isDesignMode || isPreviewMode || analyticsKey === lastTrackedDataRef.current) return;
+        lastTrackedDataRef.current = analyticsKey;
 
-            startTransition(() => {
-                void nonCriticalPromise
-                    .then((searchHitsData: ShopperSearch.schemas['ProductSearchHit'][]) => {
-                        if (analytics) {
-                            void analytics.trackViewCategory({
-                                category,
-                                searchResults: [...(searchResultCritical.hits ?? []), ...searchHitsData],
-                                sort:
-                                    searchResultCritical.selectedSortingOption ||
-                                    searchResultCritical.sortingOptions?.[0]?.label ||
-                                    '',
-                                refinements: searchResultCritical.selectedRefinements ?? {},
-                            });
-                        }
-                    })
-                    .catch(() => {
-                        // Silently handle promise rejection
+        startTransition(() => {
+            void nonCriticalPromise
+                .then((searchHitsData: ShopperSearch.schemas['ProductSearchHit'][]) => {
+                    if (!analytics) return;
+
+                    void analytics.trackViewCategory({
+                        category,
+                        searchResults: [...(searchResultCritical.hits ?? []), ...searchHitsData],
+                        sort:
+                            searchResultCritical.selectedSortingOption ||
+                            searchResultCritical.sortingOptions?.[0]?.label ||
+                            '',
+                        refinements: searchResultCritical.selectedRefinements ?? {},
                     });
-            });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [analytics, category, analyticsKey, nonCriticalPromise]);
+                })
+                .catch(() => {
+                    // Analytics must never block or fail category rendering.
+                });
+        });
+    }, [
+        analytics,
+        analyticsKey,
+        category,
+        isDesignMode,
+        isPreviewMode,
+        nonCriticalPromise,
+        searchResultCritical,
+        startTransition,
+    ]);
 
     const handleProductClick = useCallback(
         (product: ShopperSearch.schemas['ProductSearchHit']) => {
-            if (analytics) {
-                void analytics.trackClickProductInCategory({
-                    category,
-                    product,
-                });
-            }
+            if (isDesignMode || isPreviewMode || !analytics) return;
+
+            void analytics.trackClickProductInCategory({
+                category,
+                product,
+            });
         },
-        [analytics, category]
+        [analytics, category, isDesignMode, isPreviewMode]
     );
 
     return (
@@ -429,6 +576,7 @@ export default function CategoryPage({
             <SeoMeta
                 title={category.name || category.id}
                 description={category.pageDescription || category.description}
+                noIndex={isDesignMode || isPreviewMode}
                 openGraph={{
                     type: 'website',
                     url: pageUrl,
@@ -449,7 +597,13 @@ export default function CategoryPage({
                         <CategoryBreadcrumbs category={category} />
                     </div>
 
-                    <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div
+                        className={cn(
+                            'mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between',
+                            stickyControls &&
+                                'sticky z-30 border-b border-border bg-background/95 py-4 backdrop-blur-sm'
+                        )}
+                        style={stickyControls ? { top: 'var(--header-height, 0px)' } : undefined}>
                         <h1 className="text-3xl font-bold leading-none tracking-[-0.75px] text-card-foreground">
                             {category?.name || category.id} ({searchResultCritical.total})
                         </h1>
@@ -474,7 +628,21 @@ export default function CategoryPage({
 
                         {/* Category Refinements - toggles visibility on left side */}
                         {filtersOpen && (
-                            <div className="w-full lg:w-64 lg:flex-shrink-0">
+                            <div
+                                className={cn(
+                                    'w-full lg:w-64 lg:flex-shrink-0',
+                                    stickyFilters && 'lg:sticky lg:self-start lg:overflow-y-auto'
+                                )}
+                                style={
+                                    stickyFilters
+                                        ? {
+                                              top: stickyControls
+                                                  ? 'calc(var(--header-height, 0px) + 5.5rem)'
+                                                  : 'calc(var(--header-height, 0px) + 1rem)',
+                                              maxHeight: 'calc(100vh - var(--header-height, 0px) - 6rem)',
+                                          }
+                                        : undefined
+                                }>
                                 <CategoryRefinements result={searchResultCritical} refine={refine} />
                             </div>
                         )}

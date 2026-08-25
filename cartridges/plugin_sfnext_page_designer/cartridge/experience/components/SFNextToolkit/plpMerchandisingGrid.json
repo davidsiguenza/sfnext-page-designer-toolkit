@@ -1,0 +1,201 @@
+{
+    "name": "PLP Merchandising Grid",
+    "description": "Configures PLP controls, product-card views and a product grid with deterministic editorial interlinks.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [
+        {
+            "id": "editorialCards",
+            "name": "Editorial interlinks",
+            "component_type_inclusions": [
+                {
+                    "type_id": "SFNextToolkit.editorialCard"
+                }
+            ],
+            "max_components": 12
+        }
+    ],
+    "attribute_definition_groups": [
+        {
+            "id": "plpMerchandisingGrid",
+            "name": "PLP Merchandising Grid",
+            "description": "Configures PLP controls, product-card views and a product grid with deterministic editorial interlinks.",
+            "attribute_definitions": [
+                {
+                    "id": "stickyControls",
+                    "name": "Sticky listing heading",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Keeps the category title and sorting control visible while browsing.",
+                    "default_value": false
+                },
+                {
+                    "id": "stickyFilters",
+                    "name": "Sticky filters",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Keeps the desktop refinement panel visible while browsing products.",
+                    "default_value": false
+                },
+                {
+                    "id": "defaultCardView",
+                    "name": "Default card view",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Initial product-card view when the shopper has not selected another allowed view.",
+                    "values": ["standard", "editorial", "compact"],
+                    "default_value": "standard"
+                },
+                {
+                    "id": "allowedCardViews",
+                    "name": "Allowed card views",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Controls which alternative product-card views shoppers may select.",
+                    "values": ["standard-only", "standard-editorial", "standard-compact", "all"],
+                    "default_value": "standard-only"
+                },
+                {
+                    "id": "cardSurface",
+                    "name": "Card surface",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Semantic theme applied to every product card.",
+                    "values": ["card", "muted", "transparent"],
+                    "default_value": "card"
+                },
+                {
+                    "id": "gridDensity",
+                    "name": "Grid density",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Spacing between product and editorial cards.",
+                    "values": ["compact", "regular", "comfortable"],
+                    "default_value": "regular"
+                },
+                {
+                    "id": "desktopColumns",
+                    "name": "Desktop columns",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Default number of product columns on wide screens.",
+                    "values": ["3", "4", "5"],
+                    "default_value": "4"
+                },
+                {
+                    "id": "imageViewType",
+                    "name": "Catalog image type",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Catalog view type used as the primary image for each product.",
+                    "values": ["hi-res", "large", "medium", "small", "swatch"],
+                    "default_value": "medium"
+                },
+                {
+                    "id": "showBadges",
+                    "name": "Show badges",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showBadges",
+                    "default_value": true
+                },
+                {
+                    "id": "showWishlist",
+                    "name": "Show wishlist action",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showWishlist",
+                    "default_value": true
+                },
+                {
+                    "id": "showQuickAdd",
+                    "name": "Show quick add",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showQuickAdd",
+                    "default_value": true
+                },
+                {
+                    "id": "showSwatches",
+                    "name": "Show color swatches",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showSwatches",
+                    "default_value": true
+                },
+                {
+                    "id": "showBrand",
+                    "name": "Show brand",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showBrand",
+                    "default_value": true
+                },
+                {
+                    "id": "showCategory",
+                    "name": "Show category",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showCategory",
+                    "default_value": true
+                },
+                {
+                    "id": "showProductName",
+                    "name": "Show product name",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showProductName",
+                    "default_value": true
+                },
+                {
+                    "id": "showSku",
+                    "name": "Show SKU",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showSku",
+                    "default_value": true
+                },
+                {
+                    "id": "showRating",
+                    "name": "Show rating",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showRating",
+                    "default_value": true
+                },
+                {
+                    "id": "showPrice",
+                    "name": "Show price",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showPrice",
+                    "default_value": true
+                },
+                {
+                    "id": "showPromotions",
+                    "name": "Show promotions",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showPromotions",
+                    "default_value": true
+                },
+                {
+                    "id": "maxSwatches",
+                    "name": "Maximum swatches",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Maximum number of visible color swatches per product (between 1 and 12).",
+                    "default_value": 3
+                },
+                {
+                    "id": "additionalAttributes",
+                    "name": "Additional attributes",
+                    "type": "text",
+                    "required": false,
+                    "description": "Up to five custom attributes separated by lines or commas, using id|Label.",
+                    "default_value": ""
+                }
+            ]
+        }
+    ]
+}

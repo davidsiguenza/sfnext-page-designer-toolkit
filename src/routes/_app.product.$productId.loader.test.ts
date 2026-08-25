@@ -21,10 +21,12 @@ import { loader } from './_app.product.$productId';
 import { appConfigContext } from '@salesforce/storefront-next-runtime/config';
 import { authContext } from '@/middlewares/auth.utils';
 import { siteContext } from '@salesforce/storefront-next-runtime/site-context';
+import type { PageWithComponentData } from '@/lib/page-designer/page-loader.server';
 
 // Mock fetchProductById and fetchCategory directly
 const mockFetchProductById = vi.hoisted(() => vi.fn());
 const mockFetchCategory = vi.hoisted(() => vi.fn());
+const mockFetchPdpProductNavigation = vi.hoisted(() => vi.fn(() => Promise.resolve({})));
 
 vi.mock('@/lib/api/products.server', () => ({
     fetchProductById: mockFetchProductById,
@@ -34,21 +36,26 @@ vi.mock('@/lib/api/categories.server', () => ({
     fetchCategory: mockFetchCategory,
 }));
 
+vi.mock('@/components/sfnext-toolkit/pdp-layout/navigation.server', () => ({
+    fetchPdpProductNavigation: mockFetchPdpProductNavigation,
+}));
+
 vi.mock('@/lib/wishlist/fetch-initial-state.server', () => ({
     fetchWishlistInitialState: vi.fn(() => Promise.resolve({ customerId: null, productIds: new Set() })),
 }));
 
 // Mock Page Designer functions - use vi.hoisted to avoid hoisting issues
 const mockFetchPageWithComponentData = vi.hoisted(() =>
-    vi.fn(() =>
-        Promise.resolve({
-            id: 'pdp',
-            typeId: 'page',
-            aspectTypeId: 'pdp',
-            name: 'Product Detail Page',
-            regions: [],
-            componentData: {},
-        })
+    vi.fn(
+        (_args: unknown, _params: unknown): Promise<PageWithComponentData | null> =>
+            Promise.resolve({
+                id: 'pdp',
+                typeId: 'page',
+                aspectTypeId: 'pdp',
+                name: 'Product Detail Page',
+                regions: [],
+                componentData: {},
+            })
     )
 );
 
@@ -582,6 +589,36 @@ describe('Product Route Loaders', () => {
             expect(mockFetchCategory).not.toHaveBeenCalled();
         });
 
+        test('keeps a valid variant PDP available when the optional master lookup fails', async () => {
+            const variantProduct = {
+                ...mockProduct,
+                id: 'variant-product-123',
+                primaryCategoryId: null,
+                master: { masterId: 'master-product-123' },
+            };
+
+            mockFetchProductById
+                .mockResolvedValueOnce(variantProduct)
+                .mockRejectedValueOnce(new Error('Master product service unavailable'));
+
+            const request = new Request('https://example.com/product/variant-product-123');
+            const result = await loader({
+                request,
+                params: { siteId: 'test-site', localeId: 'en-US', productId: 'variant-product-123' },
+                context: mockContext,
+                url: new URL(request.url),
+                pattern: '/product/:productId',
+            });
+
+            expect(result.product).toEqual(variantProduct);
+            await expect(result.category).resolves.toBeUndefined();
+            await expect(result.page).resolves.toBeTruthy();
+            expect(mockFetchPageWithComponentData).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.not.objectContaining({ categoryId: expect.anything() })
+            );
+        });
+
         test('propagates category fetch failure on the deferred promise', async () => {
             const { NormalizedApiError } = await import('@/lib/api/normalized-api-error');
             mockFetchProductById.mockResolvedValueOnce(mockProduct);
@@ -625,6 +662,91 @@ describe('Product Route Loaders', () => {
                     categoryId: 'test-category-123',
                 })
             );
+        });
+
+        test('returns critical product data without waiting for the optional Page Designer layout', async () => {
+            let resolvePage!: (page: PageWithComponentData | null) => void;
+            const pendingPage = new Promise<PageWithComponentData | null>((resolve) => {
+                resolvePage = resolve;
+            });
+            mockFetchProductById.mockResolvedValueOnce(mockProduct);
+            mockFetchCategory.mockResolvedValue(mockCategory);
+            mockFetchPageWithComponentData.mockReturnValueOnce(pendingPage);
+
+            const request = new Request('https://example.com/product/test-product-123');
+            const result = await loader({
+                request,
+                params: { siteId: 'test-site', localeId: 'en-US', productId: 'test-product-123' },
+                context: mockContext,
+                url: new URL(request.url),
+                pattern: '/product/:productId',
+            });
+
+            expect(result.product).toEqual(mockProduct);
+            expect(result.pdpLayout).toBeInstanceOf(Promise);
+
+            resolvePage(null);
+            await expect(result.pdpLayout).resolves.toEqual(
+                expect.objectContaining({ desktopColumnRatio: '50-50', enableProductNavigation: false })
+            );
+        });
+
+        test('uses PDP Layout Configuration and resolves category navigation only when enabled', async () => {
+            mockFetchProductById.mockResolvedValueOnce(mockProduct);
+            mockFetchCategory.mockResolvedValue(mockCategory);
+            mockFetchPageWithComponentData.mockResolvedValueOnce({
+                id: 'flexible-pdp',
+                typeId: 'sfnextToolkitFlexibleProductDetailPage',
+                aspectTypeId: 'pdp',
+                name: 'SFNext Toolkit - Flexible Product Detail',
+                regions: [
+                    {
+                        id: 'pdpLayout',
+                        components: [
+                            {
+                                id: 'layout-1',
+                                typeId: 'SFNextToolkit.pdpLayout',
+                                data: {
+                                    desktopColumnRatio: '65-35',
+                                    mediaSide: 'right',
+                                    galleryPresentation: 'strip',
+                                    stickyProductInfo: true,
+                                    enableProductNavigation: true,
+                                },
+                            },
+                        ],
+                    },
+                ],
+                componentData: {},
+            } as unknown as PageWithComponentData);
+            mockFetchPdpProductNavigation.mockResolvedValueOnce({
+                next: { productId: 'next-product', productName: 'Next product' },
+            });
+
+            const request = new Request('https://example.com/product/test-product-123');
+            const result = await loader({
+                request,
+                params: { siteId: 'test-site', localeId: 'en-US', productId: 'test-product-123' },
+                context: mockContext,
+                url: new URL(request.url),
+                pattern: '/product/:productId',
+            });
+
+            await expect(result.pdpLayout).resolves.toEqual({
+                desktopColumnRatio: '65-35',
+                mediaSide: 'right',
+                galleryPresentation: 'strip',
+                stickyProductInfo: true,
+                enableProductNavigation: true,
+            });
+            await expect(result.pdpProductNavigation).resolves.toEqual({
+                next: { productId: 'next-product', productName: 'Next product' },
+            });
+            expect(mockFetchPdpProductNavigation).toHaveBeenCalledWith(mockContext, {
+                categoryId: 'test-category-123',
+                currentProductIds: ['test-product-123', 'test-product-123'],
+                currency: 'USD',
+            });
         });
 
         test('omits categoryId from fetchPageWithComponentData when product has no primaryCategoryId', async () => {

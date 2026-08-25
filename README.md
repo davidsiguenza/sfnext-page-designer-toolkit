@@ -2,13 +2,13 @@
 
 A reusable Page Designer component and template library for Salesforce B2C Commerce Storefront Next, distributed as a clean fork of the official Storefront Next template.
 
-The toolkit adds merchant-configurable PLP, PDP, blank, blog-home, blog-post, and Branding Studio page types together with reusable editorial, promotional, trust, FAQ, navigation, category, product, video, sizing, theme, and Content Asset components. It contains no brand assets, catalog IDs, credentials, or fixed site configuration. The optional Size Guide is the deliberate exception to brand-neutral content: it ships a versioned Mayoral reference dataset and clearly bounded comparison rules.
+The toolkit adds merchant-configurable PLP, PDP, Category Landing, blank, blog-home, blog-post, and Branding Studio page types together with reusable editorial, promotional, trust, FAQ, navigation, category, product, video, sizing, theme, and Content Asset components. Its specialized Flexible Product Detail and Merchandising Product Listing templates extend the standard commerce routes without replacing their product, search, analytics, or cart behavior. It contains no brand assets, catalog IDs, credentials, or fixed site configuration. The optional Size Guide is the deliberate exception to brand-neutral content: it ships a versioned Mayoral reference dataset and clearly bounded comparison rules.
 
 Start with the [unified component catalog](./docs/COMPONENT-CATALOG.md) to browse every custom Page Designer component kept on `main`, with direct links to its source, metadata, Storybook story, and authoring guide. The [complete Storefront Next cartridge guide](./cartridges/plugin_sfnext_page_designer/README.md) covers installation, Business Manager setup, deployment, accessibility, and troubleshooting in depth.
 
 ## Unified component catalog
 
-`main` is the canonical, cumulative branch for the component library. It currently contains 30 custom Storefront Next component types and one isolated SFRA component package; historical feature branches are development records, not separate installation sources.
+`main` is the canonical, cumulative branch for the component library. It currently contains 36 custom Storefront Next component types and one isolated SFRA component package; historical feature branches are development records, not separate installation sources.
 
 - [Browse all components in one catalog](./docs/COMPONENT-CATALOG.md)
 - Run `pnpm storybook` for the available interactive Storefront Next examples.
@@ -22,10 +22,10 @@ The first package is [Two-column image, text, and CTA](./sfra/two-column-image-c
 
 ## Toolkit at a glance
 
-- Repository total: 31 custom Page Designer component types across Storefront Next and SFRA.
-- Page types: blank landing page, product listing page, product detail page, blog home, shared blog-post layout, and a safe Branding Studio workspace.
-- Components: 30 reusable types, including Campaign Hero, Shoppable Image, Motion Showcase, Embedded Video, editorial layouts, a responsive single Product Card, curated or category-driven Product Carousel, configurable PLP grid, Blog Post Grid, Content Collection, PDP Size Guide, visual Site Theme, and the four-part Mega Menu enhancement.
-- Delivery: 39 Page Designer metadata definitions in `plugin_sfnext_page_designer`—30 components, 6 pages, and 3 custom visual editors—and the matching React implementation for Managed Runtime.
+- Repository total: 37 custom Page Designer component types across Storefront Next and SFRA.
+- Page types: blank landing, standard and flexible product detail, standard and merchandising product listing, Category Landing, blog home, shared blog-post layout, and a safe Branding Studio workspace.
+- Components: 36 reusable types, including Campaign Hero, Shoppable Image, Motion Showcase, Mixed Media Carousel, Category Quick Links, editorial PLP interlinks, configurable PDP/PLP layouts, Embedded Video, Product Card and Carousel, Blog Post Grid, Content Collection, PDP Size Guide, visual Site Theme, and the four-part Mega Menu enhancement.
+- Delivery: 48 Page Designer metadata definitions in `plugin_sfnext_page_designer`—36 components, 9 pages, and 3 custom visual editors—and the matching React implementation for Managed Runtime.
 - Safety: namespaced type IDs, restricted nested regions, safe merchant links, semantic design tokens, and accessible defaults.
 
 ## Prerequisites
@@ -124,6 +124,12 @@ Content Asset-backed components also require the Storefront Next SLAS client to 
 - **Shoppable Image** places up to 12 catalog-backed hotspots over a responsive campaign image. Each hotspot opens standard Quick Add, while an optional integrated panel can list every live product or expose Product Set actions.
 - **Content Collection** displays manually ordered Content Asset IDs or the latest _N_ online assets from a folder, filtered as blog, generic, or all content. Cards can render as a responsive grid or carousel and can map custom Content attribute IDs to title, summary, image, date, author, category, and destination.
 - **Size Guide** sits in the PDP template's single `productTools` region and recommends a Mayoral child size from a supported known-brand size, physical measurements, or age. It checks the current product's available variation values and reports uncertainty instead of inventing a conversion.
+
+## Reusable commerce page templates
+
+- **Flexible Product Detail** controls 50/50 through 70/30 desktop columns, media side, gallery presentation, sticky product information, and optional previous/next navigation within the primary category.
+- **Merchandising Product Listing** controls three to five columns, density, semantic card surfaces, sticky listing controls and filters, shopper-selectable card views, and deterministic Editorial Cards interleaved with products.
+- **Category Landing** renders an editorial category assignment without running Product Search. It provides dedicated hero, quick-link, editorial, shoppable, social, and supporting-content regions, including Motion Showcase and Shoppable Image where appropriate.
 
 Page Designer does not provide a native B2C Content Asset search attribute. Manual Content Collection authoring therefore uses Content Asset IDs, one per line or comma-separated; folder-backed mode avoids maintaining that list.
 

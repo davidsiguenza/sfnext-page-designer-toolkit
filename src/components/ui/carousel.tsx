@@ -32,6 +32,17 @@ type CarouselContextProps = {
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null)
 
+const INTERACTIVE_CAROUSEL_TARGETS =
+  'a, button, input, select, textarea, video, audio, iframe, [contenteditable="true"], [role="slider"]'
+
+export function shouldHandleCarouselArrowKey(
+  target: EventTarget | null,
+  currentTarget: HTMLElement
+) {
+  if (!(target instanceof Element) || target === currentTarget) return true
+  return !target.closest(INTERACTIVE_CAROUSEL_TARGETS)
+}
+
 function useCarousel() {
   const context = React.useContext(CarouselContext)
 
@@ -77,6 +88,8 @@ function Carousel({
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!shouldHandleCarouselArrowKey(event.target, event.currentTarget)) return
+
       if (event.key === "ArrowLeft") {
         event.preventDefault()
         scrollPrev()

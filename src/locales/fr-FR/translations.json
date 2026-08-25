@@ -27,7 +27,12 @@
             "defaultCtaText": "Acheter maintenant"
         },
         "previousImage": "Image précédente",
-        "nextImage": "Image suivante"
+        "nextImage": "Image suivante",
+        "media": {
+            "playVideo": "Lire la vidéo",
+            "captions": "Sous-titres",
+            "viewTranscript": "Voir la transcription"
+        }
     },
     "search": {
         "results": "Résultats de la recherche pour",
@@ -1360,6 +1365,12 @@
             "productsAvailable_one": "1 product available",
             "productsAvailable_other": "{{count}} products available",
             "productsAvailable_many": "{{count}} products available"
+        },
+        "cardViews": {
+            "label": "Affichage des fiches produit",
+            "standard": "Standard",
+            "editorial": "Éditorial",
+            "compact": "Compact"
         }
     },
     "maintenancePage": {

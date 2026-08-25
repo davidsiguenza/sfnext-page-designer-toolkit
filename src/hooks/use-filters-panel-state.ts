@@ -26,6 +26,7 @@ export function getInitialFiltersOpen(searchParams: URLSearchParams): boolean {
 }
 
 export const ACTION_PARAMS = ['action', 'actionParams'] as const;
+const LISTING_VIEW_QUERY_PARAM = 'plpView';
 
 function stripParams(search: string, keys: readonly string[]): string {
     const params = new URLSearchParams(search);
@@ -45,9 +46,9 @@ export function getSearchWithoutActionParams(search: string): string {
     return stripParams(search, ACTION_PARAMS);
 }
 
-/** Strips all client-only params (filters, pending action) for shouldRevalidate comparison. */
+/** Strips all client-only params (filters, PLP card view, pending action) for shouldRevalidate comparison. */
 export function getSearchWithoutClientOnlyParams(search: string): string {
-    return stripParams(search, [FILTERS_QUERY_PARAM, ...ACTION_PARAMS]);
+    return stripParams(search, [FILTERS_QUERY_PARAM, LISTING_VIEW_QUERY_PARAM, ...ACTION_PARAMS]);
 }
 
 function buildSearchWithFiltersState(search: string, isOpen: boolean): string {

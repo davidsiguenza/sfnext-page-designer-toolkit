@@ -324,6 +324,17 @@ describe('ImageGallery - thumbnail responsive sources', () => {
         expect(screen.queryByRole('button', { name: 'Next Image' })).not.toBeInTheDocument();
     });
 
+    it('can hide thumbnails while retaining main-image carousel controls', () => {
+        const { container } = render(<ImageGallery images={mockImages} showNavigationArrows showThumbnails={false} />, {
+            wrapper,
+        });
+
+        expect(container.querySelector('[data-gallery-thumbs]')).not.toBeInTheDocument();
+        expect(container.querySelector('[data-gallery-strip]')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Previous Image' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Next Image' })).toBeInTheDocument();
+    });
+
     it('honors per-callsite widths overrides for main image and thumbnails', () => {
         // Mirrors how a narrow consumer (modal, card cell) sizes the gallery — main capped at 420,
         // thumbs at 96. Defaults would otherwise emit PDP-sized widths and oversize the requests.

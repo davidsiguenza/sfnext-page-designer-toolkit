@@ -1,6 +1,6 @@
 # Storefront Next Page Designer Toolkit
 
-`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides 6 merchant-facing page types, 30 component types, and 3 custom editors without brand assets, catalog IDs, credentials, or fixed site configuration. The optional Size Guide intentionally includes a versioned Mayoral sizing dataset; no Mayoral imagery or product data is bundled.
+`plugin_sfnext_page_designer` is a reusable Page Designer toolkit for Salesforce B2C Commerce and Storefront Next. It provides 9 merchant-facing page types, 36 component types, and 3 custom editors without brand assets, catalog IDs, credentials, or fixed site configuration. The optional Size Guide intentionally includes a versioned Mayoral sizing dataset; no Mayoral imagery or product data is bundled.
 
 The toolkit has two required parts:
 
@@ -13,16 +13,19 @@ A B2C cartridge cannot execute React by itself. Install and deploy both parts to
 
 ### Page types
 
-| Type ID                                | Use case                                                                                      | Route or assignment                                   |
-| -------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `page.sfnextToolkitBlankPage`          | Build campaign and editorial landing pages from a flexible blank canvas.                      | `/:siteId/:localeId/page/:pageId`                     |
-| `page.sfnextToolkitProductListingPage` | Add managed content around the standard category experience and configure the product grid.   | PLP aspect, `/:siteId/:localeId/category/:categoryId` |
-| `page.sfnextToolkitProductDetailPage`  | Add content around the standard PDP and one contextual fit tool beside its product options.   | PDP aspect, `/:siteId/:localeId/product/:productId`   |
-| `page.sfnextToolkitBlogHomePage`       | Compose an editorial blog landing page around an automatically populated post grid.           | `/:siteId/:localeId/blog`                             |
-| `page.sfnextToolkitBlogPostPage`       | Define the reusable before/after-article layout shared by every blog post.                    | `/:siteId/:localeId/blog/preview`                     |
-| `page.sfnextToolkitBrandingStudioPage` | Stage and preview one visual Site Theme before saving it as a site-wide Header content block. | `/:siteId/:localeId/page/:pageId`                     |
+| Type ID                                             | Use case                                                                                                   | Route or assignment                                   |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `page.sfnextToolkitBlankPage`                       | Build campaign and editorial landing pages from a flexible blank canvas.                                   | `/:siteId/:localeId/page/:pageId`                     |
+| `page.sfnextToolkitProductListingPage`              | Add managed content around the standard category experience and configure the product grid.                | PLP aspect, `/:siteId/:localeId/category/:categoryId` |
+| `page.sfnextToolkitMerchandisingProductListingPage` | Configure sticky PLP controls, tile views, responsive columns, and editorial grid interlinks.              | PLP aspect, `/:siteId/:localeId/category/:categoryId` |
+| `page.sfnextToolkitProductDetailPage`               | Add content around the standard PDP and one contextual fit tool beside its product options.                | PDP aspect, `/:siteId/:localeId/product/:productId`   |
+| `page.sfnextToolkitFlexibleProductDetailPage`       | Configure PDP columns, gallery presentation, sticky information, and optional adjacent-product navigation. | PDP aspect, `/:siteId/:localeId/product/:productId`   |
+| `page.sfnextToolkitCategoryLandingPage`             | Compose a lightweight editorial category landing page with contextual, motion, and shoppable regions.      | PLP aspect, `/:siteId/:localeId/category/:categoryId` |
+| `page.sfnextToolkitBlogHomePage`                    | Compose an editorial blog landing page around an automatically populated post grid.                        | `/:siteId/:localeId/blog`                             |
+| `page.sfnextToolkitBlogPostPage`                    | Define the reusable before/after-article layout shared by every blog post.                                 | `/:siteId/:localeId/blog/preview`                     |
+| `page.sfnextToolkitBrandingStudioPage`              | Stage and preview one visual Site Theme before saving it as a site-wide Header content block.              | `/:siteId/:localeId/page/:pageId`                     |
 
-The PLP and PDP page types use the standard `plp` and `pdp` aspect definitions from `app_storefrontnext_base` instead of duplicating them.
+The standard and specialized PLP/PDP page types use the `plp` and `pdp` aspect definitions from `app_storefrontnext_base` instead of duplicating them.
 
 ### Component types
 
@@ -53,15 +56,21 @@ The PLP and PDP page types use the standard `plp` and `pdp` aspect definitions f
 | `component.SFNextToolkit.accordion`              | FAQ, delivery, returns, care, and long-form supporting information.                                      | None                     |
 | `component.SFNextToolkit.accordionItem`          | One accessible disclosure inside an Accordion.                                                           | None                     |
 | `component.SFNextToolkit.categoryHero`           | A PLP hero that defaults to the current category and supports editorial overrides.                       | Current category route   |
+| `component.SFNextToolkit.categoryQuickLinks`     | Contextual category chips sourced from the current or a selected category.                               | Categories API           |
+| `component.SFNextToolkit.editorialCard`          | Editorial interlink inserted at a deterministic position inside the merchandising PLP grid.              | None                     |
+| `component.SFNextToolkit.mixedMediaCarousel`     | Accessible image/video carousel composed from a restricted nested slide region.                          | None                     |
+| `component.SFNextToolkit.mixedMediaSlide`        | Image, direct-video, YouTube, or Vimeo story used inside Mixed Media Carousel.                           | None                     |
+| `component.SFNextToolkit.pdpLayout`              | PDP column, gallery, sticky-information, and adjacent-navigation configuration.                          | Current PDP + search     |
+| `component.SFNextToolkit.plpMerchandisingGrid`   | PLP tile views, columns, sticky controls, and editorial-card placement.                                  | PLP search runtime       |
 | `component.SFNextToolkit.productList`            | PLP image view type, product fields, swatches, actions, and custom catalog attributes.                   | PLP search runtime       |
 | `component.SFNextToolkit.blogPostGrid`           | Search, filter, sort, and paginate localized blog Content Assets in editorial cards.                     | Shopper Experience API   |
 | `component.SFNextToolkit.contentCollection`      | Manually selected or latest folder content, including blog and generic assets, in a grid or carousel.    | Shopper Experience API   |
 | `component.SFNextToolkit.sizeGuide`              | PDP fit assistant using bounded Mayoral brand, measurement, and age rules plus product availability.     | Current PDP product      |
 | `component.SFNextToolkit.siteTheme`              | Visual, allowlisted source-token palette published through the Header's site-wide theme region.          | None                     |
 
-Twenty component types are general-purpose root-page blocks. Seven are nested contextual building blocks rather than loose page blocks: `accordionItem`, `categoryCard`, `megaMenuPanel`, `megaMenuLink`, `megaMenuFeature`, `promoCard`, and `trustItem`. The three remaining components are deliberately constrained: `sizeGuide` appears only in a PDP's max-one `productTools` region; `megaMenu` is staged as a content block for **Header > Mega Menu Enhancements**; and `siteTheme` is staged in Branding Studio for **Header > Site Theme**. The last two are ordinary content blocks with no fixed component ID and must not be published as ordinary page content. These restrictions keep the Page Designer palette useful and prevent invalid or unexpectedly global compositions.
+Twenty-two component types are general-purpose root-page blocks. Nine are nested contextual building blocks rather than loose page blocks: `accordionItem`, `categoryCard`, `editorialCard`, `megaMenuPanel`, `megaMenuLink`, `megaMenuFeature`, `mixedMediaSlide`, `promoCard`, and `trustItem`. Five are deliberately constrained: `pdpLayout` and `plpMerchandisingGrid` appear only in their specialized page configuration regions; `sizeGuide` appears only in a PDP's max-one `productTools` region; `megaMenu` is staged as a content block for **Header > Mega Menu Enhancements**; and `siteTheme` is staged in Branding Studio for **Header > Site Theme**. The last two are ordinary content blocks with no fixed component ID and must not be published as ordinary page content. These restrictions keep the Page Designer palette useful and prevent invalid or unexpectedly global compositions.
 
-The included standard Home, About, PLP, Search, and PDP host metadata explicitly excludes those ten contextual/constrained types from every ordinary region; PLP keeps its dedicated Product List inclusion and PDP keeps its dedicated Size Guide inclusion. The same boundary is enforced in generic Grid columns, Header Announcement, Section content, and Responsive Columns, so nesting cannot reintroduce an invalid drop target. `componentPreview` remains open for development previews. Site Theme also has a runtime guard that emits live CSS only when its immediate region is the embedded Header's exact `siteTheme` region. When porting the toolkit to a Storefront Next project with additional page types or container components, apply the same exclusions to every non-contextual region: a plugin component type cannot restrict a third-party host region by itself.
+The included standard Home, About, PLP, Search, and PDP host metadata explicitly excludes contextual and constrained types from every ordinary region; PLP keeps its dedicated Product List inclusion and PDP keeps its dedicated Size Guide inclusion. The same boundary is enforced in generic Grid columns, Header Announcement, Section content, and Responsive Columns, so nesting cannot reintroduce an invalid drop target. `componentPreview` remains open for development previews. Site Theme also has a runtime guard that emits live CSS only when its immediate region is the embedded Header's exact `siteTheme` region. When porting the toolkit to a Storefront Next project with additional page types or container components, apply the same exclusions to every non-contextual region: a plugin component type cannot restrict a third-party host region by itself.
 
 ## Component guide
 
@@ -249,6 +258,30 @@ Place exactly one Product List in the PLP template's `plpProductList` region. Me
 
 `additionalAttributes` accepts up to five custom product attributes separated by commas or lines. Labels can be supplied with `material|Material` or `season=Season`; the `c_` prefix is optional.
 
+### PDP Layout Configuration
+
+Use exactly one `SFNextToolkit.pdpLayout` in the Flexible Product Detail page's `pdpLayout` region. The component is an authoring-only configuration card; the product route applies its settings to the standard Product View so price, variations, availability, promotions, analytics, and Add to Cart retain their normal commerce behavior.
+
+Merchants can choose 50/50, 60/40, 65/35, or 70/30 desktop media/information columns, place media on either side, switch among grid, thumbnail-strip, and carousel gallery presentations, and keep product information sticky on desktop. Mobile always renders media before purchase information, and sticky behavior is disabled in Page Designer Edit mode.
+
+Previous/next product navigation is optional. It reads a bounded window of up to 48 products from the current product's primary category and renders links only when a genuine adjacent item is present. It does not wrap, invent a category, or download an unbounded assortment.
+
+### PLP Merchandising Grid and Editorial Card
+
+Use exactly one `SFNextToolkit.plpMerchandisingGrid` in the Merchandising Product Listing page's `plpMerchandisingGrid` region. It replaces the standard Product List configuration for that assignment while continuing to render the shared Product Tile, filters, sorting, pagination, wishlist, and analytics behavior.
+
+The merchant controls three, four, or five desktop columns, grid density, semantic card surface, catalog image type, and visible product fields. Standard, editorial, and compact tile views can be selectively exposed to shoppers; the selected alternative is stored in the client-only `plpView` query parameter and excluded from server product-search state. Sticky listing controls and desktop filters are optional and disabled in Page Designer Edit mode.
+
+Add up to 12 `SFNextToolkit.editorialCard` children inside the restricted `editorialCards` region. Each card defines the number of products after which it appears, responsive column and row spans, image/copy, and a safe destination. Storefront rendering interleaves cards in DOM order so keyboard and assistive-technology reading order matches the visual grid.
+
+### Category Quick Links and Mixed Media
+
+`SFNextToolkit.categoryQuickLinks` renders contextual category navigation for Category Landing. It can use the current category or a selected source and supports wrapping or horizontally scrollable chips with an optional storefront-only sticky treatment. Page Designer receives a useful authoring state when no links are available.
+
+`SFNextToolkit.mixedMediaCarousel` owns up to ten `SFNextToolkit.mixedMediaSlide` children. Slides can contain content-library images, direct videos, privacy-enhanced YouTube, or Vimeo media with controlled aspect ratios, overlays, copy, and safe CTAs. Inactive slides are inert and hidden from assistive technology; native and supported embedded media are paused when the active slide changes. Page Designer Edit mode exposes the real nested `slides` drop zone.
+
+The Category Landing page resolves through the category route but deliberately returns before Product Search and product-schema generation. Its dedicated regions accept Motion Showcase for editorial storytelling and Shoppable Image for explicit product discovery.
+
 ### Size Guide
 
 Place at most one `SFNextToolkit.sizeGuide` in the Product Detail template's `productTools` region. The host route renders that region beside the standard product information and inside the existing Product provider, so the guide can compare its result with the current product's size variation values. It does not replace variation selection, price, inventory, or Add to Cart.
@@ -361,7 +394,7 @@ pnpm cartridge:validate
 pnpm build
 ```
 
-`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types and custom-editor definitions/resources, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest. Validation also enforces the complete 30-type public component contract and rejects unresolved TypeScript expressions or enum defaults that are not present in their value lists. A complete generated toolkit contains 39 JSON metadata files: 30 component definitions, 6 page definitions, and 3 custom-editor definitions. The custom editors' server modules and static JavaScript/CSS are additional cartridge resources, not JSON metadata definitions.
+`cartridge:generate` discovers every decorated component under `src/components/sfnext-toolkit`, generates its metadata into this cartridge, copies the hand-authored page types and custom-editor definitions/resources, removes duplicate toolkit metadata from `app_storefrontnext_base`, and validates the resulting manifest. Validation enforces the exact public metadata contract—36 component types, 9 page types, and 3 custom editors—and rejects missing or extra definitions, unresolved TypeScript expressions, and enum defaults that are not present in their value lists. A complete generated toolkit contains 48 JSON metadata files. The custom editors' server modules and static JavaScript/CSS are additional cartridge resources, not JSON metadata definitions.
 
 `cartridge:validate` validates both the standard Storefront Next metadata and every file in this cartridge with the B2C tooling schema validator.
 
@@ -378,7 +411,7 @@ pnpm push
 The install command deploys both `app_storefrontnext_base` and
 `plugin_sfnext_page_designer`. The base cartridge carries the required
 `Layout.header` regions, while the plugin carries the toolkit components and
-custom editor. A plugin-only deployment cannot make **Header > Mega Menu
+custom editors. A plugin-only deployment cannot make **Header > Mega Menu
 Enhancements** or **Header > Site Theme** appear on an installation whose base
 Header contract predates those regions.
 Use `pnpm cartridge:deploy:page-designer` only for subsequent metadata-only
@@ -396,7 +429,7 @@ The MRT environment must be linked to the same B2C Commerce instance and site so
 
 1. Open **Merchant Tools > Content > Page Designer** for the target site.
 2. Create a page and choose one of the `SFNext Toolkit` page types, or open a PLP/PDP assignment using the matching aspect.
-3. Drag components from the `SFNextToolkit` group into compatible regions. General toolkit page regions expose the appropriate subset of 18 root-page blocks; Blank Page exposes `Mega Menu Enhancements` only for staging its Header content block; Branding Studio exposes only `Site Theme`; and PDP `productTools` exposes only `Size Guide`. The 7 nested child types appear only inside their matching parents. Never publish Mega Menu Enhancements or Site Theme as ordinary page content.
+3. Drag components from the `SFNextToolkit` group into compatible regions. General toolkit page regions expose the appropriate subset of 22 root-page blocks; Blank Page exposes `Mega Menu Enhancements` only for staging its Header content block; Branding Studio exposes only `Site Theme`; specialized layout regions expose only their matching PDP/PLP configuration component; and PDP `productTools` exposes only `Size Guide`. The 9 nested child types appear only inside their matching parents. Never publish Mega Menu Enhancements or Site Theme as ordinary page content.
 4. Configure the component attributes and save.
 5. Use Preview to verify desktop and mobile behavior.
 6. Publish the page or assignment when it is ready.
@@ -438,11 +471,34 @@ Page Designer changes must be saved before the Storefront Next preview iframe re
 3. Configurable Product List in `plpProductList`
 4. Media + Content, Product Carousel, Content Collection, Trust Bar, or Accordion in `plpBottom`
 
+### Merchandising Product Listing page
+
+1. Optional Category Hero or campaign content in `plpTopFullWidth`
+2. Optional supporting Promo Strip or Rich Text in `plpTopContent`
+3. One PLP Merchandising Grid in `plpMerchandisingGrid`; configure sticky controls, allowed card views, responsive columns, and product fields
+4. Add only purposeful Editorial Cards to its nested region and set their per-page product positions and spans
+5. Add related editorial or trust content in `plpBottom`
+
 ### Product detail page
 
 1. Promo Strip, Trust Bar, or Media + Content in `promoContent`
 2. One Size Guide in `productTools`, when the target products use the configured Mayoral child sizing coverage
 3. Embedded Video, Product Carousel, Einstein Product Recommendations, Media + Content, Content Collection, or Accordion in `engagementContent`
+
+### Flexible Product Detail page
+
+1. One PDP Layout Configuration in `pdpLayout`; choose the desktop ratio, media side, gallery mode, and sticky information
+2. Enable adjacent-product navigation only for categories where the bounded catalog sequence is useful
+3. Optional Promo Strip, Trust Bar, or Media + Content in `promoContent`
+4. Optional Size Guide in `productTools` and supporting storytelling in `engagementContent`
+
+### Category Landing page
+
+1. One Hero Banner or Mixed Media Carousel in `clpHero`
+2. One contextual Category Quick Links component in `clpQuickLinks`
+3. Campaign/editorial modules, including Motion Showcase, in `clpMain`
+4. Explicit Product Card, Product Carousel, Product Recommendations, or Shoppable Image modules in `clpShoppable`
+5. Social proof or media in `clpSocial`, followed by supporting SEO/service content in `clpBottom`
 
 ### Blog home
 
@@ -475,10 +531,13 @@ scripts/sync-page-designer-toolkit-cartridge.mjs
 src/components/sfnext-toolkit
 src/extensions/page-designer-toolkit
 src/components/header/index.tsx
+src/components/image-gallery
 src/components/product-carousel
+src/components/product-grid
 src/components/product-list
 src/components/product-tile
 src/components/product-view
+src/components/region
 src/components/navigation-menu-mega
 src/components/navigation-menu/impl.tsx
 src/lib/product/product-conversion.ts
@@ -487,6 +546,7 @@ src/lib/page-designer/component-loader.server.ts
 src/lib/page-designer/page-loader.server.ts
 src/root.tsx
 src/routes/_app.tsx
+src/routes/_app.category.$categoryId.tsx
 src/routes/_app.product.$productId.tsx
 src/routes/_empty.preview.component.tsx
 site-imports/sfnext-toolkit-blog
@@ -496,11 +556,11 @@ Then:
 
 1. Register `SFDC_EXT_PAGE_DESIGNER_TOOLKIT` in `src/extensions/config.json`.
 2. Add the `cartridge:generate`, `cartridge:validate`, `cartridge:deploy:page-designer`, and `cartridge:deploy:page-designer:install` scripts from this project to `package.json`. The `:install` command must include both `app_storefrontnext_base` and `plugin_sfnext_page_designer`; the shorter command remains plugin-only for later metadata updates.
-3. Merge the shared Product Carousel, Product List, Product Tile, Product View, and product-conversion adapters rather than replacing newer host implementations blindly. Product Card and category-loaded Product Carousel rely on the tile/data contracts; Size Guide relies on the PDP route's max-one `productTools` region being rendered inside the current Product provider and passed into Product View beside the standard options. Run their tests after resolving any Storefront Next release differences.
+3. Merge the shared Product Carousel, Product Grid, Product List, Product Tile, Product View, Image Gallery, Region, and product-conversion adapters rather than replacing newer host implementations blindly. Product Card and category-loaded Product Carousel rely on the tile/data contracts; the merchandising PLP relies on Product Grid and Region authoring metadata; PDP Layout relies on Product View and Image Gallery; and Size Guide relies on the PDP route's max-one `productTools` region being rendered inside the current Product provider. Run their tests after resolving any Storefront Next release differences.
 4. Merge the Header integrations into the target release's root application shell and `navigation-menu-mega` implementation. `Layout.header` must remain the only embedded component, with fixed `component_id: header`, max-one `siteTheme` and `megaMenuEnhancements` regions, and the corresponding type inclusions. Preserve the requested Header ID with Page Designer `mode`/`pdToken`. Project only its Site Theme child into the root `PageDesignerProvider` before the route outlet so checkout and authentication layouts inherit it too; cache only that sanitized published projection per site/locale for 30 seconds, skip the cache entirely in Edit/Preview, and bound both cold and expired refreshes to one second with a fail-closed code-palette fallback. Let `_app` stream the request-scoped raw owner and attach the optional Mega Menu feature batches for the inherited navigation; when root has a cold miss in that same request, the raw owner promise is reused rather than fetched twice. Do not cache the full Header tree, fetch either feature as a second fixed component, or give its ordinary content block a fixed ID. Preserve the host category tree, focus/keyboard behavior, single menu state, mobile menu, category banners, and standard no-enhancement fallback instead of replacing the navigation wholesale.
 5. Keep the Site Theme publication guard intact when adapting the application shell: suppress the published global projection in Edit/Preview so the staged/focused registry component owns the scoped sample; live ordinary page content produces no style; and only a child projected from the embedded Header owner may emit allowlisted source variables at `:root`.
 6. Extend the host CSP `frame-src` and `media-src` directives with the approved video origins described under Embedded Video.
-7. Run `pnpm cartridge:generate` and `pnpm cartridge:validate`. Do not copy a stale generated registry or edit it manually. Validation should report 39 JSON toolkit metadata files (30 components, 6 pages, and 3 custom editors), plus the editors' server/static resources.
+7. Run `pnpm cartridge:generate` and `pnpm cartridge:validate`. Do not copy a stale generated registry or edit it manually. Validation should report 48 JSON toolkit metadata files (36 components, 9 pages, and 3 custom editors), plus the editors' server/static resources.
 8. Deploy both the updated `app_storefrontnext_base` and generated `plugin_sfnext_page_designer` cartridges with `pnpm cartridge:deploy:page-designer:install --reload`, activate the code version, and place `plugin_sfnext_page_designer` before `app_storefrontnext_base` in the target site's cartridge path. Repeat the dual-cartridge deployment whenever the Header host metadata changes; plugin-only deployment is sufficient only for later metadata-only updates that preserve that contract.
 9. If Blog Post Grid, Content Collection, blog routes, or Content-backed Mega Menu Features are required, import `site-imports/sfnext-toolkit-blog` when its fields are used, create the desired library folder (the default is `sfnext-blog`), and create online assets in the locales the storefront serves. Generic Content use does not require the SFNext Blog custom fields, but mapped attributes must exist on `Content`.
 10. Preserve the SLAS client's existing scopes and add `sfcc.shopper-experience.contents`. Also confirm that the instance API configuration allows the Shopper Experience component, content, and content-search resources used by the runtime. Product/category Mega Menu sources use the target storefront's existing Shopper Products access; Salesforce CMS mode and a Custom feature seeded from `cms_record` use the host Salesforce CMS/Page Designer configuration instead of the B2C Content Asset API. Size Guide performs no extra shopper API call; it consumes the already loaded PDP product.

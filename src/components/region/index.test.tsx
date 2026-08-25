@@ -131,6 +131,8 @@ describe('Region', () => {
                     {
                         id: 'test-region',
                         name: 'Test Region',
+                        description: 'Merchant-visible drop zone',
+                        maxComponents: 3,
                         componentTypeInclusions: [{ typeId: 'commerce_layouts.carousel' }],
                         componentTypeExclusions: [{ typeId: 'commerce_layouts.hero' }],
                     },
@@ -143,6 +145,9 @@ describe('Region', () => {
         // Verify designMetadata is properly extracted from component (objects are passed through as-is)
         expect(capturedDesignMetadata).toMatchObject({
             id: 'test-region',
+            name: 'Test Region',
+            description: 'Merchant-visible drop zone',
+            maxComponents: 3,
             componentTypeExclusions: [{ typeId: 'commerce_layouts.hero' }],
             componentTypeInclusions: [{ typeId: 'commerce_layouts.carousel' }],
         });
@@ -223,6 +228,7 @@ describe('Region', () => {
 
         expect(capturedDesignMetadata).toEqual({
             id: 'items',
+            name: 'Items',
             componentTypeExclusions: [],
             componentTypeInclusions: [{ typeId: 'SFNextToolkit.accordionItem' }],
         });
@@ -465,6 +471,7 @@ describe('Region', () => {
                 } as unknown as RegionDesignMetadata,
                 expectedDesignMetadata: {
                     id: 'test-region',
+                    name: 'Test Mixed Region',
                     componentTypeInclusions: [{ typeId: 'commerce_layouts.carousel' }],
                     componentTypeExclusions: [{ typeId: 'commerce_layouts.hero' }],
                 },
@@ -477,6 +484,7 @@ describe('Region', () => {
                 } as RegionDefinitionConfig,
                 expectedDesignMetadata: {
                     id: 'test-region',
+                    name: 'Test Empty Region',
                     componentTypeInclusions: [],
                     componentTypeExclusions: [],
                 },
@@ -491,6 +499,7 @@ describe('Region', () => {
                 } as RegionDefinitionConfig,
                 expectedDesignMetadata: {
                     id: 'test-region',
+                    name: 'Test Empty Arrays Region',
                     componentTypeInclusions: [],
                     componentTypeExclusions: [],
                 },

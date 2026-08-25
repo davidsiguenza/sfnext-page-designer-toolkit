@@ -26,7 +26,12 @@
             "defaultCtaText": "Osta nyt"
         },
         "previousImage": "Edellinen kuva",
-        "nextImage": "Seuraava kuva"
+        "nextImage": "Seuraava kuva",
+        "media": {
+            "playVideo": "Toista video",
+            "captions": "Tekstitykset",
+            "viewTranscript": "Näytä litterointi"
+        }
     },
     "search": {
         "results": "Hakutulokset",
@@ -1348,6 +1353,12 @@
         "banner": {
             "productsAvailable_one": "1 product available",
             "productsAvailable_other": "{{count}} products available"
+        },
+        "cardViews": {
+            "label": "Tuotekorttinäkymä",
+            "standard": "Vakio",
+            "editorial": "Toimituksellinen",
+            "compact": "Tiivis"
         }
     },
     "maintenancePage": {
