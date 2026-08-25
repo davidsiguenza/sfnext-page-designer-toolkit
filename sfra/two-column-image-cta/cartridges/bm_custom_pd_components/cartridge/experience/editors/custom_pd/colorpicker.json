@@ -1,0 +1,12 @@
+{
+  "name": "Visual color picker",
+  "description": "Color picker with a quick palette and custom CSS input.",
+  "resources": {
+    "scripts": [
+      "/experience/editors/custom_pd/colorpicker.js"
+    ],
+    "styles": [
+      "/experience/editors/custom_pd/colorpicker.css"
+    ]
+  }
+}

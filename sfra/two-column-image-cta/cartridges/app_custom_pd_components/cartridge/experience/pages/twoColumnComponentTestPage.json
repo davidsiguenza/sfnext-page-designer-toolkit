@@ -1,0 +1,16 @@
+{
+  "name": "Test · Two columns",
+  "description": "Self-contained page for testing the Two columns · Image, text and CTA component.",
+  "region_definitions": [
+    {
+      "id": "main",
+      "name": "Test component",
+      "max_components": 1,
+      "component_type_inclusions": [
+        {
+          "type_id": "commerce_assets.twoColumnImageCta"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+    <name>bm_custom_pd_components</name>
+    <comment></comment>
+    <projects></projects>
+    <buildSpec></buildSpec>
+    <natures>
+        <nature>com.demandware.studio.core.beehiveNature</nature>
+    </natures>
+</projectDescription>

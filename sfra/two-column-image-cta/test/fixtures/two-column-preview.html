@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Preview · Two columns</title>
+    <link rel="stylesheet" href="../../cartridges/app_custom_pd_components/cartridge/static/default/css/experience/components/commerceAssets/twoColumnImageCta.css">
+    <style>
+        :root {
+            --skin-primary-color-1: #0a2399;
+            --skin-primary-color-invert-1: #fff;
+            --skin-heading-color-1: #bd35bd;
+            --skin-heading-color-1-invert: #fff;
+            --skin-background-color-1: #fff;
+            --skin-main-text-color-1: #143b72;
+            --skin-link-color-1: #0a2399;
+            --skin-selectbox-background-color-1: #eef2f6;
+        }
+
+        body {
+            margin: 0;
+            background: #edf1f5;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .preview-shell {
+            max-width: 1040px;
+            margin: 2rem auto;
+            padding: 0 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <main class="preview-shell">
+        <section
+            id="pd-two-column-preview"
+            class="pd-two-column-promo pd-two-column-promo--ratio-landscape_3_2 pd-two-column-promo--gap-medium pd-two-column-promo--align-center pd-two-column-promo--space-medium pd-two-column-promo--align-buttons"
+            style="--pd-two-column-section-bg: var(--skin-background-color-1); --pd-two-column-text: var(--skin-main-text-color-1); --pd-two-column-button-bg: var(--skin-primary-color-1); --pd-two-column-button-text: var(--skin-primary-color-invert-1);"
+            aria-labelledby="pd-two-column-preview-title"
+        >
+            <h1 id="pd-two-column-preview-title" class="pd-two-column-promo__visually-hidden">Elige la solución adecuada</h1>
+            <div class="pd-two-column-promo__grid">
+                <article class="pd-two-column-promo__card" style="--pd-two-column-title-bg: #00aea9; --pd-two-column-title-text: #fff;">
+                    <div class="pd-two-column-promo__media">
+                        <img class="pd-two-column-promo__image" src="./wide-left.svg" alt="Ilustración abstracta con el foco a la izquierda" style="--pd-two-column-focus-x: 20%; --pd-two-column-focus-y: 50%;">
+                    </div>
+                    <h2 class="pd-two-column-promo__title">Acné</h2>
+                    <div class="pd-two-column-promo__content">
+                        <div class="pd-two-column-promo__description">
+                            <p>Piel grasa o con tendencia acneica: descubre una rutina sencilla para cuidarla.</p>
+                        </div>
+                        <div class="pd-two-column-promo__actions">
+                            <a class="pd-two-column-promo__cta" href="#acne">Discover</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="pd-two-column-promo__card" style="--pd-two-column-title-bg: #bd35bd; --pd-two-column-title-text: #fff;">
+                    <div class="pd-two-column-promo__media">
+                        <img class="pd-two-column-promo__image" src="./wide-right.svg" alt="Ilustración abstracta con el foco a la derecha" style="--pd-two-column-focus-x: 80%; --pd-two-column-focus-y: 50%;">
+                    </div>
+                    <h2 class="pd-two-column-promo__title">Caspa</h2>
+                    <div class="pd-two-column-promo__content">
+                        <div class="pd-two-column-promo__description">
+                            <p>¿Qué tipo de caspa tienes? Sensibilidad del cuero cabelludo, alteraciones en la producción de sebo o proliferación de hongos pueden necesitar respuestas diferentes.</p>
+                        </div>
+                        <div class="pd-two-column-promo__actions">
+                            <a class="pd-two-column-promo__cta" href="#caspa">Discover</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
