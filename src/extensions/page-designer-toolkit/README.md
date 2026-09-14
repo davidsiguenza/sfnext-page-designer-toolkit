@@ -4,11 +4,11 @@ This directory contains the Storefront Next side of the reusable Page Designer
 toolkit. It registers the toolkit page types with the application and keeps the
 hand-authored PLP, PDP, Category Landing, blank, blog-home, blog-post, and Branding Studio metadata sources that are copied into
 `plugin_sfnext_page_designer` during generation. The public contract currently
-contains 9 page types and 36 component types: 22 general-purpose root blocks, 9
+contains 9 page types and 37 component types: 23 general-purpose root blocks, 9
 nested contextual children, and five deliberately constrained configuration or
 site-wide components. Together with the visual theme, shoppable-hotspot, and
-motion custom editors, they generate 48 JSON toolkit metadata definitions
-(36 components, 9 pages, and 3 editors).
+motion, campaign, countdown-date, and countdown-color custom editors, they generate 52 JSON toolkit metadata definitions
+(37 components, 9 pages, and 6 editors).
 
 The complete merchant and developer guide lives in
 [`cartridges/plugin_sfnext_page_designer/README.md`](../../../cartridges/plugin_sfnext_page_designer/README.md).
@@ -19,6 +19,7 @@ accessibility, troubleshooting, and safe removal.
 ## Architecture
 
 - `src/components/sfnext-toolkit` owns the decorated React implementations.
+- `src/components/sfnext-toolkit/countdown-band` owns manual/campaign countdowns and native `__siteDate` preview handling. Its [component guide](../../components/sfnext-toolkit/countdown-band/README.md) covers the three authoring editors and the `pdCountdown` typed client. The plugin cartridge exposes the campaign schedule through a ShopperToken API with the reusable `c_pdcountdown` scope.
 - This extension owns the page-type sources and extension registration.
 - `blog` contains the Content Asset adapter and the shared blog article renderer.
 - `src/components/sfnext-toolkit/product-card` loads one merchant-selected product and adapts the shared Product

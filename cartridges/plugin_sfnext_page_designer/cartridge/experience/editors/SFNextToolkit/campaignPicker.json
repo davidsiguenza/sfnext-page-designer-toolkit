@@ -1,0 +1,7 @@
+{
+    "name": "Campa\u00f1a Commerce",
+    "resources": {
+        "scripts": ["/experience/editors/SFNextToolkit/campaignPicker.js"],
+        "styles": ["/experience/editors/SFNextToolkit/countdownEditor.css"]
+    }
+}

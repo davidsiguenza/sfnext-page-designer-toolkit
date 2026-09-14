@@ -1,0 +1,7 @@
+{
+    "name": "Fecha y hora con zona horaria",
+    "resources": {
+        "scripts": ["/experience/editors/SFNextToolkit/countdownDate.js"],
+        "styles": ["/experience/editors/SFNextToolkit/countdownEditor.css"]
+    }
+}

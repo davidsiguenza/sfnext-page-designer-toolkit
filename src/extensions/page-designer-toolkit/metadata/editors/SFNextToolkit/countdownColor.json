@@ -1,0 +1,7 @@
+{
+    "name": "Color de la cuenta atr\u00e1s",
+    "resources": {
+        "scripts": ["/experience/editors/SFNextToolkit/countdownColor.js"],
+        "styles": ["/experience/editors/SFNextToolkit/countdownColor.css"]
+    }
+}

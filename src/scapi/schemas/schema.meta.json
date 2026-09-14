@@ -1,0 +1,7 @@
+{
+    "clientKey": "pdCountdown",
+    "basePath": "/custom/pd-countdown/v1",
+    "supportsLocale": false,
+    "orgPrefix": true,
+    "kind": "custom"
+}

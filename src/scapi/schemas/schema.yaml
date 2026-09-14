@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  title: Page Designer Countdown
+  version: 1.0.0
+paths:
+  /schedule:
+    get:
+      operationId: getSchedule
+      parameters:
+        - name: siteId
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+        - name: c_campaign_id
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 256
+      responses:
+        '200':
+          description: Current public campaign schedule. Missing and disabled campaigns have no public dates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+security:
+  - ShopperToken: [c_pdcountdown]
+components:
+  securitySchemes:
+    ShopperToken:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://example.com/oauth2/token
+          scopes:
+            c_pdcountdown: Read Page Designer campaign schedules
+  schemas:
+    Schedule:
+      type: object
+      required: [status, start, end]
+      properties:
+        status:
+          type: string
+          enum: [ready, missing, disabled, invalid]
+        campaignId:
+          type: string
+        start:
+          type: number
+          nullable: true
+        end:
+          type: number
+          nullable: true

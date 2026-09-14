@@ -8,7 +8,7 @@ Start with the [unified component catalog](./docs/COMPONENT-CATALOG.md) to brows
 
 ## Unified component catalog
 
-`main` is the canonical, cumulative branch for the component library. It currently contains 36 custom Storefront Next component types and one isolated SFRA component package; historical feature branches are development records, not separate installation sources.
+`main` is the canonical, cumulative branch for the component library. It currently contains 37 custom Storefront Next component types and one isolated SFRA component package; historical feature branches are development records, not separate installation sources.
 
 - [Browse all components in one catalog](./docs/COMPONENT-CATALOG.md)
 - Run `pnpm storybook` for the available interactive Storefront Next examples.
@@ -22,10 +22,10 @@ The first package is [Two-column image, text, and CTA](./sfra/two-column-image-c
 
 ## Toolkit at a glance
 
-- Repository total: 37 custom Page Designer component types across Storefront Next and SFRA.
+- Repository total: 38 custom Page Designer component types across Storefront Next and SFRA.
 - Page types: blank landing, standard and flexible product detail, standard and merchandising product listing, Category Landing, blog home, shared blog-post layout, and a safe Branding Studio workspace.
-- Components: 36 reusable types, including Campaign Hero, Shoppable Image, Motion Showcase, Mixed Media Carousel, Category Quick Links, editorial PLP interlinks, configurable PDP/PLP layouts, Embedded Video, Product Card and Carousel, Blog Post Grid, Content Collection, PDP Size Guide, visual Site Theme, and the four-part Mega Menu enhancement.
-- Delivery: 48 Page Designer metadata definitions in `plugin_sfnext_page_designer`—36 components, 9 pages, and 3 custom visual editors—and the matching React implementation for Managed Runtime.
+- Components: 37 reusable types, including Countdown Band, Campaign Hero, Shoppable Image, Motion Showcase, Mixed Media Carousel, Category Quick Links, editorial PLP interlinks, configurable PDP/PLP layouts, Embedded Video, Product Card and Carousel, Blog Post Grid, Content Collection, PDP Size Guide, visual Site Theme, and the four-part Mega Menu enhancement.
+- Delivery: 52 Page Designer metadata definitions in `plugin_sfnext_page_designer`—37 components, 9 pages, and 6 custom visual editors—and the matching React implementation for Managed Runtime.
 - Safety: namespaced type IDs, restricted nested regions, safe merchant links, semantic design tokens, and accessible defaults.
 
 ## Prerequisites
@@ -132,6 +132,12 @@ Content Asset-backed components also require the Storefront Next SLAS client to 
 - **Category Landing** renders an editorial category assignment without running Product Search. It provides dedicated hero, quick-link, editorial, shoppable, social, and supporting-content regions, including Motion Showcase and Shoppable Image where appropriate.
 
 Page Designer does not provide a native B2C Content Asset search attribute. Manual Content Collection authoring therefore uses Content Asset IDs, one per line or comma-separated; folder-backed mode avoids maintaining that list.
+
+## Countdown Band
+
+`SFNextToolkit.countdownBand` displays manual or Commerce campaign countdowns with independent start/end counters, editable text and styling, and an optional CTA. It follows the native Business Manager **On Date** selection, including campaign phase changes and reset to live time.
+
+See the [component guide](./src/components/sfnext-toolkit/countdown-band/README.md) for authoring, the three visual editors, the `c_pdcountdown` API scope, installation, timezone rules, and fixed Storybook examples.
 
 ## Shoppable Image
 

@@ -1,0 +1,9 @@
+{
+    "endpoints": [
+        {
+            "endpoint": "getSchedule",
+            "schema": "schema.yaml",
+            "implementation": "script"
+        }
+    ]
+}

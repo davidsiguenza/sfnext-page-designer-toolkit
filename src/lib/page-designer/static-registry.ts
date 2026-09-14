@@ -23,7 +23,7 @@ import { registry } from '@/lib/page-designer/registry';
  *
  * DO NOT EDIT THIS FUNCTION MANUALLY - it will be overwritten on next build.
  *
- * Components registered: Content.announcementBanner, Content.contentCard, Content.hero, Content.pdImage, Content.popularCategory, Content.productRecommendations, Content.productTile, Layout.grid, Layout.header, Layout.heroCarousel, Layout.popularCategories, Layout.productCarousel, Layout.productList, SFNextToolkit.accordion, SFNextToolkit.accordionItem, SFNextToolkit.blogPostGrid, SFNextToolkit.categoryCard, SFNextToolkit.categoryCarousel, SFNextToolkit.categoryHero, SFNextToolkit.categoryQuickLinks, SFNextToolkit.contentCollection, SFNextToolkit.editorialCard, SFNextToolkit.embeddedVideo, SFNextToolkit.heroBanner, SFNextToolkit.mediaContent, SFNextToolkit.megaMenu, SFNextToolkit.megaMenuFeature, SFNextToolkit.megaMenuLink, SFNextToolkit.megaMenuPanel, SFNextToolkit.mixedMediaCarousel, SFNextToolkit.mixedMediaSlide, SFNextToolkit.motionShowcase, SFNextToolkit.pdpLayout, SFNextToolkit.plpMerchandisingGrid, SFNextToolkit.productCard, SFNextToolkit.productCarousel, SFNextToolkit.productList, SFNextToolkit.productRecommendations, SFNextToolkit.promoCard, SFNextToolkit.promoGrid, SFNextToolkit.promoStrip, SFNextToolkit.responsiveColumns, SFNextToolkit.richText, SFNextToolkit.section, SFNextToolkit.shoppableImage, SFNextToolkit.siteTheme, SFNextToolkit.sizeGuide, SFNextToolkit.trustBar, SFNextToolkit.trustItem
+ * Components registered: Content.announcementBanner, Content.contentCard, Content.hero, Content.pdImage, Content.popularCategory, Content.productRecommendations, Content.productTile, Layout.grid, Layout.header, Layout.heroCarousel, Layout.popularCategories, Layout.productCarousel, Layout.productList, SFNextToolkit.accordion, SFNextToolkit.accordionItem, SFNextToolkit.blogPostGrid, SFNextToolkit.categoryCard, SFNextToolkit.categoryCarousel, SFNextToolkit.categoryHero, SFNextToolkit.categoryQuickLinks, SFNextToolkit.contentCollection, SFNextToolkit.countdownBand, SFNextToolkit.editorialCard, SFNextToolkit.embeddedVideo, SFNextToolkit.heroBanner, SFNextToolkit.mediaContent, SFNextToolkit.megaMenu, SFNextToolkit.megaMenuFeature, SFNextToolkit.megaMenuLink, SFNextToolkit.megaMenuPanel, SFNextToolkit.mixedMediaCarousel, SFNextToolkit.mixedMediaSlide, SFNextToolkit.motionShowcase, SFNextToolkit.pdpLayout, SFNextToolkit.plpMerchandisingGrid, SFNextToolkit.productCard, SFNextToolkit.productCarousel, SFNextToolkit.productList, SFNextToolkit.productRecommendations, SFNextToolkit.promoCard, SFNextToolkit.promoGrid, SFNextToolkit.promoStrip, SFNextToolkit.responsiveColumns, SFNextToolkit.richText, SFNextToolkit.section, SFNextToolkit.shoppableImage, SFNextToolkit.siteTheme, SFNextToolkit.sizeGuide, SFNextToolkit.trustBar, SFNextToolkit.trustItem
  */
 export function initializeRegistry(targetRegistry = registry): void {
     targetRegistry.registerImporter(
@@ -100,6 +100,11 @@ export function initializeRegistry(targetRegistry = registry): void {
     targetRegistry.registerImporter(
         'SFNextToolkit.contentCollection',
         () => import('../../components/sfnext-toolkit/content-collection/index'),
+        { loader: 'loader', fallback: 'fallback' }
+    );
+    targetRegistry.registerImporter(
+        'SFNextToolkit.countdownBand',
+        () => import('../../components/sfnext-toolkit/countdown-band/index'),
         { loader: 'loader', fallback: 'fallback' }
     );
     targetRegistry.registerImporter(

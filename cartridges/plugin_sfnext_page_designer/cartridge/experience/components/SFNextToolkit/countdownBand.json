@@ -1,0 +1,265 @@
+{
+    "name": "Countdown Band · Cuenta atrás",
+    "description": "Banda responsive con fecha manual o campaña Commerce, inicio y fin independientes, colores, tipografía y CTA opcional.",
+    "group": "SFNextToolkit",
+    "arch_type": "headless",
+    "region_definitions": [],
+    "attribute_definition_groups": [
+        {
+            "id": "countdownBand",
+            "name": "Countdown Band · Cuenta atrás",
+            "description": "Banda responsive con fecha manual o campaña Commerce, inicio y fin independientes, colores, tipografía y CTA opcional.",
+            "attribute_definitions": [
+                {
+                    "id": "message",
+                    "name": "Texto de la banda",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: message",
+                    "default_value": "Black Friday"
+                },
+                {
+                    "id": "source",
+                    "name": "Origen de las fechas",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: source",
+                    "values": ["manual", "campaign"],
+                    "default_value": "manual"
+                },
+                {
+                    "id": "campaign",
+                    "name": "Campaña de Commerce",
+                    "type": "custom",
+                    "required": false,
+                    "description": "Field: campaign",
+                    "editor_definition": {
+                        "type": "SFNextToolkit.campaignPicker"
+                    }
+                },
+                {
+                    "id": "manualStart",
+                    "name": "Inicio manual: fecha, hora y zona",
+                    "type": "custom",
+                    "required": false,
+                    "description": "Field: manualStart",
+                    "editor_definition": {
+                        "type": "SFNextToolkit.countdownDate"
+                    }
+                },
+                {
+                    "id": "manualEnd",
+                    "name": "Fin manual: fecha, hora y zona",
+                    "type": "custom",
+                    "required": false,
+                    "description": "Field: manualEnd",
+                    "editor_definition": {
+                        "type": "SFNextToolkit.countdownDate"
+                    }
+                },
+                {
+                    "id": "showStart",
+                    "name": "Mostrar cuenta atrás hasta el inicio",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showStart",
+                    "default_value": true
+                },
+                {
+                    "id": "showEnd",
+                    "name": "Mostrar cuenta atrás hasta el final",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showEnd",
+                    "default_value": false
+                },
+                {
+                    "id": "startLabel",
+                    "name": "Texto antes del inicio",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: startLabel",
+                    "default_value": "Empieza en"
+                },
+                {
+                    "id": "endLabel",
+                    "name": "Texto antes del final",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: endLabel",
+                    "default_value": "Termina en"
+                },
+                {
+                    "id": "startedLabel",
+                    "name": "Texto cuando ha empezado",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: startedLabel",
+                    "default_value": "Ya ha empezado"
+                },
+                {
+                    "id": "endedLabel",
+                    "name": "Texto cuando ha terminado",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: endedLabel",
+                    "default_value": "Campaña finalizada"
+                },
+                {
+                    "id": "endAfterStart",
+                    "name": "Mostrar el final solo después del inicio",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: endAfterStart",
+                    "default_value": false
+                },
+                {
+                    "id": "hideElapsed",
+                    "name": "Ocultar cada contador al llegar a cero",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: hideElapsed",
+                    "default_value": true
+                },
+                {
+                    "id": "hideWhenComplete",
+                    "name": "Ocultar toda la banda al terminar los contadores",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: hideWhenComplete",
+                    "default_value": true
+                },
+                {
+                    "id": "showSeconds",
+                    "name": "Mostrar segundos",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showSeconds",
+                    "default_value": true
+                },
+                {
+                    "id": "height",
+                    "name": "Alto mínimo de la banda (px)",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Entre 32 y 480 px. Crece si el contenido necesita más espacio en móvil.",
+                    "default_value": 104
+                },
+                {
+                    "id": "textSize",
+                    "name": "Tamaño del texto (px)",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Field: textSize",
+                    "default_value": 22
+                },
+                {
+                    "id": "digitSize",
+                    "name": "Tamaño de las cifras (px)",
+                    "type": "integer",
+                    "required": false,
+                    "description": "Field: digitSize",
+                    "default_value": 30
+                },
+                {
+                    "id": "fontFamily",
+                    "name": "Tipografía",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: fontFamily",
+                    "values": ["inherit", "sans", "serif", "mono"],
+                    "default_value": "inherit"
+                },
+                {
+                    "id": "fontWeight",
+                    "name": "Peso del texto",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: fontWeight",
+                    "values": ["400", "500", "600", "700"],
+                    "default_value": "600"
+                },
+                {
+                    "id": "alignment",
+                    "name": "Alineación",
+                    "type": "enum",
+                    "required": false,
+                    "description": "Field: alignment",
+                    "values": ["left", "center", "right"],
+                    "default_value": "center"
+                },
+                {
+                    "id": "backgroundColor",
+                    "name": "Color de fondo",
+                    "type": "custom",
+                    "required": false,
+                    "description": "Field: backgroundColor",
+                    "editor_definition": {
+                        "type": "SFNextToolkit.countdownColor"
+                    }
+                },
+                {
+                    "id": "textColor",
+                    "name": "Color del texto",
+                    "type": "custom",
+                    "required": false,
+                    "description": "Field: textColor",
+                    "editor_definition": {
+                        "type": "SFNextToolkit.countdownColor"
+                    }
+                },
+                {
+                    "id": "showCta",
+                    "name": "Mostrar botón CTA",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: showCta",
+                    "default_value": false
+                },
+                {
+                    "id": "ctaLabel",
+                    "name": "Texto del botón",
+                    "type": "string",
+                    "required": false,
+                    "description": "Field: ctaLabel",
+                    "default_value": "Ver la campaña"
+                },
+                {
+                    "id": "ctaUrl",
+                    "name": "Enlace a la landing de la campaña",
+                    "type": "url",
+                    "required": false,
+                    "description": "Selecciona la página o categoría destino. Una campaña Commerce no tiene una URL de storefront propia."
+                },
+                {
+                    "id": "ctaBackground",
+                    "name": "Color de fondo del botón",
+                    "type": "custom",
+                    "required": false,
+                    "description": "Field: ctaBackground",
+                    "editor_definition": {
+                        "type": "SFNextToolkit.countdownColor"
+                    }
+                },
+                {
+                    "id": "ctaColor",
+                    "name": "Color del texto del botón",
+                    "type": "custom",
+                    "required": false,
+                    "description": "Field: ctaColor",
+                    "editor_definition": {
+                        "type": "SFNextToolkit.countdownColor"
+                    }
+                },
+                {
+                    "id": "ctaNewTab",
+                    "name": "Abrir CTA en otra pestaña",
+                    "type": "boolean",
+                    "required": false,
+                    "description": "Field: ctaNewTab",
+                    "default_value": false
+                }
+            ]
+        }
+    ]
+}

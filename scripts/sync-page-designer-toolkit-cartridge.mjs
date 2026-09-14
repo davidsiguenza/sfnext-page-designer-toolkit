@@ -24,6 +24,7 @@ const requiredToolkitComponentTypes = [
     'categoryHero',
     'categoryQuickLinks',
     'contentCollection',
+    'countdownBand',
     'editorialCard',
     'embeddedVideo',
     'heroBanner',
@@ -65,6 +66,9 @@ const requiredToolkitPageFiles = [
     'sfnextToolkitProductListingPage.json',
 ];
 const requiredToolkitEditorFiles = [
+    'SFNextToolkit/campaignPicker.json',
+    'SFNextToolkit/countdownColor.json',
+    'SFNextToolkit/countdownDate.json',
     'SFNextToolkit/motionEditor.json',
     'SFNextToolkit/shoppableHotspots.json',
     'SFNextToolkit/themeEditor.json',
